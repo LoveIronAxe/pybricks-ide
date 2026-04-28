@@ -7,29 +7,34 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0071e3">
 <meta name="description" content="Pybricks IDE - 为 Pybricks 机器人打造的可视化编程环境，离线可用，无需服务器">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230071e3'/><text x='256' y='320' font-size='280' text-anchor='middle' fill='white'>P</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230071e3'/><rect x='7' y='7' width='6' height='6' rx='1' fill='white' opacity='0.9'/><rect x='19' y='7' width='6' height='6' rx='1' fill='white' opacity='0.9'/><rect x='7' y='19' width='6' height='6' rx='1' fill='white' opacity='0.9'/><rect x='19' y='19' width='6' height='6' rx='1' fill='white' opacity='0.9'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
 :root {
   --primary: #0071e3;
-  --primary-dark: #0051a8;
-  --primary-light: #d4e3ff;
+  --primary-container: #d4e3ff;
   --on-primary: #ffffff;
+  --on-primary-container: #001c38;
   --surface: #ffffff;
-  --surface-variant: #f5f5f7;
+  --surface-variant: #f5f5f5;
   --on-surface: #1c1b1f;
   --on-surface-variant: #49454f;
   --outline: #74777f;
+  --outline-variant: #c5c5d0;
+  --elevation-1: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-2: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  --radius-sm: 12px;
+  --radius-md: 20px;
   --radius-lg: 28px;
-  --radius-xl: 32px;
-  --font: 'Roboto', 'Noto Sans SC', sans-serif;
+  --radius-full: 9999px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: var(--font);
+  font-family: 'Roboto', 'Noto Sans SC', sans-serif;
   background: var(--surface);
   color: var(--on-surface);
   line-height: 1.6;
@@ -43,10 +48,10 @@ body {
   left: 0;
   right: 0;
   height: 64px;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--outline-variant);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,8 +63,8 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 400;
   color: var(--on-surface);
   text-decoration: none;
 }
@@ -67,14 +72,7 @@ body {
 .logo-icon {
   width: 36px;
   height: 36px;
-  background: var(--primary);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 20px;
+  filter: drop-shadow(0 0 8px rgba(0,113,227,0.4));
 }
 
 .nav-links {
@@ -86,7 +84,7 @@ body {
   color: var(--on-surface-variant);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   transition: color 0.2s;
 }
 
@@ -103,52 +101,52 @@ body {
   justify-content: center;
   text-align: center;
   padding: 120px 24px 80px;
-  background: linear-gradient(180deg, #f8f8ff 0%, var(--surface) 100%);
+  background: var(--surface);
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: var(--primary-light);
+  padding: 6px 14px;
+  background: var(--primary-container);
   color: var(--primary);
   border-radius: 100px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   margin-bottom: 24px;
 }
 
 .hero-badge .material-icons {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .hero h1 {
-  font-size: clamp(48px, 8vw, 80px);
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 24px;
-  max-width: 900px;
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  max-width: 700px;
+  letter-spacing: -0.5px;
 }
 
 .hero h1 span {
-  background: linear-gradient(135deg, var(--primary) 0%, #5856d6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary);
+  font-weight: 400;
 }
 
 .hero-subtitle {
-  font-size: clamp(18px, 3vw, 22px);
+  font-size: clamp(16px, 2.5vw, 18px);
   color: var(--on-surface-variant);
-  max-width: 600px;
-  margin-bottom: 48px;
-  line-height: 1.6;
+  max-width: 520px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+  font-weight: 300;
 }
 
 .hero-cta {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -157,238 +155,290 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 18px 36px;
+  padding: 14px 28px;
   background: var(--primary);
   color: var(--on-primary);
   border: none;
-  border-radius: var(--radius-xl);
-  font-size: 17px;
-  font-weight: 600;
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  font-weight: 400;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0,113,227,0.3);
+  box-shadow: 0 4px 14px rgba(0,113,227,0.25);
 }
 
 .btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,113,227,0.4);
+  box-shadow: 0 6px 20px rgba(0,113,227,0.35);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 18px 36px;
+  padding: 14px 28px;
   background: transparent;
   color: var(--on-surface);
-  border: 1px solid var(--outline);
-  border-radius: var(--radius-xl);
-  font-size: 17px;
-  font-weight: 600;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  font-weight: 400;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-secondary:hover {
-  border-color: var(--on-surface);
-  background: rgba(0,0,0,0.02);
-}
-
-.hero-image {
-  margin-top: 80px;
-  max-width: 1000px;
-  width: 100%;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-}
-
-.hero-image img {
-  width: 100%;
-  display: block;
+  border-color: var(--outline);
+  background: var(--surface-variant);
 }
 
 /* Features */
 .features {
-  padding: 120px 48px;
+  padding: 80px 48px;
   background: var(--surface);
 }
 
 .features-header {
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto 64px;
+  max-width: 500px;
+  margin: 0 auto 48px;
 }
 
 .features-header h2 {
-  font-size: 40px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
 }
 
 .features-header p {
-  font-size: 18px;
+  font-size: 15px;
   color: var(--on-surface-variant);
+  font-weight: 300;
+}
+
+.features-card {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--surface-variant);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--elevation-2);
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
-.feature-card {
-  padding: 32px;
-  background: var(--surface-variant);
-  border-radius: var(--radius-lg);
-  transition: all 0.2s;
+.feature-item {
+  text-align: center;
+  padding: 24px 16px;
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
 }
 
-.feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+.feature-item:hover {
+  background: rgba(0,0,0,0.02);
 }
 
 .feature-icon {
-  width: 56px;
-  height: 56px;
-  background: var(--primary-light);
-  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.feature-item:hover .feature-icon {
+  transform: rotate(-5deg);
 }
 
 .feature-icon .material-icons {
-  font-size: 28px;
+  font-size: 32px;
+  color: var(--on-surface-variant);
+  transition: color 0.3s ease;
+}
+
+.feature-item:hover .feature-icon .material-icons {
   color: var(--primary);
 }
 
-.feature-card h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 12px;
+.feature-item:nth-child(2):hover .feature-icon { transform: rotate(4deg); }
+.feature-item:nth-child(3):hover .feature-icon { transform: rotate(-3deg); }
+.feature-item:nth-child(4):hover .feature-icon { transform: rotate(5deg); }
+.feature-item:nth-child(5):hover .feature-icon { transform: rotate(-4deg); }
+.feature-item:nth-child(6):hover .feature-icon { transform: rotate(3deg); }
+
+.feature-item h3 {
+  font-size: 15px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: var(--on-surface);
 }
 
-.feature-card p {
+.feature-item p {
   color: var(--on-surface-variant);
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.6;
+  font-weight: 300;
 }
 
 /* How It Works */
 .how-it-works {
-  padding: 120px 48px;
+  padding: 80px 48px;
   background: var(--surface-variant);
 }
 
 .how-header {
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto 64px;
+  max-width: 500px;
+  margin: 0 auto 48px;
 }
 
 .how-header h2 {
-  font-size: 40px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
 }
 
 .how-header p {
-  font-size: 18px;
+  font-size: 15px;
   color: var(--on-surface-variant);
+  font-weight: 300;
+}
+
+.steps-card {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--elevation-2);
 }
 
 .steps {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 64px;
-  max-width: 1000px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
 }
 
 .step {
   text-align: center;
-  max-width: 280px;
+  padding: 24px;
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
 }
 
-.step-number {
-  width: 64px;
-  height: 64px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
+.step:hover {
+  background: var(--surface-variant);
+}
+
+.step-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0 auto 20px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.step:nth-child(1) .step-icon { background: #e3f2fd; }
+.step:nth-child(2) .step-icon { background: #f3e5f5; }
+.step:nth-child(3) .step-icon { background: #e8f5e9; }
+
+.step-icon .material-icons {
+  font-size: 28px;
+  color: var(--on-surface);
 }
 
 .step h3 {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 400;
   margin-bottom: 8px;
+  color: var(--on-surface);
 }
 
 .step p {
   color: var(--on-surface-variant);
-  font-size: 15px;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 300;
 }
 
 /* CTA */
 .cta-section {
-  padding: 120px 48px;
-  background: linear-gradient(135deg, var(--primary) 0%, #5856d6 100%);
+  padding: 100px 48px;
+  background: var(--surface);
   text-align: center;
-  color: white;
+}
+
+.cta-inner {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .cta-section h2 {
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 300;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+  color: var(--on-surface);
+  text-shadow: 0 0 40px rgba(0,113,227,0.15);
 }
 
 .cta-section p {
-  font-size: 18px;
-  opacity: 0.9;
-  margin-bottom: 40px;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 15px;
+  color: var(--on-surface-variant);
+  margin-bottom: 32px;
+  font-weight: 300;
 }
 
-.cta-section .btn-primary {
-  background: white;
-  color: var(--primary);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(0,113,227,0.3), 0 0 60px rgba(0,113,227,0.1);
 }
 
-.cta-section .btn-primary:hover {
-  background: #f5f5f7;
-  transform: translateY(-2px);
+.cta-btn:hover {
+  box-shadow: 0 6px 28px rgba(0,113,227,0.4), 0 0 80px rgba(0,113,227,0.15);
+  transform: translateY(-1px);
 }
 
 /* Footer */
 .footer {
-  padding: 48px;
-  background: var(--on-surface);
-  color: rgba(255,255,255,0.7);
+  padding: 40px 48px;
+  background: var(--surface-variant);
   text-align: center;
-  font-size: 14px;
+}
+
+.footer p {
+  color: var(--on-surface-variant);
+  font-size: 13px;
+  font-weight: 300;
 }
 
 .footer a {
-  color: white;
+  color: var(--primary);
   text-decoration: none;
 }
 
@@ -407,11 +457,20 @@ body {
   }
   
   .features, .how-it-works, .cta-section {
-    padding: 80px 24px;
+    padding: 60px 24px;
+  }
+  
+  .features-card, .steps-card {
+    padding: 24px;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
   
   .steps {
-    gap: 40px;
+    gap: 24px;
   }
   
   .hero-cta {
@@ -419,10 +478,20 @@ body {
     align-items: center;
   }
   
-  .btn-primary, .btn-secondary {
+  .btn-primary, .btn-secondary, .cta-btn {
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
   }
 }
 </style>
@@ -432,7 +501,27 @@ body {
 <!-- Header -->
 <header class="header">
   <a href="#" class="logo">
-    <div class="logo-icon">P</div>
+    <svg class="logo-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="9" height="9" patternUnits="userSpaceOnUse">
+          <rect width="9" height="9" fill="#0071e3"/>
+          <rect x="1.5" y="1.5" width="6" height="6" rx="1.5" fill="white" opacity="0.25"/>
+        </pattern>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <rect width="36" height="36" rx="8" fill="url(#grid)"/>
+      <rect x="4" y="4" width="7" height="7" rx="2" fill="white" opacity="0.9"/>
+      <rect x="25" y="4" width="7" height="7" rx="2" fill="white" opacity="0.9"/>
+      <rect x="4" y="25" width="7" height="7" rx="2" fill="white" opacity="0.9"/>
+      <rect x="25" y="25" width="7" height="7" rx="2" fill="white" opacity="0.9"/>
+      <circle cx="18" cy="18" r="5" fill="white" opacity="0.95" filter="url(#glow)"/>
+    </svg>
     <span>Pybricks IDE</span>
   </a>
   <nav class="nav-links">
@@ -453,7 +542,6 @@ body {
   
   <p class="hero-subtitle">
     无需配置服务器，无需网络连接。在浏览器中直接编程、控制你的 LEGO 机器人。
-    离线可用，数据存储在本地。
   </p>
   
   <div class="hero-cta">
@@ -466,66 +554,64 @@ body {
       了解更多
     </a>
   </div>
-  
-  <div class="hero-image">
-    <img src="https://via.placeholder.com/1000x600/e8f4ff/0071e3?text=Pybricks+IDE+Editor+Preview" alt="Pybricks IDE Editor Preview">
-  </div>
 </section>
 
 <!-- Features -->
 <section class="features" id="features">
   <div class="features-header">
     <h2>为什么选择 Pybricks IDE？</h2>
-    <p>专为 Pybricks 机器人设计的编程工具，让创意更快实现</p>
+    <p>专为 Pybricks 机器人设计的编程工具</p>
   </div>
   
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">
-        <span class="material-icons">cloud_off</span>
+  <div class="features-card">
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="material-icons">cloud_off</span>
+        </div>
+        <h3>离线可用</h3>
+        <p>基于 PWA 技术，首次加载后即可离线使用</p>
       </div>
-      <h3>离线可用</h3>
-      <p>基于 PWA 技术，首次加载后即可离线使用。不需要网络连接，不依赖第三方服务器。</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">
-        <span class="material-icons">storage</span>
+      
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="material-icons">storage</span>
+        </div>
+        <h3>本地存储</h3>
+        <p>所有数据存储在浏览器本地，隐私安全</p>
       </div>
-      <h3>本地存储</h3>
-      <p>所有数据存储在浏览器本地，关闭再打开数据还在。隐私安全，数据完全由你掌控。</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">
-        <span class="material-icons">grid_view</span>
+      
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="material-icons">grid_view</span>
+        </div>
+        <h3>可视化编程</h3>
+        <p>图形化积木块，拖拽即可编程</p>
       </div>
-      <h3>可视化编程</h3>
-      <p>图形化积木块，拖拽即可编程。无需记忆复杂 API，编程从未如此简单。</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">
-        <span class="material-icons">download</span>
+      
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="material-icons">download</span>
+        </div>
+        <h3>一键导出</h3>
+        <p>导出为标准 Python 代码，直接运行</p>
       </div>
-      <h3>一键导出</h3>
-      <p>导出为标准 Python 代码，直接在 Pybricks 运行。支持 JSON、Python 等多种格式。</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">
-        <span class="material-icons">devices</span>
+      
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="material-icons">devices</span>
+        </div>
+        <h3>跨平台访问</h3>
+        <p>支持电脑、平板、手机各种设备</p>
       </div>
-      <h3>跨平台访问</h3>
-      <p>支持电脑、平板、手机各种设备。在任何地方打开浏览器即可继续工作。</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">
-        <span class="material-icons">hub</span>
+      
+      <div class="feature-item">
+        <div class="feature-icon">
+          <span class="material-icons">hub</span>
+        </div>
+        <h3>硬件适配</h3>
+        <p>支持多种控制器，自动适配设备类型</p>
       </div>
-      <h3>硬件适配</h3>
-      <p>支持 Prime Hub、Essential Hub、Technic Hub 等多种控制器，自动适配设备类型。</p>
     </div>
   </div>
 </section>
@@ -537,44 +623,51 @@ body {
     <p>简单到令人惊喜，无需任何配置</p>
   </div>
   
-  <div class="steps">
-    <div class="step">
-      <div class="step-number">1</div>
-      <h3>配置车辆</h3>
-      <p>选择你的 Hub 类型，连接电机和传感器，配置轮组参数</p>
-    </div>
-    
-    <div class="step">
-      <div class="step-number">2</div>
-      <h3>设计地图</h3>
-      <p>在画布上绘制赛道，添加障碍物和路径点</p>
-    </div>
-    
-    <div class="step">
-      <div class="step-number">3</div>
-      <h3>编写程序</h3>
-      <p>拖拽积木块，自动生成 Python 代码，导出运行</p>
+  <div class="steps-card">
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">
+          <span class="material-icons">settings_input_hdmi</span>
+        </div>
+        <h3>配置车辆</h3>
+        <p>选择 Hub 类型，连接电机和传感器</p>
+      </div>
+      
+      <div class="step">
+        <div class="step-icon">
+          <span class="material-icons">map</span>
+        </div>
+        <h3>设计地图</h3>
+        <p>在画布上绘制赛道，添加路径点</p>
+      </div>
+      
+      <div class="step">
+        <div class="step-icon">
+          <span class="material-icons">code</span>
+        </div>
+        <h3>编写程序</h3>
+        <p>拖拽积木块，导出 Python 代码运行</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta-section">
-  <h2>准备好开始了吗？</h2>
-  <p>打开编辑器，开始你的 Pybricks 编程之旅</p>
-  <a href="pages/vehicle.html" class="btn-primary">
-    <span class="material-icons">arrow_forward</span>
-    立即开始
-  </a>
+  <div class="cta-inner">
+    <h2>准备好开始了吗？</h2>
+    <p>打开编辑器，开始你的 Pybricks 编程之旅</p>
+    <a href="pages/vehicle.html" class="cta-btn">
+      <span class="material-icons">arrow_forward</span>
+      立即开始
+    </a>
+  </div>
 </section>
 
 <!-- Footer -->
 <footer class="footer">
   <p>
     Pybricks IDE · 开源项目 · 基于 <a href="https://pybricks.com" target="_blank">Pybricks</a>
-  </p>
-  <p style="margin-top: 8px; opacity: 0.6;">
-    Made with ❤️ by Pybricks IDE Team
   </p>
 </footer>
 
