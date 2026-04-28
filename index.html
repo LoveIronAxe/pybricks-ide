@@ -35,7 +35,23 @@
 
 body {
   font-family: 'Roboto', 'Noto Sans SC', sans-serif;
-  background: var(--surface);
+  background:
+    /* 主光晕 - 顶部蓝色光效 */
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 113, 227, 0.10) 0%, transparent 60%),
+    /* 次要光晕 - 右下角紫色光效 */
+    radial-gradient(ellipse 50% 40% at 90% 90%, rgba(88, 86, 214, 0.06) 0%, transparent 50%),
+    /* 左下角辅助光晕 */
+    radial-gradient(ellipse 40% 30% at 10% 85%, rgba(0, 113, 227, 0.05) 0%, transparent 45%),
+    /* 微妙的点阵网格 */
+    radial-gradient(circle, rgba(0, 113, 227, 0.04) 1px, transparent 1px),
+    /* 白色底 */
+    #ffffff;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    28px 28px,
+    100% 100%;
   color: var(--on-surface);
   line-height: 1.6;
   overflow-x: hidden;
@@ -101,7 +117,41 @@ body {
   justify-content: center;
   text-align: center;
   padding: 120px 24px 80px;
-  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hero 装饰光晕 */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(0, 113, 227, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(0, 113, 227, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(30px);
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-badge {
@@ -379,6 +429,26 @@ body {
   padding: 100px 48px;
   background: var(--surface);
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(0, 113, 227, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-section > * {
+  position: relative;
+  z-index: 1;
 }
 
 .cta-inner {
