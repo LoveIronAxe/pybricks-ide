@@ -245,7 +245,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--surface-variant);
+  background: #ffffff;
 }
 
 /* ===== TOOLBAR ===== */
@@ -340,10 +340,6 @@ body {
   overflow: hidden;
   position: relative;
   background: #e8e8e8;
-  background-image: 
-    linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
 #mapCanvas {
@@ -761,8 +757,8 @@ body {
     <div class="list-header">
       <h2>🗺️ 地图</h2>
       <div class="list-header-actions">
-        <button class="btn-header-action" onclick="importMapsJSON()" title="导入地图">📤</button>
-        <button class="btn-header-action" onclick="exportMapsJSON()" title="导出地图">📥</button>
+        <button class="btn-header-action" onclick="importMapsJSON()" title="导入地图"><span class="material-icons" style="font-size:16px;">file_upload</span></button>
+        <button class="btn-header-action" onclick="exportMapsJSON()" title="导出地图"><span class="material-icons" style="font-size:16px;">file_download</span></button>
         <button class="btn-add" id="btnAddMap" title="新建地图">+</button>
       </div>
     </div>
@@ -775,7 +771,7 @@ body {
   <main class="detail-panel" id="detailPanel">
     <!-- Empty state shown when no map selected -->
     <div class="empty-state" id="emptyState">
-      <div class="icon">🗺️</div>
+      <div class="icon"><span class="material-icons" style="font-size:56px;color:var(--outline);">map</span></div>
       <p>选择一个地图开始编辑</p>
       <small>或者拖拽图片文件到左侧列表创建新地图</small>
     </div>
@@ -784,26 +780,15 @@ body {
     <div id="mapEditor" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
       <!-- TOOLBAR -->
       <div class="toolbar">
-        <span class="toolbar-label">工具:</span>
+        <span class="toolbar-label" style="font-weight:600;font-size:13px;">🗺️ 地图编辑器</span>
+        <span class="toolbar-label" style="margin-left:8px;">工具:</span>
         <div class="toolbar-group">
-          <button class="tool-btn active" data-tool="select" title="选择">
-            ↖️<span class="tooltip">选择</span>
-          </button>
-          <button class="tool-btn" data-tool="ruler" title="标尺">
-            📏<span class="tooltip">标尺</span>
-          </button>
-          <button class="tool-btn" data-tool="line" title="划线">
-            ✏️<span class="tooltip">划线</span>
-          </button>
-          <button class="tool-btn" data-tool="measure" title="点到点测量">
-            📐<span class="tooltip">测量</span>
-          </button>
-          <button class="tool-btn" data-tool="obstacle" title="障碍物">
-            🧱<span class="tooltip">障碍物</span>
-          </button>
-          <button class="tool-btn" data-tool="movable" title="搬运物">
-            📦<span class="tooltip">搬运物</span>
-          </button>
+          <button class="tool-btn active" data-tool="select" title="选择"><span class="material-icons" style="font-size:16px;">near_me</span><span class="tooltip">选择</span></button>
+          <button class="tool-btn" data-tool="ruler" title="标尺"><span class="material-icons" style="font-size:16px;">straighten</span><span class="tooltip">标尺</span></button>
+          <button class="tool-btn" data-tool="line" title="划线"><span class="material-icons" style="font-size:16px;">edit</span><span class="tooltip">划线</span></button>
+          <button class="tool-btn" data-tool="measure" title="点到点测量"><span class="material-icons" style="font-size:16px;">architecture</span><span class="tooltip">测量</span></button>
+          <button class="tool-btn" data-tool="obstacle" title="障碍物"><span class="material-icons" style="font-size:16px;">crop_square</span><span class="tooltip">障碍物</span></button>
+          <button class="tool-btn" data-tool="movable" title="搬运物"><span class="material-icons" style="font-size:16px;">widgets</span><span class="tooltip">搬运物</span></button>
         </div>
         <div class="toolbar-group">
           <span class="toolbar-label">分屏:</span>
@@ -813,21 +798,11 @@ body {
         </div>
         <div class="toolbar-group">
           <span class="toolbar-label">文件:</span>
-          <button class="tool-btn" onclick="exportCurrentMapJSON()" title="导出当前地图(JSON)">
-            📥<span class="tooltip">导出当前地图</span>
-          </button>
-          <button class="tool-btn" onclick="exportCurrentMapPNG()" title="导出当前地图(PNG图片)">
-            🖼️<span class="tooltip">导出PNG</span>
-          </button>
-          <button class="tool-btn" onclick="exportCurrentMapSVG()" title="导出当前地图(SVG矢量图)">
-            📊<span class="tooltip">导出SVG</span>
-          </button>
-          <button class="tool-btn" onclick="exportCurrentMapMermaid()" title="导出当前地图(Mermaid流程图)">
-            🔀<span class="tooltip">导出Mermaid</span>
-          </button>
-          <button class="tool-btn" onclick="exportAllMapsJSON()" title="导出全部地图(JSON)">
-            📁<span class="tooltip">导出全部</span>
-          </button>
+          <button class="tool-btn" onclick="exportCurrentMapJSON()" title="导出当前地图(JSON)"><span class="material-icons" style="font-size:16px;">file_download</span><span class="tooltip">导出当前地图</span></button>
+          <button class="tool-btn" onclick="exportCurrentMapPNG()" title="导出当前地图(PNG图片)"><span class="material-icons" style="font-size:16px;">image</span><span class="tooltip">导出PNG</span></button>
+          <button class="tool-btn" onclick="exportCurrentMapSVG()" title="导出当前地图(SVG矢量图)"><span class="material-icons" style="font-size:16px;">polyline</span><span class="tooltip">导出SVG</span></button>
+          <button class="tool-btn" onclick="exportCurrentMapMermaid()" title="导出当前地图(Mermaid流程图)"><span class="material-icons" style="font-size:16px;">account_tree</span><span class="tooltip">导出Mermaid</span></button>
+          <button class="tool-btn" onclick="exportAllMapsJSON()" title="导出全部地图(JSON)"><span class="material-icons" style="font-size:16px;">folder_open</span><span class="tooltip">导出全部</span></button>
         </div>
       </div>
 
@@ -887,12 +862,10 @@ body {
 <div class="modal-overlay" id="mapModal">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="modalTitle">导入地图</h3>
-      <button class="modal-close" id="modalClose">✕</button>
+      <h3 id="modalTitle"><span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:8px;">file_upload</span>导入地图</h3>
+      <button class="modal-close" id="modalClose"><span class="material-icons" style="font-size:18px;">close</span></button>
     </div>
-    <div class="modal-body" id="modalBody">
-      <!-- Dynamic content -->
-    </div>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
@@ -900,8 +873,8 @@ body {
 <div class="modal-overlay" id="measureModal">
   <div class="modal">
     <div class="modal-header">
-      <h3>📐 点到点测量</h3>
-      <button class="modal-close" id="measureModalClose">✕</button>
+      <h3><span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:8px;">architecture</span>点到点测量</h3>
+      <button class="modal-close" id="measureModalClose"><span class="material-icons" style="font-size:18px;">close</span></button>
     </div>
     <div class="modal-body">
       <p style="font-size:13px; color:var(--on-surface-variant);">
@@ -920,12 +893,11 @@ body {
   </div>
 </div>
 
-<!-- OBSTACLE/MOVABLE PROPS MODAL -->
 <div class="modal-overlay" id="itemModal">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="itemModalTitle">障碍物属性</h3>
-      <button class="modal-close" id="itemModalClose">✕</button>
+      <h3 id="itemModalTitle"><span class="material-icons" style="font-size:20px;vertical-align:middle;margin-right:8px;">info</span>障碍物属性</h3>
+      <button class="modal-close" id="itemModalClose"><span class="material-icons" style="font-size:18px;">close</span></button>
     </div>
     <div class="modal-body" id="itemModalBody"></div>
     <div class="modal-actions">
@@ -1130,12 +1102,12 @@ function drawMap() {
     ctx.drawImage(mapImage, 0, 0);
   }
 
-  // Draw grid overlay (light)
+  // Draw grid overlay (light, independent of background image)
   const gridSize = 20;
   const startX = 0, startY = 0;
   const endX = mapImage ? mapImage.width : canvas.width / state.zoom;
   const endY = mapImage ? mapImage.height : canvas.height / state.zoom;
-  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
   ctx.lineWidth = 1 / state.zoom;
   for (let x = Math.floor(startX / gridSize) * gridSize; x <= endX; x += gridSize) {
     ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, endY); ctx.stroke();
@@ -1293,8 +1265,8 @@ function drawObstacle(ctx, o) {
   const sel = state.selectedItemType === 'obstacle' && state.selectedItem && state.selectedItem._id === o._id;
   ctx.fillStyle = o.type === 'blocked' ? 'rgba(220,38,38,0.25)' : 'rgba(234,179,8,0.25)';
   ctx.strokeStyle = o.type === 'blocked' ? '#dc2626' : '#ca8a04';
-  ctx.lineWidth = sel ? 3 : 2;
-  if (sel) { ctx.setLineDash([5, 3]); }
+  ctx.lineWidth = sel ? 2.5 / state.zoom : 1.5;
+  if (sel) { ctx.setLineDash([5 / state.zoom, 3 / state.zoom]); }
   ctx.beginPath();
   ctx.rect(o.x, o.y, o.w, o.h);
   ctx.fill();
@@ -1305,7 +1277,7 @@ function drawObstacle(ctx, o) {
     const hs = 5;
     ctx.fillStyle = '#fff';
     ctx.strokeStyle = '#0071e3';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2 / state.zoom;
     [[o.x, o.y], [o.x + o.w, o.y], [o.x, o.y + o.h], [o.x + o.w, o.y + o.h]].forEach(([hx, hy]) => {
       ctx.beginPath(); ctx.rect(hx - hs / 2, hy - hs / 2, hs, hs);
       ctx.fill(); ctx.stroke();
@@ -1317,8 +1289,8 @@ function drawMovable(ctx, m) {
   const sel = state.selectedItemType === 'movable' && state.selectedItem && state.selectedItem._id === m._id;
   ctx.fillStyle = m.color || 'rgba(59,130,246,0.3)';
   ctx.strokeStyle = m.color || '#3b82f6';
-  ctx.lineWidth = sel ? 3 : 2;
-  if (sel) { ctx.setLineDash([5, 3]); }
+  ctx.lineWidth = sel ? 2.5 / state.zoom : 1.5;
+  if (sel) { ctx.setLineDash([5 / state.zoom, 3 / state.zoom]); }
   ctx.beginPath();
   if (m.shape === 'circle') {
     ctx.arc(m.x + m.size / 2, m.y + m.size / 2, m.size / 2, 0, Math.PI * 2);
@@ -1335,7 +1307,7 @@ function drawMovable(ctx, m) {
     const r = m.shape === 'circle' ? m.size / 2 : m.size / 2;
     ctx.fillStyle = '#fff';
     ctx.strokeStyle = '#0071e3';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2 / state.zoom;
     const corners = m.shape === 'circle'
       ? [0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(a => [cx + r * Math.cos(a), cy + r * Math.sin(a)])
       : [[m.x, m.y], [m.x + m.size, m.y], [m.x, m.y + m.size], [m.x + m.size, m.y + m.size]];
@@ -1838,6 +1810,38 @@ function showImportModal(name, imageData, img, file) {
       <input type="text" id="mapNameInput" value="${name}" placeholder="输入地图名称">
     </div>`;
 
+  // Add action buttons inside modal
+  const actions = modal.querySelector('.modal-actions');
+  if (actions) {
+    actions.innerHTML = '<button class="btn-outlined" onclick="closeAllModals()">取消</button>';
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'btn-filled';
+    confirmBtn.textContent = imageData ? '导入' : '创建';
+    confirmBtn.onclick = () => {
+      const mapName = document.getElementById('mapNameInput').value.trim() || '未命名地图';
+      const thumbnail = imageData && img ? makeThumbnail(img) : null;
+      const newMap = {
+        id: uuid(),
+        name: mapName,
+        imageData: imageData || null,
+        thumbnailData: thumbnail,
+        pixelToMm: 1,
+        obstacles: [],
+        movableItems: [],
+        paths: [],
+        rulers: []
+      };
+      state.maps.push(newMap);
+      activeMapId = newMap.id;
+      saveMaps();
+      renderMapList();
+      showMapEditor();
+      closeAllModals();
+      showToast(`地图「${mapName}」已${imageData ? '导入' : '创建'}`);
+    };
+    actions.appendChild(confirmBtn);
+  }
+
   showModal('mapModal');
   document.getElementById('mapNameInput').focus();
 
@@ -1866,16 +1870,11 @@ function showImportModal(name, imageData, img, file) {
     renderMapList();
   };
 
-  // Replace actions
-  const actions = modal.querySelector('.modal-actions') || document.createElement('div');
-  actions.className = 'modal-actions';
-  actions.innerHTML = '<button class="btn-outlined" id="modalCancelBtn">取消</button>';
-  actions.appendChild(confirmBtn);
-  if (!modal.querySelector('.modal-actions')) modal.appendChild(actions);
-  document.getElementById('modalCancelBtn').onclick = () => hideModal('mapModal');
-}
+  document.getElementById('modalClose').addEventListener('click', () => hideModal('mapModal'));
 
-document.getElementById('modalClose').addEventListener('click', () => hideModal('mapModal'));
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+}
 document.getElementById('modalCancelBtn')?.addEventListener('click', () => hideModal('mapModal'));
 
 /* ======================================================

@@ -53,7 +53,7 @@
 
 body {
   font-family: var(--font);
-  background: var(--surface-container);
+  background: #f0f0f0;
   color: var(--on-surface);
   height: 100vh;
   overflow: hidden;
@@ -66,6 +66,7 @@ body {
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0; /* critical for flex children to scroll */
 }
 
 /* ===== SIDEBAR ===== */
@@ -134,7 +135,8 @@ body {
   border-right: 1px solid var(--outline-variant);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  min-height: 0;
 }
 
 .list-header {
@@ -218,6 +220,18 @@ body {
 .list-item.active {
   background: var(--primary-container);
   color: var(--on-primary-container);
+  position: relative;
+}
+
+.list-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  border-radius: 0 2px 2px 0;
 }
 
 .list-item .item-icon { font-size: 18px; }
@@ -237,16 +251,23 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  background: var(--surface);
 }
 
 .detail-empty {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: var(--on-surface-variant);
   font-size: 14px;
+  gap: 12px;
 }
+
+.detail-empty .empty-icon { font-size: 48px; opacity: 0.4; }
+.detail-empty .empty-title { font-size: 16px; font-weight: 500; color: var(--on-surface); }
+.detail-empty .empty-hint { font-size: 13px; }
 
 .detail-section {
   display: flex;
@@ -281,158 +302,45 @@ body {
   align-self: flex-start;
 }
 
-/* Hub body - 204x164px = 2x scale of 102x82mm */
-.hub-body {
+/* Hub body - SVG-based portrait PrimeHub */
+.hub-svg-wrap {
   position: relative;
-  width: 204px;
-  height: 164px;
-  background: linear-gradient(145deg, #2B4DB0, #152E7A);
-  border-radius: 22px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 16px rgba(0,0,0,0.3);
+  width: 160px;
+  height: 260px;
   flex-shrink: 0;
 }
 
-/* 5x5 display screen */
-.hub-display {
-  position: absolute;
-  top: 52px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90px;
-  height: 90px;
-  background: #111;
-  border-radius: 8px;
-  border: 1px solid #333;
-  display: grid;
-  grid-template-columns: repeat(5, 14px);
-  grid-template-rows: repeat(5, 14px);
-  gap: 3px;
-  padding: 6px;
+.hub-svg-wrap svg {
+  width: 100%;
+  height: 100%;
 }
 
-.display-pixel {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #1a0800;
-  transition: background 0.05s, box-shadow 0.05s;
+/* Power button pulse animation */
+@keyframes pulse-ring {
+  0% { opacity: 0.9; r: 16px; }
+  50% { opacity: 0.3; r: 20px; }
+  100% { opacity: 0.9; r: 16px; }
 }
 
-.display-pixel.on {
-  background: #FF6600;
-  box-shadow: 0 0 6px 2px rgba(255,100,0,0.8);
+.pulse-ring-anim {
+  animation: pulse-ring 2s ease-in-out infinite;
 }
 
-/* Hub buttons */
-.hub-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 12px;
-  gap: 20px;
-}
-
-.hub-btn {
-  border: none;
-  cursor: pointer;
-  transition: transform 0.1s, background 0.1s;
-  font-family: var(--font);
-}
-
-.btn-left, .btn-right {
-  width: 36px;
-  height: 14px;
-  background: #ddd;
-  border-radius: 7px;
-  border: 1px solid #bbb;
-}
-
-.btn-center {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #ddd;
-  border: 1px solid #bbb;
-  font-size: 0;
-}
-
-.btn-bt {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #e0e0e0;
-  border: 1px solid #bbb;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hub ports */
+/* Hub port styling */
 .hub-port {
-  position: absolute;
-  width: 14px;
-  height: 8px;
-  background: #1a1a1a;
-  border-radius: 2px;
-  border: 1px solid #0a0a0a;
   cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: fill 0.2s;
 }
 
-.hub-port:hover { background: #333; }
-.hub-port.connected { background: #888; border-color: #666; }
+.hub-port:hover rect.hub-port-fill { fill: #555; }
+.hub-port.connected rect.hub-port-fill { fill: #888; }
+.hub-port.connected:hover rect.hub-port-fill { fill: #aaa; }
 
-.port-label {
-  position: absolute;
-  font-size: 8px;
-  font-weight: bold;
-  color: #aaa;
-  pointer-events: none;
-}
-
-.port-A { left: -10px; top: 58px; }
-.port-A .port-label { left: -14px; top: -1px; }
-.port-B { right: -10px; top: 58px; }
-.port-B .port-label { right: -14px; top: -1px; }
-.port-C { left: -10px; top: 128px; }
-.port-C .port-label { left: -14px; top: -1px; }
-.port-D { right: -10px; top: 128px; }
-.port-D .port-label { right: -14px; top: -1px; }
-.port-E { left: 38px; bottom: -9px; }
-.port-E .port-label { bottom: -16px; left: 50%; transform: translateX(-50%); top: auto; }
-.port-F { right: 38px; bottom: -9px; }
-.port-F .port-label { bottom: -16px; right: -1px; top: auto; }
-
-/* Status LED */
-.hub-led {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #333;
-}
-
-.hub-led.green.on {
-  background: #00ff00;
-  box-shadow: 0 0 8px 3px rgba(0,255,0,0.7);
+/* Corner connectors */
+.hub-corner {
+  fill: #1a3a8a;
+  stroke: #0a1f5a;
+  stroke-width: 1;
 }
 
 /* Device cards on hub */
@@ -626,10 +534,10 @@ body {
 }
 
 .wheel-motors {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 12px;
-  justify-content: center;
 }
 
 .wheel-motor {
@@ -740,10 +648,12 @@ body {
 }
 
 .color-preview {
-  height: 32px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--outline);
+  height: 36px;
+  width: 60px;
+  border-radius: 18px;
+  border: 2px solid var(--outline);
   cursor: pointer;
+  padding: 0;
 }
 
 .side-select {
@@ -1048,12 +958,12 @@ input[type="range"] {
   <span class="topbar-title">Pybricks IDE</span>
   <!-- 导入导出按钮组 -->
   <div class="topbar-actions">
-    <button class="btn-icon" id="btnImportVehicle" title="导入车辆 (JSON)" onclick="importVehiclesJSON()">📤 导入</button>
+    <button class="btn-icon" id="btnImportVehicle" title="导入车辆 (JSON)" onclick="importVehiclesJSON()"><span class="material-icons" style="font-size:16px;">file_upload</span> 导入</button>
     <div class="dropdown">
-      <button class="btn-icon dropdown-toggle" id="btnExportVehicle" onclick="toggleExportMenu()">📥 导出 ▼</button>
+      <button class="btn-icon dropdown-toggle" id="btnExportVehicle" onclick="toggleExportMenu()"><span class="material-icons" style="font-size:16px;">file_download</span> 导出 <span style="font-size:10px;">▼</span></button>
       <div class="dropdown-menu" id="exportMenu">
-        <div class="dropdown-item" onclick="exportVehiclesJSON()">📋 导出全部车辆 (JSON)</div>
-        <div class="dropdown-item" onclick="exportVehiclePython()">🐍 导出当前车辆 (Python)</div>
+        <div class="dropdown-item" onclick="exportVehiclesJSON()"><span class="material-icons" style="font-size:16px;">description</span> 导出全部车辆 (JSON)</div>
+        <div class="dropdown-item" onclick="exportVehiclePython()"><span class="material-icons" style="font-size:16px;">code</span> 导出当前车辆 (Python)</div>
       </div>
     </div>
   </div>
@@ -1089,8 +999,8 @@ input[type="range"] {
       <div class="list-header">
         <span class="list-title">车辆</span>
         <div class="list-header-actions">
-          <button class="btn-header-action" onclick="importVehiclesJSON()" title="导入车辆">📤</button>
-          <button class="btn-header-action" onclick="exportVehiclesJSON()" title="导出车辆">📥</button>
+          <button class="btn-header-action" onclick="importVehiclesJSON()" title="导入车辆"><span class="material-icons" style="font-size:16px;">file_upload</span></button>
+          <button class="btn-header-action" onclick="exportVehiclesJSON()" title="导出车辆"><span class="material-icons" style="font-size:16px;">file_download</span></button>
           <button class="btn-add" onclick="openAddVehicleModal()">+</button>
         </div>
       </div>
@@ -1101,7 +1011,11 @@ input[type="range"] {
 
     <!-- DETAIL PANEL -->
     <div class="detail-panel" id="vehicle-detail">
-      <div class="detail-empty">请选择或添加一辆车辆</div>
+      <div class="detail-empty">
+        <span class="material-icons empty-icon" style="font-size:56px; color: var(--outline);">directions_car</span>
+        <div class="empty-title">请先创建车辆</div>
+        <div class="empty-hint">点击左侧列表上方的 + 按钮添加第一辆车</div>
+      </div>
     </div>
   </div>
 
@@ -1194,32 +1108,50 @@ input[type="range"] {
 <script>
 // ===== DEVICE DEFINITIONS =====
 const MOTOR_DEVICES = [
-  { name: '中型电机', emoji: '⚙️', className: 'MotorMedium', type: 'motor' },
-  { name: '大型电机', emoji: '⚙️➕', className: 'MotorLarge', type: 'motor' },
-  { name: '力传感器', emoji: '🔲', className: 'ForceSensor', type: 'motor' },
+  { name: '大型电机', icon: 'settings', className: 'MotorLarge', type: 'motor' },
+  { name: '中型电机', icon: 'build', className: 'MotorMedium', type: 'motor' },
+  { name: '力传感器', icon: 'fitness_center', className: 'ForceSensor', type: 'sensor' },
 ];
 
 const SENSOR_DEVICES = [
-  { name: '颜色传感器', emoji: '🔴', className: 'ColorSensor', type: 'sensor' },
-  { name: '颜色距离传感器', emoji: '📏', className: 'ColorDistanceSensor', type: 'sensor' },
-  { name: '超声波传感器', emoji: '📡', className: 'UltrasonicSensor', type: 'sensor' },
-  { name: '红外传感器', emoji: '📶', className: 'InfraredSensor', type: 'sensor' },
-  { name: '倾斜传感器', emoji: '📐', className: 'TiltSensor', type: 'sensor' },
+  { name: '颜色传感器', icon: 'palette', className: 'ColorSensor', type: 'sensor' },
+  { name: '超声波传感器', icon: 'radar', className: 'UltrasonicSensor', type: 'sensor' },
+  { name: '红外传感器', icon: 'wifi', className: 'InfraredSensor', type: 'sensor' },
+  { name: '倾斜传感器', icon: 'screen_rotation', className: 'TiltSensor', type: 'sensor' },
+  { name: '无设备', icon: 'block', className: 'None', type: 'none' },
+];
+
+const ALL_DEVICES = [
+  { name: '大型电机', icon: 'settings', className: 'MotorLarge', type: 'motor' },
+  { name: '中型电机', icon: 'build', className: 'MotorMedium', type: 'motor' },
+  { name: '力传感器', icon: 'fitness_center', className: 'ForceSensor', type: 'sensor' },
+  { name: '颜色传感器', icon: 'palette', className: 'ColorSensor', type: 'sensor' },
+  { name: '超声波传感器', icon: 'radar', className: 'UltrasonicSensor', type: 'sensor' },
+  { name: '红外传感器', icon: 'wifi', className: 'InfraredSensor', type: 'sensor' },
+  { name: '倾斜传感器', icon: 'screen_rotation', className: 'TiltSensor', type: 'sensor' },
+  { name: '无设备', icon: 'block', className: 'None', type: 'none' },
 ];
 
 const PORT_MOTOR = ['A','B','C','D'];
 const PORT_SENSOR = ['E','F'];
 
 const DEVICES_BY_PORT = {
-  'A': MOTOR_DEVICES, 'B': MOTOR_DEVICES, 'C': MOTOR_DEVICES, 'D': MOTOR_DEVICES,
-  'E': SENSOR_DEVICES, 'F': SENSOR_DEVICES,
+  'A': ALL_DEVICES, 'B': ALL_DEVICES, 'C': ALL_DEVICES, 'D': ALL_DEVICES,
+  'E': ALL_DEVICES, 'F': ALL_DEVICES,
+};
+
+const DEVICE_ICON = {
+  'MotorLarge': 'settings', 'MotorMedium': 'build',
+  'ForceSensor': 'fitness_center', 'ColorSensor': 'palette',
+  'UltrasonicSensor': 'radar', 'InfraredSensor': 'wifi',
+  'TiltSensor': 'screen_rotation', 'None': 'block',
 };
 
 const DEVICE_EMOJI = {
-  'MotorMedium': '⚙️', 'MotorLarge': '⚙️➕',
+  'MotorLarge': '⚙️', 'MotorMedium': '⚙️',
   'ForceSensor': '🔲', 'ColorSensor': '🔴',
-  'ColorDistanceSensor': '📏', 'UltrasonicSensor': '📡',
-  'InfraredSensor': '📶', 'TiltSensor': '📐',
+  'UltrasonicSensor': '📡', 'InfraredSensor': '📶',
+  'TiltSensor': '📐', 'None': '🚫',
 };
 
 const DEVICE_NAME_MAP = {
@@ -1272,11 +1204,97 @@ function renderVehicleList() {
     return;
   }
   list.innerHTML = vehicles.map(v => `
-    <div class="list-item ${v.id === activeVehicleId ? 'active' : ''}" onclick="selectVehicle('${v.id}')">
+    <div class="list-item ${v.id === activeVehicleId ? 'active' : ''}" onclick="selectVehicle('${v.id}')" oncontextmenu="showVehicleContextMenu(event, '${v.id}')">
       <span class="item-icon material-icons">directions_car</span>
-      <span>${v.name}</span>
+      <span style="flex:1">${v.name}</span>
+      <button class="btn-context-menu material-icons" style="font-size:16px;color:var(--on-surface-variant);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:4px;" onclick="event.stopPropagation();showVehicleContextMenu2(event,'${v.id}')">more_vert</button>
     </div>
   `).join('');
+}
+
+// ===== CONTEXT MENU =====
+function showVehicleContextMenu(e, id) {
+  e.preventDefault();
+  showVehicleContextMenu2(e, id);
+}
+
+function showVehicleContextMenu2(e, id) {
+  // Remove existing menus
+  document.querySelectorAll('.context-menu').forEach(m => m.remove());
+  const menu = document.createElement('div');
+  menu.className = 'context-menu';
+  menu.style.cssText = 'position:fixed;background:var(--surface);border:1px solid var(--outline-variant);border-radius:8px;box-shadow:var(--elevation-3);min-width:160px;z-index:2000;overflow:hidden;';
+  menu.innerHTML = [
+    { icon: 'edit', label: '重命名', fn: `renameVehicle('${id}')` },
+    { icon: 'content_copy', label: '复制', fn: `copyVehicle('${id}')` },
+    { icon: 'file_upload', label: '导入', fn: `importVehiclesJSON()` },
+    { icon: 'file_download', label: '导出', fn: `exportVehicleJSON('${id}')` },
+    { icon: 'delete', label: '删除', fn: `deleteVehicle('${id}')`, danger: true },
+  ].map(item => `
+    <div class="context-menu-item ${item.danger ? 'danger' : ''}" onclick="${item.fn};closeContextMenu()" style="display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:13px;cursor:pointer;${item.danger ? 'color:var(--error);' : 'color:var(--on-surface);'}${item.danger ? '' : ''}">
+      <span class="material-icons" style="font-size:16px;">${item.icon}</span>
+      <span>${item.label}</span>
+    </div>
+  `).join('');
+
+  // Add hover style
+  const style = document.createElement('style');
+  style.textContent = '.context-menu-item:hover{background:var(--surface-variant);}';
+  menu.appendChild(style);
+
+  const rect = e.target.getBoundingClientRect ? e.target.closest('.list-item').getBoundingClientRect() : { right: e.clientX, top: e.clientY };
+  menu.style.left = (e.clientX || rect.right - 160) + 'px';
+  menu.style.top = (e.clientY || rect.top) + 'px';
+  document.body.appendChild(menu);
+
+  // Close on outside click
+  setTimeout(() => {
+    document.addEventListener('click', function closeMenu() {
+      menu.remove();
+      document.removeEventListener('click', closeMenu);
+    });
+  }, 0);
+}
+
+function closeContextMenu() {
+  document.querySelectorAll('.context-menu').forEach(m => m.remove());
+}
+
+function renameVehicle(id) {
+  const v = vehicles.find(v => v.id === id);
+  if (!v) return;
+  const newName = prompt('输入新名称:', v.name);
+  if (newName && newName.trim()) {
+    v.name = newName.trim();
+    saveVehicleToDB(v);
+    renderVehicleList();
+    if (activeVehicleId === id) renderVehicleDetail();
+  }
+}
+
+function copyVehicle(id) {
+  const v = vehicles.find(v => v.id === id);
+  if (!v) return;
+  const copy = JSON.parse(JSON.stringify(v));
+  copy.id = uuid();
+  copy.name = v.name + ' (副本)';
+  vehicles.push(copy);
+  activeVehicleId = copy.id;
+  saveVehicleToDB(copy);
+  renderVehicleList();
+  renderVehicleDetail();
+  showToast(`已复制为「${copy.name}」`);
+}
+
+function exportVehicleJSON(id) {
+  const v = vehicles.find(v => v.id === id);
+  if (!v) return;
+  const data = { version: '1.0', exportedAt: new Date().toISOString(), vehicles: [v] };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${v.name}.json`; a.click();
+  URL.revokeObjectURL(url);
 }
 
 function selectVehicle(id) {
@@ -1329,10 +1347,10 @@ function renderVehicleDetail() {
   const portCards = ['A','B','C','D','E','F'].map(p => {
     const dev = v.ports[p];
     if (dev) {
-      const emoji = DEVICE_EMOJI[dev.className] || '❓';
+      const icon = DEVICE_ICON[dev.className] || 'help_outline';
       return `
         <div class="device-card" onclick="editPortDevice('${p}')">
-          <span class="device-emoji">${emoji}</span>
+          <span class="device-emoji material-icons" style="font-size:20px;color:var(--primary)">${icon}</span>
           <span class="device-name">${DEVICE_NAME_MAP[dev.className] || dev.className}</span>
           <span class="device-port">${p}</span>
           <button class="device-remove" onclick="event.stopPropagation();removeDevice('${p}')">×</button>
@@ -1346,8 +1364,8 @@ function renderVehicleDetail() {
   const leftMotor = wheelGroup && wheelGroup.leftPort ? v.ports[wheelGroup.leftPort] : null;
   const rightMotor = wheelGroup && wheelGroup.rightPort ? v.ports[wheelGroup.rightPort] : null;
 
-  const lEmoji = leftMotor ? (DEVICE_EMOJI[leftMotor.className] || '⚙️') : '⚙️';
-  const rEmoji = rightMotor ? (DEVICE_EMOJI[rightMotor.className] || '⚙️') : '⚙️';
+  const lIcon = leftMotor ? (DEVICE_ICON[leftMotor.className] || 'settings') : 'settings';
+  const rIcon = rightMotor ? (DEVICE_ICON[rightMotor.className] || 'settings') : 'settings';
   const lName = leftMotor ? (DEVICE_NAME_MAP[leftMotor.className] || leftMotor.className) : '选择左电机';
   const rName = rightMotor ? (DEVICE_NAME_MAP[rightMotor.className] || rightMotor.className) : '选择右电机';
 
@@ -1387,27 +1405,102 @@ function renderVehicleDetail() {
       <div class="section-title">Prime Hub 拼搭俯视图</div>
       <div class="hub-card">
         <div class="hub-title">${v.name} — Prime Hub</div>
-        <div class="hub-body" id="hub-body-${v.id}">
-          <div class="hub-top">
-            <button class="hub-btn btn-left" title="LEFT"></button>
-            <button class="hub-btn btn-right" title="RIGHT"></button>
-            <button class="hub-btn btn-center" title="CENTER"></button>
-            <button class="hub-btn btn-bt" title="BT">📶</button>
-          </div>
+        <div class="hub-svg-wrap" id="hub-svg-wrap">
+          <svg viewBox="0 0 160 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hub body - portrait rounded rectangle -->
+            <rect x="8" y="8" width="144" height="244" rx="20" fill="url(#hubGrad)" stroke="#1a3a8a" stroke-width="1.5"/>
+            <defs>
+              <linearGradient id="hubGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3a5dc9"/>
+                <stop offset="100%" stop-color="#1a2e7a"/>
+              </linearGradient>
+            </defs>
 
-          <!-- Ports -->
-          <div class="hub-port port-A ${v.ports.A ? 'connected' : ''}" onclick="openPortModal('A')"><span class="port-label">A</span></div>
-          <div class="hub-port port-B ${v.ports.B ? 'connected' : ''}" onclick="openPortModal('B')"><span class="port-label">B</span></div>
-          <div class="hub-port port-C ${v.ports.C ? 'connected' : ''}" onclick="openPortModal('C')"><span class="port-label">C</span></div>
-          <div class="hub-port port-D ${v.ports.D ? 'connected' : ''}" onclick="openPortModal('D')"><span class="port-label">D</span></div>
-          <div class="hub-port port-E ${v.ports.E ? 'connected' : ''}" onclick="openPortModal('E')"><span class="port-label">E</span></div>
-          <div class="hub-port port-F ${v.ports.F ? 'connected' : ''}" onclick="openPortModal('F')"><span class="port-label">F</span></div>
+            <!-- Corner connectors (4 corners) -->
+            <rect class="hub-corner" x="2" y="20" width="8" height="6" rx="2"/>
+            <rect class="hub-corner" x="150" y="20" width="8" height="6" rx="2"/>
+            <rect class="hub-corner" x="2" y="234" width="8" height="6" rx="2"/>
+            <rect class="hub-corner" x="150" y="234" width="8" height="6" rx="2"/>
 
-          <!-- Display -->
-          <div class="hub-display" id="hub-display"></div>
+            <!-- Left side ports (A top, C middle, A2/port below C) -->
+            <g class="hub-port ${v.ports.A ? 'connected' : ''}" onclick="openPortModal('A')" style="cursor:pointer">
+              <rect class="hub-port-fill" x="-2" y="72" width="10" height="14" rx="3" fill="#1a1a1a" stroke="#0a0a0a"/>
+              <text x="-6" y="82" fill="#aaa" font-size="8" font-weight="bold" text-anchor="middle" dominant-baseline="middle">A</text>
+            </g>
+            <g class="hub-port ${v.ports.C ? 'connected' : ''}" onclick="openPortModal('C')" style="cursor:pointer">
+              <rect class="hub-port-fill" x="-2" y="130" width="10" height="14" rx="3" fill="#1a1a1a" stroke="#0a0a0a"/>
+              <text x="-6" y="140" fill="#aaa" font-size="8" font-weight="bold" text-anchor="middle" dominant-baseline="middle">C</text>
+            </g>
+            <!-- Port at bottom-left for D or another port -->
+            <g class="hub-port ${v.ports.D ? 'connected' : ''}" onclick="openPortModal('D')" style="cursor:pointer">
+              <rect class="hub-port-fill" x="-2" y="188" width="10" height="14" rx="3" fill="#1a1a1a" stroke="#0a0a0a"/>
+              <text x="-6" y="198" fill="#aaa" font-size="8" font-weight="bold" text-anchor="middle" dominant-baseline="middle">D</text>
+            </g>
 
-          <!-- LED -->
-          <div class="hub-led green on"></div>
+            <!-- Right side ports (B top, middle, bottom) -->
+            <g class="hub-port ${v.ports.B ? 'connected' : ''}" onclick="openPortModal('B')" style="cursor:pointer">
+              <rect class="hub-port-fill" x="152" y="72" width="10" height="14" rx="3" fill="#1a1a1a" stroke="#0a0a0a"/>
+              <text x="166" y="82" fill="#aaa" font-size="8" font-weight="bold" text-anchor="middle" dominant-baseline="middle">B</text>
+            </g>
+            <!-- Middle-right port -->
+            <g class="hub-port" style="cursor:default; opacity:0.3">
+              <rect class="hub-port-fill" x="152" y="130" width="10" height="14" rx="3" fill="#1a1a1a" stroke="#0a0a0a"/>
+              <text x="166" y="140" fill="#aaa" font-size="8" font-weight="bold" text-anchor="middle" dominant-baseline="middle">·</text>
+            </g>
+            <!-- Bottom-right port -->
+            <g class="hub-port" style="cursor:default; opacity:0.3">
+              <rect class="hub-port-fill" x="152" y="188" width="10" height="14" rx="3" fill="#1a1a1a" stroke="#0a0a0a"/>
+              <text x="166" y="198" fill="#aaa" font-size="8" font-weight="bold" text-anchor="middle" dominant-baseline="middle">·</text>
+            </g>
+
+            <!-- Bottom center 1x5 port row -->
+            <g transform="translate(40, 254)">
+              ${['E','F','·','·','·'].map((p, i) => `<rect x="${i*16+4}" y="0" width="10" height="8" rx="2" fill="#1a1a1a" stroke="#0a0a0a"/>`).join('')}
+              <text x="50" y="14" fill="#aaa" font-size="6" font-weight="bold" text-anchor="middle">E  F</text>
+            </g>
+
+            <!-- 4x4 dot matrix display - white background -->
+            <rect x="36" y="100" width="88" height="88" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+            <!-- 4x4 pixel grid (16 pixels in 4x4) -->
+            ${[0,1,2,3].map(row => [0,1,2,3].map(col => {
+              const pattern = [[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]];
+              const on = pattern[row] && pattern[row][col];
+              return `<circle cx="${44 + col*20}" cy="${108 + row*20}" r="7" fill="${on ? '#FF6600' : '#1a0800'}" ${on ? 'style="filter:drop-shadow(0 0 4px rgba(255,100,0,0.8))"' : ''}/>`;
+            }).join('')).join('')}
+            <!-- Small white ON pixels -->
+            <circle cx="64" cy="108" r="7" fill="#FF6600" style="filter:drop-shadow(0 0 4px rgba(255,100,0,0.8))"/>
+            <circle cx="64" cy="128" r="7" fill="#FF6600" style="filter:drop-shadow(0 0 4px rgba(255,100,0,0.8))"/>
+            <circle cx="84" cy="128" r="7" fill="#FF6600" style="filter:drop-shadow(0 0 4px rgba(255,100,0,0.8))"/>
+            <circle cx="84" cy="148" r="7" fill="#FF6600" style="filter:drop-shadow(0 0 4px rgba(255,100,0,0.8))"/>
+
+            <!-- Bluetooth icon (top-right area) -->
+            <g transform="translate(122, 18)">
+              <text font-size="18" fill="#e0e0e0" font-family="Material Icons" text-anchor="middle">bluetooth</text>
+            </g>
+
+            <!-- Power button with blue pulse ring -->
+            <g transform="translate(80, 44)">
+              <!-- Pulse ring -->
+              <circle class="pulse-ring-anim" cx="0" cy="0" r="16" fill="none" stroke="#4488ff" stroke-width="2" opacity="0.5"/>
+              <!-- Power button background -->
+              <circle cx="0" cy="0" r="14" fill="url(#powerGrad)" stroke="#1a1a1a" stroke-width="1"/>
+              <!-- Power icon -->
+              <text x="0" y="5" font-size="14" fill="#e0e0e0" font-family="Material Icons" text-anchor="middle">power_settings_new</text>
+              <defs>
+                <radialGradient id="powerGrad">
+                  <stop offset="0%" stop-color="#4a6a4a"/>
+                  <stop offset="100%" stop-color="#2a3a2a"/>
+                </radialGradient>
+              </defs>
+            </g>
+
+            <!-- Left/Right buttons at top -->
+            <rect x="30" y="24" width="30" height="10" rx="5" fill="#ccc" stroke="#aaa" stroke-width="1"/>
+            <rect x="100" y="24" width="30" height="10" rx="5" fill="#ccc" stroke="#aaa" stroke-width="1"/>
+
+            <!-- Status LED (bottom-right) -->
+            <circle cx="142" cy="240" r="5" fill="#00ff00" style="filter:drop-shadow(0 0 4px rgba(0,255,0,0.7))"/>
+          </svg>
         </div>
 
         <div class="hub-device-cards">
@@ -1422,13 +1515,13 @@ function renderVehicleDetail() {
         <div class="wheel-group-title">驱动轮组</div>
         <div class="wheel-motors">
           <div class="wheel-motor ${leftMotor ? 'filled' : ''}" id="wheel-left" ondragover="onDragOver(event)" ondrop="onDropLeft(event)" ondragleave="onDragLeave(event)" onclick="openWheelMotorSelect('left')">
-            <span class="wm-emoji">${lEmoji}</span>
+            <span class="wm-emoji material-icons" style="font-size:28px;color:var(--primary)">${lIcon}</span>
             <span class="wm-name">${lName}</span>
             ${lPort ? `<span class="wm-port">端口 ${lPort}</span>` : ''}
           </div>
-          <span class="wheel-arrow" onclick="flipWheels()" title="翻转左右电机">⇄</span>
+          <span class="wheel-arrow" onclick="flipWheels()" title="翻转左右电机"><span class="material-icons">swap_horiz</span></span>
           <div class="wheel-motor ${rightMotor ? 'filled' : ''}" id="wheel-right" ondragover="onDragOver(event)" ondrop="onDropRight(event)" ondragleave="onDragLeave(event)" onclick="openWheelMotorSelect('right')">
-            <span class="wm-emoji">${rEmoji}</span>
+            <span class="wm-emoji material-icons" style="font-size:28px;color:var(--primary)">${rIcon}</span>
             <span class="wm-name">${rName}</span>
             ${rPort ? `<span class="wm-port">端口 ${rPort}</span>` : ''}
           </div>
@@ -1535,9 +1628,10 @@ function renderVehicleDetail() {
     ` : ''}
   `;
 
-  // Render display pixels
-  renderHubDisplay(v);
+  // Display is now rendered inline in SVG - no renderHubDisplay needed
 }
+
+// Keep renderHubDisplay as a no-op for compatibility
 
 function renderHubDisplay(v) {
   const display = document.getElementById('hub-display');
@@ -1575,9 +1669,9 @@ function openPortModal(port) {
   const list = document.getElementById('port-device-list');
   list.innerHTML = devices.map(d => `
     <div class="device-option" data-class="${d.className}" onclick="selectDeviceOption('${d.className}')">
-      <span class="opt-emoji">${d.emoji}</span>
+      <span class="opt-emoji" style="font-family:Material Icons;font-size:22px;color:var(--primary)">${d.icon}</span>
       <span class="opt-name">${d.name}</span>
-      <span class="opt-check">✓</span>
+      <span class="opt-check material-icons" style="font-size:18px;">check</span>
     </div>
   `).join('');
 
@@ -1659,25 +1753,51 @@ function closePortModal() {
 function openWheelMotorSelect(side) {
   const v = getActiveVehicle();
   if (!v) return;
-  // Find motor ports that are not already used in wheel group (or all if not set)
-  const available = ['A','B','C','D'].filter(p => {
+  // Build list of motor ports with their info
+  const motorPorts = ['A','B','C','D'].map(p => {
     const d = v.ports[p];
-    return d && (d.className === 'MotorMedium' || d.className === 'MotorLarge');
+    const icon = d ? (DEVICE_ICON[d.className] || 'settings') : 'block';
+    const name = d ? (DEVICE_NAME_MAP[d.className] || d.className) : '无设备';
+    const usedByOther = v.wheelGroup && side === 'left' && v.wheelGroup.rightPort === p;
+    const usedByThis = v.wheelGroup && ((side === 'left' && v.wheelGroup.leftPort === p) || (side === 'right' && v.wheelGroup.rightPort === p));
+    return { port: p, icon, name, disabled: usedByOther, usedByThis };
   });
 
-  if (available.length === 0) {
-    // Prompt to add motor first
-    alert('请先在端口A/B/C/D连接电机');
-    return;
-  }
+  const selectedPort = v.wheelGroup ? (side === 'left' ? v.wheelGroup.leftPort : v.wheelGroup.rightPort) : null;
+  const html = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      ${motorPorts.map(mp => `
+        <div onclick="${mp.disabled || mp.usedByThis ? '' : `selectWheelPort('${side}','${mp.port}')`}"
+             style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px;border:2px solid ${mp.port === selectedPort ? 'var(--primary)' : mp.disabled ? 'var(--outline-variant)' : 'var(--outline)'};border-radius:12px;cursor:${mp.disabled || mp.usedByThis ? 'not-allowed' : 'pointer'};opacity:${mp.disabled || mp.usedByThis ? '0.4' : '1'};background:${mp.port === selectedPort ? 'var(--primary-container)' : 'transparent'};">
+          <span class="material-icons" style="font-size:24px;color:${mp.port === selectedPort ? 'var(--primary)' : 'var(--on-surface-variant)'}">${mp.icon}</span>
+          <span style="font-size:12px;font-weight:500;">${mp.name}</span>
+          <span style="font-size:10px;color:var(--on-surface-variant);">端口 ${mp.port}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('port-modal-title').textContent = `选择${side === 'left' ? '左' : '右'}电机`;
+  document.getElementById('port-modal-subtitle').textContent = '点击选择一个电机端口';
+  document.getElementById('port-device-list').innerHTML = html;
+  document.getElementById('port-confirm-btn').style.display = 'none';
+  document.getElementById('port-modal').classList.add('open');
 
-  const port = available[0];
-  if (!v.wheelGroup) v.wheelGroup = { leftPort: null, rightPort: null, wheelDiameter: 62, wheelWidth: 20 };
-  if (side === 'left') {
-    v.wheelGroup.leftPort = v.wheelGroup.leftPort || port;
-  } else {
-    v.wheelGroup.rightPort = v.wheelGroup.rightPort || port;
+  // Override cancel to just close
+  const cancelBtn = document.querySelector('#port-modal .btn-outlined');
+  if (cancelBtn) {
+    cancelBtn.onclick = () => { closePortModal(); document.getElementById('port-confirm-btn').style.display = ''; };
   }
+  activePort = side;
+}
+
+function selectWheelPort(side, port) {
+  const v = getActiveVehicle();
+  if (!v) return;
+  if (!v.wheelGroup) v.wheelGroup = { leftPort: null, rightPort: null, wheelDiameter: 62, wheelWidth: 20 };
+  if (side === 'left') v.wheelGroup.leftPort = port;
+  else v.wheelGroup.rightPort = port;
+  document.getElementById('port-confirm-btn').style.display = '';
+  closePortModal();
   save();
   renderVehicleDetail();
 }
