@@ -1,0 +1,331 @@
+URL: https://pybricks.com/learn/building-a-robot/spike-prime/
+Title: learn_building-a-robot_spike-prime.txt
+================================================================================
+
+SPIKE Prime StarterBot - Pybricks
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+    
+      
+    
+  
+
+    
+      
+
+  
+
+  
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+    
+  
+  
+  
+
+  
+    
+    
+    
+    
+
+    
+      
+        
+      
+
+      
+        
+          
+        
+        The SPIKE Prime version of the StarterBot has everything you need to
+follow along with the lessons and activities in this guide.
+
+You’ll start by building a drive base and you’ll add various sensor attachments
+along the way. This robot makes creative use of the SPIKE Prime left and right
+buttons to create working bumpers that can independently detect obstacles in
+its path.
+
+This provides lots of interesting learning opportunities, such as monitoring
+multiple sensors at the same time.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Color Sensor
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Ultrasonic Sensor
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        SPIKE Prime Hub
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Left bumper
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Right
+bumper
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Right motor
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Left motor
+    
+    
+    
+    
+
+The StarterBot is very effective at avoiding obstacles. The left and right bumpers press the buttons on the hub when running into an obstacle that the Ultrasonic Sensor did not see. This robot can also follow lines or square the line with the Color Sensor.
+
+You can build this version of StarterBot with just the elements in the LEGO Education Spike Prime (45678)
+ base set.
+
+This design is almost entirely the same as
+the MINDSTORMS Inventor variant,
+but it uses a ball caster instead of a swivel wheel.
+
+Building the base
+
+    
+        
+    
+    
+
+This sturdy base consists of just the hub and two motors. Each motor drives a
+wheel and a ball caster in the back is used for support. You can use this drive
+base throughout chapters 3 and 4 to learn the basics of programming and robot
+navigation.
+
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+Adding the distance sensor
+
+The Ultrasonic Sensor measures distance. You’ll use it to learn the essentials
+of working with sensors. You can build it now, or return here when you get to
+chapter 5 and onwards.
+
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+Adding the color sensor and bumpers
+
+This attachment includes the Color Sensor for line following and line squaring.
+It also has two bumpers that press the left and right buttons on the hub when
+the robot runs into an obstacle.
+
+You can build it now, but it’s better to leave it unattached
+until you get to chapter 5.3 and onwards.
+
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+Setup blocks
+
+If you use the design shown above, you can use the following setup blocks in
+your program. This can be a useful starting point for many of your programs.
+
+Don’t worry if you’re not sure what each of these blocks do. We’ll introduce
+them one by one in the next chapters.
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    Setup blocks for the SPIKE Prime StarterBot. This it drive in a square.

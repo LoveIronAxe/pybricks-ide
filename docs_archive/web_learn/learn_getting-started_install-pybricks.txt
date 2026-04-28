@@ -1,0 +1,416 @@
+URL: https://pybricks.com/learn/getting-started/install-pybricks/
+Title: learn_getting-started_install-pybricks.txt
+================================================================================
+
+Installing Pybricks
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+    
+      
+    
+  
+
+    
+      
+
+  
+
+  
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+    
+  
+  
+  
+
+  
+    
+    
+    
+    
+
+    
+      
+        
+      
+
+      
+        
+          
+        
+        Now that you’ve decided to use Pybricks, it’s time to open the Pybricks app
+and install the Pybricks firmware on your hub.
+
+If you prefer to get going right away, go
+to code.pybricks.com.
+Just follow the Welcome Tour under Help via the
+menu (). Otherwise, stick around and we’ll take you through the steps.
+
+If you are using EV3, please visit
+the legacy instructions instead.
+
+The Pybricks “App”
+
+The Pybricks Code editor
+at code.pybricks.com
+is a web page that looks and feels like an app. It includes everything you need
+to create and run and programs, and manage your LEGO hub.
+
+Once the page is fully loaded, you can use Pybricks offline.
+For more convenience, you can click to install as app. This creates an app
+shortcut for easy access to Pybricks.
+
+Pybricks is saved offline in your browser. If you delete your
+browser data, you need internet access again to load Pybricks.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Tools
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Create app shortcut
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Ready for offline use
+    
+    
+    
+    
+
+Why update the firmware?
+
+You can think of your LEGO hub as a small computer. Just like your computer
+has an operating system (like Windows or MacOS) to run programs (like apps),
+the hub has firmware to run the programs that you make.
+
+Out of the box, all LEGO hubs work in a different way. Pybricks makes them work
+the same using the Pybricks firmware.
+
+This enables all the unique features that Pybricks is known for, such as
+compatibility with all motors and sensors, improved robot navigation, saving
+your program on the hub, and so on.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        City Hub
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Technic Hub
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Move Hub
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Inventor Hub
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Prime Hub
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Essential Hub
+    
+    
+    
+    
+    
+    
+
+These LEGO hubs can be used with Pybricks.
+
+Fortunately, installing the Pybricks firmware is easy. You can recover to the
+original firmware at any time. If you have any doubts about the installation process,
+you can always try the recovery process
+first, just to be sure.
+
+Installing Pybricks on the hub
+
+You can install Pybricks on any of the hubs shown above. To get started,
+go to code.pybricks.com,
+open the tools menu (), and click install Pybricks firmware:
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Tools
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Install
+    
+    
+    
+    
+
+Then follow the on-screen instructions in five steps:
+
+  Select your hub type and click next.
+  Here you’ll see the various software licenses used in the firmware. Once
+you’ve read and accepted them, click next.
+  If you have more than one hub, choose a unique name to tell them apart
+later. Click next. (Classroom tip: Use easy to remember names such as
+animals or city names. Add matching stickers or labels to each hub.)
+  Here you’ll see the instructions to put your hub in update mode. You can
+watch the video to see what each step looks like. On some computers, you’ll
+see additional instructions to install an extra driver. Click install.
+  You’ll get a popup window to connect to your device. Once you do, the update
+begins and you’ll see an installation progress bar.
+
+Restoring the original firmware
+
+The Pybricks installation process works just like a normal LEGO firmware
+update. This is why restoring the original is so easy.
+
+To recover the LEGO firmware, go to code.pybricks.com,
+open the tools menu (), and click Restore official LEGO firmware. Choose
+your hub and follow the on-screen instructions.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Tools
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Restore official LEGO firmware
+    
+    
+    
+    
+
+Troubleshooting connectivity
+
+If connectivity issues arise, you’ll usually see a notification popup that
+describes the problem. Be sure to follow the indicated instructions. If that
+does not help, follow the instructions below.
+
+  
+    You should not attempt to connect to the hub via your computer’s settings
+menu. If you already did, just remove the hub from there and try again via the
+app instead.
+  
+  
+    You can refresh the app by pressing Ctrl + F5.
+  
+  
+    If connection issues continue to persist, please describe the problem on our
+forum. Additional Bluetooth
+troubleshooting advice is available here.
+  
+  
+    Using other Bluetooth devices at the same time can cause interference
+resulting in errors in Pybricks Code, particularly Bluetooth keyboards/mice.
+Be sure to turn off any unused devices for the best experience.
+  
+  
+    Many Bluetooth adapters on Windows have compatibility issues. We have had the
+best results with adapters that used the generic Microsoft Bluetooth drivers
+such as adapters that use Cambridge Silicon Radio (CSR 4.0) chips. You can
+help by reporting known working (and not working) adapters here.
+  
+
+Trying new beta features (optional)
+
+Most users should use code.pybricks.com, which is the stable version.
+If you are connected to the internet, app updates will automatically
+load when they become available.
+
+If you are curious about trying the latest fixes or features before they are
+finished, you can do so by clicking on try new beta features. This opens
+a separate window, with separate projects.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Tools
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Check version
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Try new beta features
+    
+    
+    
+    
+
+If you use block coding with a license code, you can sign in to both versions
+at the same time.
+
+You may be prompted to install a new beta firmware version as well. The
+installation procedure works the same. When you go back to the stable version,
+you can install its corresponding firmware again.
+
+Trying the nightly version (optional)
+
+Advanced users and contributors who want to help test the latest features can
+install a custom firmware. To do so, first start the firmware installation as
+usual.
+
+Instead of selecting a hub on the
+first dialog, choose Advanced and select your zip file with
+the firmware. You can use the latest experimental firmware files or the source code to build your own.

@@ -1,0 +1,81 @@
+LEGO® System and City - Pybricks 
+
+ Python 27 
+
+ Block Coding 26 
+
+ Technic 23 
+
+ Remote Control 15 
+
+ SPIKE Prime 12 
+
+ Steering Car 11 
+
+ MINDSTORMS Robot Inventor 10 
+
+ Xbox Controller 9 
+
+ City 8 
+
+ SPIKE Essential 8 
+
+ Boost 7 
+
+ Powered Up Remote 7 
+
+ News 5 
+
+ Hub to Hub Communication 3 
+
+ MINDSTORMS EV3 2 
+
+ LEGO 42099 2 
+
+ LEGO 42160 2 
+
+ LEGO 42124 2 
+
+ LEGO 42109 2 
+
+ LEGO 42129 2 
+
+ LEGO 42131 2 
+
+ LEGO 42146 2 
+
+ LEGO® System and City 
+
+ Using Pybricks with Visual Studio Code and other editors
+
+ You can use Pybricks in your favorite code editor like Visual Studio Code. Here’s how.
+
+ Using Pybricks on Linux
+
+ Tips and tricks for using Pybricks successfully on Linux. With udev rules and snap configurations for Chromium.
+
+ Making your own Duplo Train controller
+
+ You can control the Duplo Train with and LEGO City, Technic, SPIKE, or MINDSTORMS. Here’s how you can build your own remote for your kids.
+
+ How to download multiple Pybricks programs with your own menu
+
+ This is how you can install multiple Pybricks programs on the hub, and add a simple menu select one to run. This works on the SPIKE Prime Hub and the MINDSTO... 
+
+ How to disable motor checks in multipurpose Pybricks programs
+
+ This article explains how to disable motor checks in multipurpose programs so that they run no matter which motors are connected, if any.
+
+ Pybricks 3.5 is here!
+
+ What’s new in in Pybricks 3.5? Comment block, Xbox Controller rumble, keyboard input, and more!
+
+ Get creative with your smart LEGO® bricks using Pybricks
+
+ Pybricks releases block-based coding! Now fans of all LEGO themes can bring their smart bricks together in a  single app for endless possibilities.
+
+ Make your LEGO® System &amp; LEGO® Technic creations come alive with Python coding using Pybricks
+
+ Pybricks releases Python coding for LEGO® Powered Up. LEGO fans of all ages can learn to code and make their LEGO creations come alive.
+
+ Back to Top &uarr;

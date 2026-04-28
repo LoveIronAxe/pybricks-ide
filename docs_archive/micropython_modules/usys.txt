@@ -1,0 +1,131 @@
+usys – System specific functions &mdash; pybricks v3.6.1 documentation
+      
+      
+      
+      
+    
+  
+    
+  
+  
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+
+ 
+  
+    
+
+    
+
+      
+        
+          
+  
+      
+      usys – System specific functions
+      
+      
+  
+  
+
+          
+           
+             
+  
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+usys – System specific functions¶
+This MicroPython module is a subset of the sys module in Python.
+Input and output streams
+
+stdin¶
+This is a stream object (uio.FileIO) that receives input from a
+connected terminal, if any.
+Also see kbd_intr to disable
+KeyboardInterrupt when passing binary data via stdin.
+
+stdout¶
+This is a stream object (uio.FileIO) that sends output to a connected
+terminal, if any.
+
+stderr¶
+Alias for stdout.
+
+Version info
+
+implementation¶
+MicroPython version tuple. See format and example below.
+
+version¶
+Python compatibility version, Pybricks version, and build date.
+See format and example below.
+
+version_info¶
+Python compatibility version. See format and example below.
+
+Examples¶
+
+Version information¶
+from pybricks import version
+
+# (&#39;essentialhub&#39;, &#39;3.2.0b5&#39;, &#39;v3.2.0b5 on 2022-11-11&#39;)
+print(version)
+
+import usys
+
+# (&#39;micropython&#39;, (1, 19, 1), &#39;SPIKE Essential Hub with STM32F413RG&#39;, 6)
+print(usys.implementation)
+
+# &#39;3.4.0; Pybricks MicroPython v3.2.0b5 on 2022-11-11&#39;
+print(usys.version)
+
+# (3, 4, 0)
+print(usys.version_info)
+
+Standard input and output¶
+The stdin stream can be used to capture input via the Pybricks Code
+input/output window. See the keyboard input project to learn how this works.
+This approach can be extended to exchange data with any other device as well.

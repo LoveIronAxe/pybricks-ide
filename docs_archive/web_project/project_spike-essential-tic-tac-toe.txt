@@ -1,0 +1,290 @@
+Playing Tic Tac Toe with SPIKE Essential - Pybricks 
+
+ Laurens Valk 
+
+ Let’s build, code, and learn! 
+
+ Follow 
+
+ Website 
+
+ Facebook 
+
+ GitHub 
+
+ Instagram 
+
+ YouTube 
+
+ Custom Social Profile Link
+
+-->
+
+ Playing Tic Tac Toe with SPIKE Essential
+
+ A good way to practice more interesting coding concepts is to mimic a well
+known board game. There’s no stress to get a robot mission right, and it’s
+easy to check if your code behaves according to the rules of the game. 
+
+ In this article, we’ll show you how you can make Tic Tac Toe game for two
+players! 
+
+ Requirements 
+
+ If you want to build exactly the same Tic Tac Toe game, you’ll need the
+ LEGO Education Spike Essential (45345) 
+ set. 
+
+ However, you can build it with any hub if you combine it with the Color Light
+Matrix to display the game. 
+
+ To build, place the motor and the hub on the base plate using some bricks and
+pins, as shown above. Add a beam to the motor to indicate whose turn it is. 
+
+ Running and playing the game 
+
+ Instead of noughts and crosses, you’ll use the blue and green colors
+to indicate each player’s turn on the SPIKE Color Light Matrix. 
+
+ You’ll use the hub button to choose your position, and then confirm your choice
+by handing the flag to the other player for their turn. You can see this in the
+video above. 
+
+ The example below includes numerous comment blocks to help you illustrate how
+this program works. Have fun! 
+
+ Download block code project 
+
+ The Tic Tac Toe program.
+
+ Running the Pybricks program 
+
+ This project uses  
+ Pybricks on your LEGO hub. Pybricks makes your creations
+come alive and helps you unlock the full potential of your LEGO  Technic ,
+ City ,  MINDSTORMS ,  BOOST , or  Spike  sets. 
+
+ If you haven’t already, install Pybricks on your hub as shown below, or check
+out our  getting started guide  for more details. You can go
+back to the LEGO firmware and apps at any time. 
+
+ Tools
+
+ Install
+
+ Now import the program you  downloaded earlier , as
+shown below. Click to connect your hub and ▶ to
+start! 
+
+ files
+
+ import
+
+ open
+
+ connect
+
+ run
+
+ You can run imported block programs even if you’re not signed up. This is a
+great way to try out Pybricks and see how it works. 
+
+ Running it as a Python program 
+
+ You can also run this project as a Python (MicroPython) program. The following
+code was generated from the  block program  above.
+To run it, create a new empty Python program in Pybricks and copy the code into
+it. 
+
+ Copy code 
+
+ from pybricks.hubs import EssentialHub 
+ from pybricks.parameters import Button  , Color  , Direction  , Port  , Stop 
+ from pybricks.pupdevices import ColorLightMatrix  , Motor 
+ from pybricks.tools import StopWatch  , wait 
+ from urandom import choice 
+
+ # Set up all devices.
+  hub = EssentialHub  () 
+ matrix = ColorLightMatrix  (  Port  .  B  ) 
+ blink_time = StopWatch  () 
+ player = Motor  (  Port  .  A  , Direction  .  CLOCKWISE  ) 
+
+ # Initialize variables.
+  turn = choice  ([  Color  .  BLUE  , Color  .  GREEN  ]) 
+ game = [  Color  .  NONE  ] * 9 
+ game_win = [  Color  .  NONE  ] * 9 
+ location = 8 
+
+ def empty  (  position  ): 
+ # This function checks if the given position on the board
+ # is still free, by checking that the color is none.
+ # It returns True if it's empty, and False if not.
+
+ # We make a function for this, so we can easily check
+ # this in several places in the program. That way we don't
+ # have to repeat this code, and the word "empty" is easier
+ # to read than checking what all these lists blocks do.
+ return game  [  position  ] == Color  .  NONE 
+
+ def test_one_row  (  a  , b  , c  ): 
+ # This function checks if 3 given positions are full, with the same color.
+ # We can use this function to check the board, row by row. For example,
+ # check_three(3, 4, 5) will check that the middle row is complete.
+ # If any position is empty, then this row/column/diagonal is not complete.
+ # So we return false.
+ if empty  (  a  ) or empty  (  b  ) or empty  (  c  ): 
+ return None 
+ # If all pixels are the same, then the row/column/diagonal is complete!
+ if color  (  a  ) == color  (  b  ) and color  (  a  ) == color  (  c  ): 
+ # We have a winnner! Let's celebrate by blinking the winning row
+ # in orange. To do that, we first have to make a copy of the board
+ # and set the winning row to orange.
+ for item in range  (  9  ): 
+ # So loop over all 9 positions. If it matches one of the winning
+ # positions, then make it orange. Otherwise keep it the existing
+ # color for that position.
+ if item in [  a  , b  , c  ]: 
+ game_win  [  item  ] = Color  .  ORANGE 
+ else  : 
+ game_win  [  item  ] = color  (  item  ) 
+ # Blink the winning game state 5 times.
+ for count in range  (  5  ): 
+ matrix  .  on  (  game_win  ) 
+ wait  (  500  ) 
+ matrix  .  on  (  game  ) 
+ wait  (  500  ) 
+ # This completes the game, so we end the program.
+ matrix  .  on  (  Color  .  NONE  ) 
+ raise SystemExit 
+
+ def color  (  position  ): 
+ # This function gets the color at the given position.
+
+ # We make a function for this, so we can just use color(4) to
+ # check what the color at position 4 is, which makes the other
+ # code easier to read.
+ return game  [  position  ] 
+
+ def find_next_free_spot  (  current  ): 
+ # To find the next free spot, go over all 9 spots, and
+ # return the first one that is free, so no color. We
+ # start checking from the given position
+ for index in range  (  current  , current + 9  , 1  ): 
+ if color  (  index % 9  ) == Color  .  NONE  : 
+ # If that spot still has no color, we can use it.
+ return index % 9 
+ # If we didn't find a free spot anywhere, all spots are full. And yet
+ # nobody has one yet. so it's a draw. Game over!
+ # Blink a white flag to indicate this.
+ matrix  .  on  (  Color  .  WHITE  ) 
+ wait  (  1000  ) 
+ matrix  .  on  (  Color  .  NONE  ) 
+ raise SystemExit 
+
+ def check_win  (): 
+ # Check rows for a winner.
+ test_one_row  (  0  , 1  , 2  ) 
+ test_one_row  (  3  , 4  , 5  ) 
+ test_one_row  (  6  , 7  , 8  ) 
+ # Check columns for a winner.
+ test_one_row  (  0  , 3  , 6  ) 
+ test_one_row  (  1  , 4  , 7  ) 
+ test_one_row  (  2  , 5  , 8  ) 
+ # Check diagonals for a winner.
+ test_one_row  (  0  , 4  , 8  ) 
+ test_one_row  (  2  , 4  , 6  ) 
+
+ def turn_is_complete  (): 
+ # Blue's turn is complete if they push the motor to the positive side.
+ if turn == Color  .  BLUE and player  .  angle  () &gt; 30  : 
+ return True 
+ # Green's turn is complete if they push the motor to the negative side.
+ if turn == Color  .  GREEN and player  .  angle  () &lt; -  30  : 
+ return True 
+ # Otherwise the turn is not done, so return false.
+ return False 
+
+ # The main program starts here.
+# The tic tac toe game can be described at any time by:
+# - the state of the board (which spots are full, with either blue or green)
+# - whose turn it currently is (green or blue)
+
+ # To make things simple, we represent the game state with a list of 9 colors.
+# That way, we can directly show the current state on the color light matrix.
+# The color "none" is used to indicate a free spot.
+
+ # In the setup, we randomly assign the first turn to either the green or blue
+# player. For each completed turn, we add the current player's color to their
+# selected position on the board (the selected position in the list).
+# Allow the button to be used as an input, instead of stopping the program.
+  hub  .  system  .  set_stop_button  (  None  ) 
+ hub  .  light  .  on  (  Color  .  NONE  ) 
+ # Let the motor randomly indicate the first player.
+  if turn == Color  .  GREEN  : 
+ player  .  run_target  (  500  , 765  , Stop  .  COAST  ) 
+ else  : 
+ player  .  run_target  (  500  , 675  , Stop  .  COAST  ) 
+ # Discard the two full turns and reset the rotation sensor back to the
+# marker on the shaft. This way, positive angles indicate the green
+# player and negative angles indicate the blue player.
+  player  .  reset_angle  (  None  ) 
+ # This is the outer loop. It repeats full turns until the game completes.
+  while True  : 
+ hub  .  light  .  on  (  turn  ) 
+ # This loop executes one turn of the current player, so it runs until
+ # the current turn is complete. We check that in a separate function.
+ while not turn_is_complete  (): 
+ # The turn starts by ensuring the previous press is now released,
+ # so we don't immediately register another button press.
+ while Button  .  CENTER in hub  .  buttons  .  pressed  (): 
+ wait  (  1  ) 
+ # Find the next free spot, up one from the last location.
+ location = find_next_free_spot  (  location + 1  ) 
+ # Blink until turn or complete or button pressed. Instead of waiting
+ # some time between turning the light on and off, we keep waiting
+ # for several things at once. The blink is completes if it is time to
+ # blink again or the turn is complete or the button is pressed to
+ # change the selected position.
+ while not (  turn_is_complete  () or Button  .  CENTER in hub  .  buttons  .  pressed  ()): 
+ # Show game state for the current selection being off and then on.
+ # This creates a blink.
+ for blink_color in [  turn  , Color  .  NONE  ]: 
+ game  [  location  ] = blink_color 
+ matrix  .  on  (  game  ) 
+ blink_time  .  reset  () 
+ while not (  blink_time  .  time  () &gt; 200 or turn_is_complete  () or Button  .  CENTER in hub  .  buttons  .  pressed  ()): 
+ wait  (  1  ) 
+ # The blink might just have been on or off at this point, so reinstate
+ # game state based on whether turn complete or not.
+ game  [  location  ] = turn if turn_is_complete  () else Color  .  NONE 
+ # With the user turn complete, we can check if anyone has one yet,
+ # using a separate function. That will then exit the program.
+ check_win  () 
+ # But otherwise it is the next player's turn. So change to blue if it was
+ # green, or change to green if it was blue.
+ turn = Color  .  BLUE if turn == Color  .  GREEN else Color  .  GREEN 
+
+Python representation of the block program.
+
+ Facebook  
+
+ LinkedIn  
+
+ You May Also Enjoy 
+
+ Groceries with machine learning
+
+ A LEGO SPIKE Prime robot goes shopping. Find the broccoli with machine learning.
+
+ Robotic arm with vision
+
+ A LEGO SPIKE Prime robotic arm with a camera to detect colored objects to pick up.
+
+ Saving LEGO® MINDSTORMS® …
+
+ Pybricks reboots LEGO® MINDSTORMS® for use in the modern classroom. Help us save hundreds of thousands of robots from the e-waste pile!
+
+ Using Pybricks with Visual Studio Code and other editors
+
+ You can use Pybricks in your favorite code editor like Visual Studio Code. Here’s how.

@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pybricks IDE — 调试页面</title>
+<!-- PWA -->
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0071e3">
+<meta name="description" content="Pybricks 机器车可视化编程IDE - 可离线使用">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230071e3'/><text x='256' y='320' font-size='280' text-anchor='middle' fill='white'>P</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #0071e3;
+  --on-primary: #ffffff;
+  --primary-container: #d4e3ff;
+  --on-primary-container: #001c38;
+  --surface: #ffffff;
+  --surface-variant: #f5f5f5;
+  --on-surface: #1c1b1f;
+  --on-surface-variant: #49454f;
+  --outline: #74777f;
+  --outline-variant: #c5c5d0;
+  --error: #ba1a1a;
+  --success: #22c55e;
+  --warning: #eab308;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.18);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 12px;
+  --radius-btn: 20px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --sidebar-width: 56px;
+  --list-width: 260px;
+  --font: 'Roboto', 'Noto Sans SC', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--on-surface);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 顶部工具栏 ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 var(--space-md);
+  background: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
+  gap: var(--space-sm);
+}
+
+.topbar-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.topbar-spacer { flex: 1; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  height: 36px;
+  padding: 0 var(--space-md);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  outline: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.btn-primary:hover { box-shadow: var(--shadow-sm); }
+.btn-primary:active { opacity: 0.85; }
+
+.btn-outlined {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--outline);
+}
+.btn-outlined:hover { background: rgba(0,113,227,0.06); }
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  outline: none;
+}
+.btn-icon:hover { background: var(--surface-variant); }
+
+/* ── 主体区域 ── */
+.main-area {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── 侧边栏 Navigation Rail ── */
+.sidebar {
+  width: 56px;
+  min-width: 56px;
+  background: var(--surface-variant);
+  border-right: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  gap: var(--space-xs);
+}
+
+.sidebar-item {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+  gap: 2px;
+  border: none;
+  background: transparent;
+}
+
+.sidebar-item:hover { background: rgba(0,0,0,0.05); }
+
+.sidebar-item.active {
+  background: var(--primary-container);
+}
+
+.sidebar-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: 0 3px 3px 0;
+}
+
+.sidebar-icon { font-size: 22px; line-height: 1; }
+.sidebar-label { font-size: 10px; font-weight: 500; color: var(--on-surface-variant); }
+.sidebar-item.active .sidebar-label { color: var(--on-primary-container); }
+
+/* ── 列表栏 ── */
+.list-panel {
+  width: 260px;
+  min-width: 200px;
+  max-width: 360px;
+  border-right: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--outline-variant);
+  gap: var(--space-sm);
+}
+
+.list-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+  flex: 1;
+}
+
+.list-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.session-item:hover { background: var(--surface-variant); }
+.session-item.active { background: var(--primary-container); }
+
+.session-icon { font-size: 18px; }
+.session-info { flex: 1; overflow: hidden; }
+.session-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.session-time { font-size: 11px; color: var(--on-surface-variant); }
+
+/* ── 详情栏 ── */
+.detail-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── 卡片通用 ── */
+.card {
+  background: var(--surface-variant);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--outline-variant);
+  gap: var(--space-sm);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--on-surface);
+  flex: 1;
+}
+
+.card-body { padding: var(--space-md); }
+
+/* ── 模拟器 Canvas ── */
+.simulator-wrap {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #e8f4e8;
+  border: 1px solid var(--outline-variant);
+}
+
+#simCanvas {
+  display: block;
+  width: 100%;
+  height: 400px;
+}
+
+.sim-overlay-info {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  background: rgba(255,255,255,0.85);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 11px;
+  color: var(--on-surface-variant);
+  pointer-events: none;
+}
+
+/* ── 控制台 ── */
+.console-wrap {
+  background: #1e1e2e;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.console-header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-md);
+  background: #2a2a3e;
+  gap: var(--space-sm);
+}
+
+.console-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #aaa;
+  flex: 1;
+}
+
+.console-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm) var(--space-md);
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.console-line { display: flex; gap: var(--space-sm); }
+.console-ts { color: #6a6a8a; flex-shrink: 0; }
+.console-action { font-weight: 500; flex-shrink: 0; }
+.console-msg { flex: 1; word-break: break-all; }
+.console-line.success .console-action { color: #4ade80; }
+.console-line.success .console-msg { color: #86efac; }
+.console-line.warn .console-action { color: #fbbf24; }
+.console-line.warn .console-msg { color: #fcd34d; }
+.console-line.error .console-action { color: #f87171; }
+.console-line.error .console-msg { color: #fca5a5; }
+
+/* ── 数据面板 2列网格 ── */
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.data-card {
+  background: var(--surface-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.data-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.data-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.data-unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--on-surface-variant);
+  margin-left: 2px;
+}
+
+/* ── 传感器曲线图 ── */
+.chart-wrap {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--outline-variant);
+}
+
+#chartCanvas {
+  display: block;
+  width: 100%;
+  height: 150px;
+}
+
+/* ── 控制栏 ── */
+.control-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--surface-variant);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.control-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--outline-variant);
+  margin: 0 var(--space-xs);
+}
+
+.ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  height: 36px;
+  padding: 0 var(--space-md);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  outline: none;
+  background: var(--surface);
+  color: var(--on-surface);
+  border: 1px solid var(--outline);
+}
+.ctrl-btn:hover { background: var(--surface-variant); }
+.ctrl-btn.active { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+
+.speed-group {
+  display: flex;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+}
+
+.speed-btn {
+  height: 36px;
+  padding: 0 var(--space-md);
+  border: none;
+  border-right: 1px solid var(--outline);
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  outline: none;
+}
+.speed-btn:last-child { border-right: none; }
+.speed-btn:hover { background: var(--surface-variant); }
+.speed-btn.active { background: var(--primary); color: var(--on-primary); }
+
+/* ── 车辆拼搭视图 ── */
+.vehicle-view {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--surface-variant);
+  border-radius: var(--radius-md);
+}
+
+.vehicle-hub-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+#vehicleCanvas {
+  display: block;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: 1px solid var(--outline-variant);
+}
+
+.vehicle-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.vehicle-info-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--on-surface);
+  margin-bottom: var(--space-xs);
+}
+
+.claw-test {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.claw-label {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.claw-angle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 60px;
+}
+
+.port-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.port-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.port-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--primary-container);
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* ── 内存监控 ── */
+.memory-grid {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.mem-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  background: var(--surface-variant);
+  border-radius: var(--radius-btn);
+  font-size: 12px;
+}
+
+.mem-label { color: var(--on-surface-variant); }
+.mem-value { font-weight: 700; color: var(--on-surface); }
+.mem-value.active { color: var(--success); }
+.mem-value.inactive { color: var(--outline); }
+
+/* ── 弹窗 ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  min-width: 320px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--shadow-md);
+  transform: scale(0.95);
+  transition: transform 0.2s;
+}
+.modal-overlay.open .modal { transform: scale(1); }
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--on-surface);
+  margin-bottom: var(--space-lg);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--on-surface-variant);
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--surface-variant); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+/* ── 页面切换 ── */
+.page-section { display: none; }
+.page-section.active { display: flex; flex-direction: column; gap: var(--space-lg); }
+
+/* ── 滚动条美化 ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+
+/* ── 空状态 ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  color: var(--on-surface-variant);
+  gap: var(--space-sm);
+  font-size: 13px;
+}
+.empty-icon { font-size: 36px; opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<!-- 顶部工具栏 -->
+<header class="topbar">
+  <span class="topbar-title">🐍 Pybricks IDE</span>
+  <div class="topbar-spacer"></div>
+  <button class="btn btn-primary" onclick="exportPython()">
+    📥 一键导出 Python
+  </button>
+</header>
+
+<!-- 主体区域 -->
+<div class="main-area">
+
+  <!-- 侧边栏 -->
+  <nav class="sidebar">
+    <button class="sidebar-item" onclick="switchPage('vehicle')" title="车辆">
+      <span class="sidebar-icon material-icons">directions_car</span>
+      <span class="sidebar-label">车辆</span>
+    </button>
+    <button class="sidebar-item" onclick="switchPage('map')" title="地图">
+      <span class="sidebar-icon material-icons">map</span>
+      <span class="sidebar-label">地图</span>
+    </button>
+    <button class="sidebar-item" onclick="switchPage('program')" title="程序">
+      <span class="sidebar-icon material-icons">code</span>
+      <span class="sidebar-label">程序</span>
+    </button>
+    <button class="sidebar-item active" onclick="switchPage('debug')" title="调试">
+      <span class="sidebar-icon material-icons">bug_report</span>
+      <span class="sidebar-label">调试</span>
+    </button>
+  </nav>
+
+  <!-- 列表栏 -->
+  <aside class="list-panel">
+    <div class="list-header">
+      <span class="list-title">调试记录</span>
+      <button class="btn-icon" onclick="newDebugSession()" title="新建调试">+</button>
+    </div>
+    <div class="list-content" id="sessionList">
+      <div class="empty-state">
+        <span class="empty-icon">📋</span>
+        <span>暂无调试记录</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 详情栏 -->
+  <main class="detail-panel">
+
+    <!-- 调试页面（默认显示） -->
+    <section class="page-section active" id="page-debug">
+
+      <!-- 模拟器 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🤖 全息仿真</span>
+          <button class="btn-icon" onclick="toggleSimOptions()" title="选项">⚙️</button>
+        </div>
+        <div class="simulator-wrap">
+          <canvas id="simCanvas"></canvas>
+          <div class="sim-overlay-info" id="simInfo">x: 0, y: 0, heading: 0°</div>
+        </div>
+      </div>
+
+      <!-- 控制台 -->
+      <div class="console-wrap">
+        <div class="console-header">
+          <span class="console-title">📟 控制台</span>
+          <button class="btn-icon" onclick="clearConsole()" title="清空" style="width:24px;height:24px;font-size:14px;">🗑️</button>
+        </div>
+        <div class="console-body" id="consoleBody">
+          <div class="console-line success">
+            <span class="console-ts">[00:00.00]</span>
+            <span class="console-action">[系统]</span>
+            <span class="console-msg">调试页面已就绪。点击「开始」运行模拟。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 控制栏 -->
+      <div class="control-bar">
+        <div class="control-group">
+          <button class="ctrl-btn" id="btnStart" onclick="startSimulation()">▶️ 开始</button>
+          <button class="ctrl-btn" id="btnPause" onclick="pauseSimulation()">⏸️ 暂停</button>
+          <button class="ctrl-btn" id="btnStop" onclick="stopSimulation()">⏹️ 停止</button>
+          <button class="ctrl-btn" onclick="resetSimulation()">🔄 重置</button>
+        </div>
+        <div class="control-sep"></div>
+        <div class="speed-group">
+          <button class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
+          <button class="speed-btn active" onclick="setSpeed(1)">1x</button>
+          <button class="speed-btn" onclick="setSpeed(2)">2x</button>
+        </div>
+        <div class="control-sep"></div>
+        <button class="ctrl-btn" onclick="stepExecute()">⏭️ 单步</button>
+        <div class="control-sep"></div>
+        <button class="ctrl-btn" onclick="showVehicleModal()">🔩 车辆视图</button>
+      </div>
+
+      <!-- 实时数据面板 -->
+      <div class="data-grid">
+        <div class="data-card">
+          <span class="data-label">速度</span>
+          <span class="data-value" id="dataSpeed">0<span class="data-unit">mm/s</span></span>
+        </div>
+        <div class="data-card">
+          <span class="data-label">左电机角度</span>
+          <span class="data-value" id="dataLeftMotor">0<span class="data-unit">°</span></span>
+        </div>
+        <div class="data-card">
+          <span class="data-label">右电机角度</span>
+          <span class="data-value" id="dataRightMotor">0<span class="data-unit">°</span></span>
+        </div>
+        <div class="data-card">
+          <span class="data-label">反射率</span>
+          <span class="data-value" id="dataReflection">0<span class="data-unit">%</span></span>
+        </div>
+        <div class="data-card">
+          <span class="data-label">巡线误差</span>
+          <span class="data-value" id="dataError">0</span>
+        </div>
+        <div class="data-card">
+          <span class="data-label">坐标</span>
+          <span class="data-value" id="dataCoord">0, 0</span>
+        </div>
+      </div>
+
+      <!-- 传感器曲线图 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📈 反射率曲线</span>
+          <button class="btn-icon" onclick="clearChart()" title="清空曲线">🗑️</button>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- 车辆拼搭视图 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔩 车辆拼搭视图</span>
+          <button class="btn-icon" onclick="showVehicleModal()">🔍</button>
+        </div>
+        <div class="vehicle-view">
+          <canvas id="vehicleCanvas" width="204" height="164" onclick="showVehicleModal()"></canvas>
+          <div class="vehicle-info">
+            <div class="vehicle-info-title">Prime Hub 俯视图</div>
+            <div class="claw-test">
+              <span class="claw-label">爪子角度：</span>
+              <span class="claw-angle" id="clawAngleDisplay">0°</span>
+              <button class="ctrl-btn" onclick="testClawOpen()">张开</button>
+              <button class="ctrl-btn" onclick="testClawClose()">闭合</button>
+            </div>
+            <div class="port-list" id="portList">
+              <div class="port-item"><span class="port-badge">A</span> 未连接</div>
+              <div class="port-item"><span class="port-badge">B</span> 未连接</div>
+              <div class="port-item"><span class="port-badge">C</span> 未连接</div>
+              <div class="port-item"><span class="port-badge">D</span> 未连接</div>
+              <div class="port-item"><span class="port-badge">E</span> 未连接</div>
+              <div class="port-item"><span class="port-badge">F</span> 未连接</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 内存监控 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">💾 内存监控</span>
+        </div>
+        <div class="card-body">
+          <div class="memory-grid">
+            <div class="mem-item">
+              <span class="mem-label">电机实例</span>
+              <span class="mem-value" id="memMotors">0</span>
+            </div>
+            <div class="mem-item">
+              <span class="mem-label">传感器实例</span>
+              <span class="mem-value" id="memSensors">0</span>
+            </div>
+            <div class="mem-item">
+              <span class="mem-label">对象总数</span>
+              <span class="mem-value" id="memTotal">0</span>
+            </div>
+            <div class="mem-item">
+              <span class="mem-label">observe_channels</span>
+              <span class="mem-value inactive" id="memObserve">inactive</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 车辆页面（占位，切换时隐藏） -->
+    <section class="page-section" id="page-vehicle">
+      <div class="empty-state">
+        <span class="empty-icon">🛒</span>
+        <span>车辆配置页面</span>
+        <span style="font-size:11px;color:var(--outline);">请在侧边栏点击「车辆」进入配置</span>
+      </div>
+    </section>
+
+    <!-- 地图页面 -->
+    <section class="page-section" id="page-map">
+      <div class="empty-state">
+        <span class="empty-icon">🗺️</span>
+        <span>地图编辑器页面</span>
+        <span style="font-size:11px;color:var(--outline);">请在侧边栏点击「地图」进入编辑</span>
+      </div>
+    </section>
+
+    <!-- 程序页面 -->
+    <section class="page-section" id="page-program">
+      <div class="empty-state">
+        <span class="empty-icon">📄</span>
+        <span>程序编辑器页面</span>
+        <span style="font-size:11px;color:var(--outline);">请在侧边栏点击「程序」进入编辑</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- 车辆视图弹窗 -->
+<div class="modal-overlay" id="vehicleModal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeVehicleModal()">✕</button>
+    <div class="modal-title">🔩 Prime Hub 拼搭视图</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+      <canvas id="hubDetailCanvas" width="340" height="273" style="border-radius:12px;border:1px solid var(--outline-variant);cursor:pointer;" onclick="testClawOnHub(event)"></canvas>
+      <div class="claw-test">
+        <span class="claw-label">爪子角度：</span>
+        <input type="range" id="clawSlider" min="-300" max="0" value="0" step="5" oninput="updateClawAngle(this.value)" style="width:200px;accent-color:var(--primary);">
+        <span class="claw-angle" id="modalClawAngle">0°</span>
+        <button class="ctrl-btn" onclick="testClawOpen()">张开</button>
+        <button class="ctrl-btn" onclick="testClawClose()">闭合</button>
+      </div>
+      <div class="port-list" id="modalPortList" style="flex-direction:row;flex-wrap:wrap;">
+        <div class="port-item"><span class="port-badge">A</span>中型电机</div>
+        <div class="port-item"><span class="port-badge">B</span>中型电机</div>
+        <div class="port-item"><span class="port-badge">C</span>未连接</div>
+        <div class="port-item"><span class="port-badge">D</span>未连接</div>
+        <div class="port-item"><span class="port-badge">E</span>颜色传感器</div>
+        <div class="port-item"><span class="port-badge">F</span>未连接</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outlined" onclick="closeVehicleModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   Pybricks IDE — 调试页面脚本
+   ═══════════════════════════════════════════════════════ */
+
+// ── 全局状态 ──
+const state = {
+  running: false,
+  paused: false,
+  speed: 1,
+  stepMode: false,
+  vehicle: {
+    x: 200, y: 200,
+    heading: 0,
+    leftMotorAngle: 0,
+    rightMotorAngle: 0,
+    speed: 0,
+    clawAngle: 0,
+    wheelBase: 114,
+    wheelDiameter: 62
+  },
+  simTime: 0,
+  trajectory: [],
+  reflectionData: [],
+  maxReflectionPoints: 100,
+  currentSessionId: null,
+  logs: [],
+  objects: { motors: 0, sensors: 0 },
+  observeChannels: false
+};
+
+// ── localStorage 读写 ──
+function loadState() {
+  try {
+    const v = JSON.parse(localStorage.getItem('pybricks_vehicles') || '[]');
+    const m = JSON.parse(localStorage.getItem('pybricks_maps') || '[]');
+    const s = JSON.parse(localStorage.getItem('pybricks_programs') || '[]');
+    const sessions = JSON.parse(localStorage.getItem('pybricks_debugSessions') || '[]');
+
+    if (v.length > 0) {
+      const active = v.find(x => x.id === JSON.parse(localStorage.getItem('pybricks_settings')||'{}').activeVehicleId) || v[0];
+      if (active.wheelGroup) {
+        state.vehicle.wheelDiameter = active.wheelGroup.wheelDiameter || 62;
+        state.vehicle.wheelBase = active.wheelGroup.axleTrack || 114;
+      }
+      state.objects.motors = Object.values(active.motors || {}).length;
+      state.objects.sensors = Object.values(active.sensors || {}).length;
+    }
+
+    renderSessionList(sessions);
+    updateMemoryMonitor();
+
+    return { vehicles: v, maps: m, programs: s, sessions };
+  } catch(e) { return { vehicles: [], maps: [], programs: [], sessions: [] }; }
+}
+
+function saveSessions(sessions) {
+  localStorage.setItem('pybricks_debugSessions', JSON.stringify(sessions));
+}
+
+function getMap() {
+  try {
+    return JSON.parse(localStorage.getItem('pybricks_maps') || '[]')[0] || null;
+  } catch { return null; }
+}
+
+// ── Canvas 初始化 ──
+const simCanvas = document.getElementById('simCanvas');
+const simCtx = simCanvas.getContext('2d');
+const chartCanvas = document.getElementById('chartCanvas');
+const chartCtx = chartCanvas.getContext('2d');
+const vehicleCanvas = document.getElementById('vehicleCanvas');
+const vehicleCtx = vehicleCanvas.getContext('2d');
+const hubDetailCanvas = document.getElementById('hubDetailCanvas');
+const hubDetailCtx = hubDetailCanvas.getContext('2d');
+
+function resizeCanvases() {
+  const dpr = window.devicePixelRatio || 1;
+  [simCanvas, chartCanvas].forEach(c => {
+    const rect = c.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    c.style.width = rect.width + 'px';
+    c.style.height = rect.height + 'px';
+    const ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+  });
+}
+
+// ── 模拟器绘制 ──
+function drawSimulator() {
+  const W = simCanvas.clientWidth;
+  const H = simCanvas.clientHeight;
+  simCtx.clearRect(0, 0, W, H);
+
+  // 背景网格
+  simCtx.strokeStyle = '#d4edda';
+  simCtx.lineWidth = 0.5;
+  const gridSize = 40;
+  for (let x = 0; x < W; x += gridSize) {
+    simCtx.beginPath(); simCtx.moveTo(x, 0); simCtx.lineTo(x, H); simCtx.stroke();
+  }
+  for (let y = 0; y < H; y += gridSize) {
+    simCtx.beginPath(); simCtx.moveTo(0, y); simCtx.lineTo(W, y); simCtx.stroke();
+  }
+
+  // 绘制地图元素
+  const map = getMap();
+  if (map) {
+    // 地图背景
+    if (map.imageData) {
+      try {
+        const img = new Image();
+        img.src = map.imageData;
+        img.onload = () => simCtx.drawImage(img, 0, 0, W, H);
+      } catch(e) {}
+    }
+
+    // 障碍物
+    (map.obstacles || []).forEach(obs => {
+      const scale = map.pixelToMm || 0.5;
+      simCtx.fillStyle = obs.type === 'blocked' ? 'rgba(239,68,68,0.6)' : 'rgba(234,179,8,0.6)';
+      simCtx.fillRect(obs.x * scale, obs.y * scale, obs.w * scale, obs.h * scale);
+      simCtx.strokeStyle = obs.type === 'blocked' ? '#ef4444' : '#eab308';
+      simCtx.lineWidth = 2;
+      simCtx.strokeRect(obs.x * scale, obs.y * scale, obs.w * scale, obs.h * scale);
+    });
+
+    // 搬运物
+    (map.movableItems || []).forEach(item => {
+      const scale = map.pixelToMm || 0.5;
+      simCtx.fillStyle = item.color === 'red' ? '#ef4444' : item.color === 'yellow' ? '#eab308' : item.color === 'green' ? '#22c55e' : '#3b82f6';
+      if (item.shape === 'circle') {
+        simCtx.beginPath();
+        simCtx.arc(item.x * scale, item.y * scale, (item.size || 20) * scale / 2, 0, Math.PI * 2);
+        simCtx.fill();
+      } else {
+        simCtx.fillRect(item.x * scale - 10 * scale, item.y * scale - 10 * scale, 20 * scale, 20 * scale);
+      }
+    });
+
+    // 巡线路径
+    (map.paths || []).forEach(path => {
+      if (path.points && path.points.length > 1) {
+        const scale = map.pixelToMm || 0.5;
+        simCtx.beginPath();
+        simCtx.strokeStyle = path.color || '#1e40af';
+        simCtx.lineWidth = 3;
+        path.points.forEach((pt, i) => {
+          const px = pt[0] * scale, py = pt[1] * scale;
+          if (i === 0) simCtx.moveTo(px, py);
+          else simCtx.lineTo(px, py);
+        });
+        simCtx.stroke();
+      }
+    });
+  } else {
+    // 默认地图
+    drawDefaultMap(W, H);
+  }
+
+  // 轨迹
+  if (state.trajectory.length > 1) {
+    simCtx.beginPath();
+    simCtx.strokeStyle = 'rgba(59,130,246,0.5)';
+    simCtx.lineWidth = 2;
+    state.trajectory.forEach((pt, i) => {
+      if (i === 0) simCtx.moveTo(pt.x, pt.y);
+      else simCtx.lineTo(pt.x, pt.y);
+    });
+    simCtx.stroke();
+  }
+
+  // 车辆
+  drawVehicle(simCtx, state.vehicle.x, state.vehicle.y, state.vehicle.heading, W, H);
+
+  // 碰撞检测
+  checkCollisions();
+}
+
+function drawDefaultMap(W, H) {
+  // 默认巡线路径
+  simCtx.beginPath();
+  simCtx.strokeStyle = '#1e40af';
+  simCtx.lineWidth = 3;
+  simCtx.setLineDash([8, 4]);
+  simCtx.moveTo(60, H/2);
+  simCtx.bezierCurveTo(W*0.3, H*0.2, W*0.5, H*0.8, W-60, H/2);
+  simCtx.stroke();
+  simCtx.setLineDash([]);
+
+  // 障碍物
+  simCtx.fillStyle = 'rgba(239,68,68,0.5)';
+  simCtx.fillRect(W*0.25-25, H*0.3-25, 50, 50);
+  simCtx.strokeStyle = '#ef4444';
+  simCtx.lineWidth = 2;
+  simCtx.strokeRect(W*0.25-25, H*0.3-25, 50, 50);
+
+  // 搬运物
+  const colors = ['#ef4444','#eab308','#22c55e','#3b82f6'];
+  [[W*0.5, H*0.35],[W*0.65, H*0.65],[W*0.4, H*0.7]].forEach(([cx,cy],i) => {
+    simCtx.fillStyle = colors[i];
+    simCtx.beginPath();
+    simCtx.arc(cx, cy, 15, 0, Math.PI * 2);
+    simCtx.fill();
+  });
+}
+
+function drawVehicle(ctx, x, y, heading, W, H) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-heading * Math.PI / 180);
+
+  const scale = 1.2;
+  const hubW = 36 * scale, hubH = 28 * scale;
+  const wheelW = 10 * scale, wheelH = 20 * scale;
+  const axleTrack = state.vehicle.wheelBase * scale / 2;
+
+  // 轮子
+  ctx.fillStyle = '#374151';
+  // 左轮
+  ctx.save();
+  ctx.translate(-axleTrack, 0);
+  ctx.rotate(state.vehicle.leftMotorAngle * Math.PI / 180);
+  ctx.fillRect(-wheelW/2, -hubH/2 - 2, wheelW, wheelH);
+  ctx.restore();
+  // 右轮
+  ctx.save();
+  ctx.translate(axleTrack, 0);
+  ctx.rotate(state.vehicle.rightMotorAngle * Math.PI / 180);
+  ctx.fillRect(-wheelW/2, hubH/2 - wheelH + 2, wheelW, wheelH);
+  ctx.restore();
+
+  // Hub主体
+  ctx.fillStyle = '#6b7280';
+  ctx.beginPath();
+  ctx.roundRect(-hubW/2, -hubH/2, hubW, hubH, 6);
+  ctx.fill();
+
+  // 点阵屏
+  ctx.fillStyle = '#fb923c';
+  const dotSize = 3;
+  const dotsX = 5, dotsY = 5;
+  const dotSpacing = 5;
+  const screenX = -dotsX * dotSpacing / 2;
+  const screenY = -dotsY * dotSpacing / 2;
+  for (let r = 0; r < dotsY; r++) {
+    for (let c = 0; c < dotsX; c++) {
+      const on = Math.sin(Date.now() / 300 + r + c) > 0;
+      ctx.fillStyle = on ? '#fb923c' : '#78350f';
+      ctx.fillRect(screenX + c * dotSpacing, screenY + r * dotSpacing, dotSize, dotSize);
+    }
+  }
+
+  // 爪子（叉子）
+  const clawOpen = state.vehicle.clawAngle > -50;
+  ctx.strokeStyle = '#9ca3af';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  // 左爪
+  ctx.beginPath();
+  ctx.moveTo(0, hubH/2);
+  ctx.lineTo(clawOpen ? -12 : -4, hubH/2 + 20);
+  ctx.stroke();
+  // 右爪
+  ctx.beginPath();
+  ctx.moveTo(0, hubH/2);
+  ctx.lineTo(clawOpen ? 12 : 4, hubH/2 + 20);
+  ctx.stroke();
+
+  // 方向箭头
+  ctx.fillStyle = 'rgba(0,113,227,0.5)';
+  ctx.beginPath();
+  ctx.moveTo(hubW/2 + 8, 0);
+  ctx.lineTo(hubW/2, -6);
+  ctx.lineTo(hubW/2, 6);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+}
+
+// ── AABB 碰撞检测 ──
+function checkCollisions() {
+  const v = state.vehicle;
+  const map = getMap();
+  if (!map || !map.obstacles) return;
+
+  const scale = map.pixelToMm || 0.5;
+  const hw = 20, hh = 15; // 车辆半尺寸
+
+  for (const obs of map.obstacles) {
+    if (obs.type !== 'blocked') continue;
+    const ox = obs.x * scale, oy = obs.y * scale;
+    const ow = obs.w * scale, oh = obs.h * scale;
+
+    if (v.x - hw < ox + ow && v.x + hw > ox && v.y - hh < oy + oh && v.y + hh > oy) {
+      logConsole('warn', '碰撞检测', `车辆与障碍物发生碰撞`, '已停止');
+      stopSimulation();
+      return;
+    }
+  }
+}
+
+// ── 传感器模拟 ──
+function simulateReflection() {
+  const map = getMap();
+  const v = state.vehicle;
+  let ref = 35; // 默认背景反射率
+
+  if (map && map.paths && map.paths.length > 0) {
+    const path = map.paths[0];
+    if (path.points && path.points.length > 1) {
+      const scale = map.pixelToMm || 0.5;
+      // 简单距离检测
+      let minDist = Infinity;
+      for (let i = 0; i < path.points.length - 1; i++) {
+        const p1 = path.points[i], p2 = path.points[i+1];
+        const px1 = p1[0] * scale, py1 = p1[1] * scale;
+        const px2 = p2[0] * scale, py2 = p2[1] * scale;
+        const dist = pointToSegmentDist(v.x, v.y, px1, py1, px2, py2);
+        minDist = Math.min(minDist, dist);
+      }
+      // 在路径上反射率高
+      if (minDist < 20) ref = 70 - minDist * 2;
+      else ref = 15 + Math.random() * 10;
+    }
+  } else {
+    ref = 30 + Math.random() * 15;
+  }
+
+  return Math.max(0, Math.min(100, ref));
+}
+
+function pointToSegmentDist(px, py, x1, y1, x2, y2) {
+  const A = px - x1, B = py - y1, C = x2 - x1, D = y2 - y1;
+  const dot = A * C + B * D;
+  const lenSq = C * C + D * D;
+  let t = lenSq !== 0 ? dot / lenSq : -1;
+  t = Math.max(0, Math.min(1, t));
+  const nearX = x1 + t * C, nearY = y1 + t * D;
+  return Math.hypot(px - nearX, py - nearY);
+}
+
+// ── 控制台 ──
+function logConsole(type, action, params, result) {
+  const body = document.getElementById('consoleBody');
+  const ts = formatTime(state.simTime);
+  const line = document.createElement('div');
+  line.className = `console-line ${type}`;
+  line.innerHTML = `<span class="console-ts">[${ts}]</span><span class="console-action">[${action}]</span><span class="console-msg">${params} → ${result}</span>`;
+  body.appendChild(line);
+  body.scrollTop = body.scrollHeight;
+  state.logs.push({ ts: state.simTime, type, action, params, result });
+}
+
+function clearConsole() {
+  document.getElementById('consoleBody').innerHTML = '';
+  state.logs = [];
+  logConsole('success', '系统', '', '控制台已清空');
+}
+
+function formatTime(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const rem = s % 60;
+  const cs = Math.floor((ms % 1000) / 10);
+  return `${String(m).padStart(2,'0')}:${String(rem).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+}
+
+// ── 传感器曲线图 ──
+function drawChart() {
+  const W = chartCanvas.clientWidth;
+  const H = chartCanvas.clientHeight;
+  chartCtx.clearRect(0, 0, W, H);
+
+  // 背景
+  chartCtx.fillStyle = '#fff';
+  chartCtx.fillRect(0, 0, W, H);
+
+  // 网格
+  chartCtx.strokeStyle = '#f0f0f0';
+  chartCtx.lineWidth = 1;
+  for (let y = 0; y < H; y += 30) {
+    chartCtx.beginPath(); chartCtx.moveTo(0, y); chartCtx.lineTo(W, y); chartCtx.stroke();
+  }
+
+  // 阈值线
+  const threshold = 35;
+  const threshY = H - (threshold / 100) * H;
+  chartCtx.strokeStyle = '#ef4444';
+  chartCtx.lineWidth = 1;
+  chartCtx.setLineDash([4, 4]);
+  chartCtx.beginPath(); chartCtx.moveTo(0, threshY); chartCtx.lineTo(W, threshY); chartCtx.stroke();
+  chartCtx.setLineDash([]);
+
+  // 曲线
+  const data = state.reflectionData;
+  if (data.length < 2) return;
+
+  const stepX = W / (state.maxReflectionPoints - 1);
+  chartCtx.beginPath();
+  chartCtx.strokeStyle = '#0071e3';
+  chartCtx.lineWidth = 2;
+
+  data.forEach((v, i) => {
+    const x = i * stepX;
+    const y = H - (v / 100) * H;
+    if (i === 0) chartCtx.moveTo(x, y);
+    else chartCtx.lineTo(x, y);
+  });
+  chartCtx.stroke();
+
+  // 填充
+  if (data.length > 1) {
+    chartCtx.lineTo((data.length - 1) * stepX, H);
+    chartCtx.lineTo(0, H);
+    chartCtx.closePath();
+    const grad = chartCtx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, 'rgba(0,113,227,0.2)');
+    grad.addColorStop(1, 'rgba(0,113,227,0)');
+    chartCtx.fillStyle = grad;
+    chartCtx.fill();
+  }
+}
+
+// ── 实时数据更新 ──
+function updateDataPanel() {
+  const v = state.vehicle;
+  const reflection = simulateReflection();
+  const error = reflection - 35;
+
+  document.getElementById('dataSpeed').innerHTML = `${v.speed.toFixed(0)}<span class="data-unit">mm/s</span>`;
+  document.getElementById('dataLeftMotor').innerHTML = `${v.leftMotorAngle.toFixed(0)}<span class="data-unit">°</span>`;
+  document.getElementById('dataRightMotor').innerHTML = `${v.rightMotorAngle.toFixed(0)}<span class="data-unit">°</span>`;
+  document.getElementById('dataReflection').innerHTML = `${reflection.toFixed(0)}<span class="data-unit">%</span>`;
+  document.getElementById('dataError').textContent = error.toFixed(1);
+  document.getElementById('dataCoord').textContent = `${v.x.toFixed(0)}, ${v.y.toFixed(0)}`;
+  document.getElementById('simInfo').textContent = `x: ${v.x.toFixed(0)}, y: ${v.y.toFixed(0)}, heading: ${v.heading.toFixed(0)}°`;
+  document.getElementById('clawAngleDisplay').textContent = `${v.clawAngle.toFixed(0)}°`;
+  document.getElementById('modalClawAngle').textContent = `${v.clawAngle.toFixed(0)}°`;
+
+  // 更新曲线数据
+  state.reflectionData.push(reflection);
+  if (state.reflectionData.length > state.maxReflectionPoints) {
+    state.reflectionData.shift();
+  }
+}
+
+// ── 车辆视图绘制 ──
+function drawVehicleHub() {
+  [vehicleCtx, hubDetailCtx].forEach((ctx, ci) => {
+    const W = ci === 0 ? 204 : 340;
+    const H = ci === 0 ? 164 : 273;
+    ctx.clearRect(0, 0, W, H);
+
+    const scale = ci === 0 ? 1 : 1.5;
+    const hubW = 102 * scale * 0.3;
+    const hubH = 82 * scale * 0.3;
+    const cx = W / 2, cy = H / 2;
+
+    // 轮子
+    const axleTrack = state.vehicle.wheelBase * scale * 0.3 / 2;
+    const wheelW = 8 * scale, wheelH = 18 * scale;
+    ctx.fillStyle = '#374151';
+
+    // 左轮
+    ctx.save();
+    ctx.translate(cx - axleTrack, cy);
+    ctx.rotate(state.vehicle.leftMotorAngle * Math.PI / 180);
+    ctx.fillRect(-wheelW/2, -hubH/2 - 2 * scale, wheelW, wheelH);
+    ctx.restore();
+
+    // 右轮
+    ctx.save();
+    ctx.translate(cx + axleTrack, cy);
+    ctx.rotate(state.vehicle.rightMotorAngle * Math.PI / 180);
+    ctx.fillRect(-wheelW/2, hubH/2 - wheelH + 2 * scale, wheelW, wheelH);
+    ctx.restore();
+
+    // Hub
+    ctx.fillStyle = '#6b7280';
+    ctx.beginPath();
+    ctx.roundRect(cx - hubW/2, cy - hubH/2, hubW, hubH, 6 * scale);
+    ctx.fill();
+
+    // 端口
+    const ports = ['A','B','C','D','E','F'];
+    const portPos = [
+      [cx - hubW/2, cy, 'left'], [cx + hubW/2, cy, 'right'],
+      [cx - hubW/2 - 8*scale, cy - hubH/4, 'left'], [cx - hubW/2 - 8*scale, cy + hubH/4, 'left'],
+      [cx + hubW/2 + 8*scale, cy - hubH/4, 'right'], [cx + hubW/2 + 8*scale, cy + hubH/4, 'right']
+    ];
+    ctx.font = `${8 * scale}px Roboto`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    portPos.forEach(([px, py, align], i) => {
+      const offset = align === 'left' ? -4 * scale : 4 * scale;
+      ctx.fillStyle = '#9ca3af';
+      ctx.fillRect(px + offset - 5*scale, py - 5*scale, 10*scale, 10*scale);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(ports[i], px + offset, py);
+    });
+
+    // 点阵屏
+    const dotSpacing = 4 * scale;
+    const dotsX = 5, dotsY = 5;
+    const screenOffX = -dotsX * dotSpacing / 2;
+    const screenOffY = -dotsY * dotSpacing / 2;
+    for (let r = 0; r < dotsY; r++) {
+      for (let c = 0; c < dotsX; c++) {
+        const on = Math.sin(Date.now() / 300 + r + c) > 0;
+        ctx.fillStyle = on ? '#fb923c' : '#78350f';
+        ctx.shadowColor = on ? '#fb923c' : 'transparent';
+        ctx.shadowBlur = on ? 4 : 0;
+        ctx.fillRect(cx + screenOffX + c * dotSpacing, cy + screenOffY + r * dotSpacing, 2.5 * scale, 2.5 * scale);
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    // 爪子
+    const clawOpen = state.vehicle.clawAngle > -50;
+    ctx.strokeStyle = '#9ca3af';
+    ctx.lineWidth = 3 * scale;
+    ctx.lineCap = 'round';
+    const clawBaseY = cy + hubH/2;
+    const clawLen = 20 * scale;
+    ctx.beginPath();
+    ctx.moveTo(cx, clawBaseY);
+    ctx.lineTo(cx + (clawOpen ? -12*scale : -4*scale), clawBaseY + clawLen);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, clawBaseY);
+    ctx.lineTo(cx + (clawOpen ? 12*scale : 4*scale), clawBaseY + clawLen);
+    ctx.stroke();
+  });
+}
+
+// ── 模拟循环 ──
+let animFrameId = null;
+let lastTime = 0;
+
+function simulationLoop(timestamp) {
+  if (!state.running || state.paused) return;
+
+  const dt = Math.min((timestamp - lastTime) * state.speed, 100);
+  lastTime = timestamp;
+
+  state.simTime += dt;
+
+  // 车辆物理模拟
+  simulateVehicle(dt);
+
+  // 更新数据
+  updateDataPanel();
+
+  // 绘制
+  drawSimulator();
+  drawChart();
+  drawVehicleHub();
+
+  // 记录轨迹
+  state.trajectory.push({ x: state.vehicle.x, y: state.vehicle.y });
+  if (state.trajectory.length > 2000) state.trajectory.shift();
+
+  animFrameId = requestAnimationFrame(simulationLoop);
+}
+
+function simulateVehicle(dt) {
+  const v = state.vehicle;
+  const speed = v.speed;
+  const turnRate = (speed / v.wheelDiameter) * 360 / (Math.PI * v.wheelBase) * (v.heading < 0 ? -1 : 1);
+
+  // 前进
+  const dx = Math.cos(v.heading * Math.PI / 180) * speed * dt / 1000;
+  const dy = -Math.sin(v.heading * Math.PI / 180) * speed * dt / 1000;
+  v.x += dx;
+  v.y += dy;
+
+  // 限制在画布内
+  const W = simCanvas.clientWidth, H = simCanvas.clientHeight;
+  v.x = Math.max(30, Math.min(W - 30, v.x));
+  v.y = Math.max(30, Math.min(H - 30, v.y));
+
+  // 电机角度
+  const degPerMm = 360 / (Math.PI * v.wheelDiameter);
+  v.leftMotorAngle += speed * degPerMm * dt / 1000;
+  v.rightMotorAngle += speed * degPerMm * dt / 1000;
+
+  // 模拟减速
+  if (v.speed > 0) v.speed = Math.max(0, v.speed - 0.5);
+}
+
+// ── 控制函数 ──
+function startSimulation() {
+  if (state.running && !state.paused) return;
+  state.running = true;
+  state.paused = false;
+  state.vehicle.speed = 80;
+  document.getElementById('btnStart').classList.add('active');
+  logConsole('success', '启动', 'speed=80mm/s', '模拟已开始');
+  lastTime = performance.now();
+  if (!animFrameId) animFrameId = requestAnimationFrame(simulationLoop);
+}
+
+function pauseSimulation() {
+  state.paused = !state.paused;
+  const btn = document.getElementById('btnPause');
+  btn.textContent = state.paused ? '▶️ 继续' : '⏸️ 暂停';
+  btn.classList.toggle('active', state.paused);
+  logConsole('warn', state.paused ? '暂停' : '继续', '', state.paused ? '已暂停' : '已恢复');
+  if (!state.paused) {
+    lastTime = performance.now();
+    animFrameId = requestAnimationFrame(simulationLoop);
+  }
+}
+
+function stopSimulation() {
+  state.running = false;
+  state.paused = false;
+  state.vehicle.speed = 0;
+  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+  document.getElementById('btnStart').classList.remove('active');
+  document.getElementById('btnPause').textContent = '⏸️ 暂停';
+  document.getElementById('btnPause').classList.remove('active');
+  logConsole('warn', '停止', '', '模拟已停止');
+}
+
+function resetSimulation() {
+  stopSimulation();
+  state.simTime = 0;
+  state.trajectory = [];
+  state.reflectionData = [];
+  state.vehicle.x = simCanvas.clientWidth / 2;
+  state.vehicle.y = simCanvas.clientHeight / 2;
+  state.vehicle.heading = 0;
+  state.vehicle.leftMotorAngle = 0;
+  state.vehicle.rightMotorAngle = 0;
+  state.vehicle.clawAngle = 0;
+  drawSimulator();
+  drawChart();
+  drawVehicleHub();
+  updateDataPanel();
+  logConsole('success', '重置', '', '所有状态已重置');
+}
+
+function setSpeed(s) {
+  state.speed = s;
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  logConsole('success', '速度', `设置为 ${s}x`, '速度倍率已更新');
+}
+
+function stepExecute() {
+  state.stepMode = true;
+  state.vehicle.speed = 40;
+  logConsole('success', '单步', '执行一步', '单步执行完成');
+  updateDataPanel();
+  drawSimulator();
+}
+
+// ── 爪子测试 ──
+function testClawOpen() {
+  state.vehicle.clawAngle = 0;
+  drawVehicleHub();
+  logConsole('success', '爪子张开', 'angle=0°', '完成');
+}
+
+function testClawClose() {
+  state.vehicle.clawAngle = -300;
+  drawVehicleHub();
+  logConsole('success', '爪子闭合', 'angle=-300°', '完成');
+}
+
+function updateClawAngle(val) {
+  state.vehicle.clawAngle = parseInt(val);
+  document.getElementById('clawSlider').value = val;
+  drawVehicleHub();
+}
+
+// ── 弹窗 ──
+function showVehicleModal() {
+  document.getElementById('vehicleModal').classList.add('open');
+  drawVehicleHub();
+}
+
+function closeVehicleModal() {
+  document.getElementById('vehicleModal').classList.remove('open');
+}
+
+function testClawOnHub(e) {
+  const rect = hubDetailCanvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  // 点击上半部分张开，下半部分闭合
+  const cy = rect.height / 2;
+  if (y < cy) testClawOpen();
+  else testClawClose();
+}
+
+// ── 页面切换 ──
+function switchPage(page) {
+  window.location.href = page + '.html';
+}
+
+// ── 调试历史记录 ──
+function renderSessionList(sessions) {
+  const list = document.getElementById('sessionList');
+  if (!sessions || sessions.length === 0) {
+    list.innerHTML = '<div class="empty-state"><span class="empty-icon">📋</span><span>暂无调试记录</span></div>';
+    return;
+  }
+  list.innerHTML = sessions.map(s => `
+    <div class="session-item${s.id === state.currentSessionId ? ' active' : ''}" onclick="loadSession('${s.id}')">
+      <span class="session-icon">🧪</span>
+      <div class="session-info">
+        <div class="session-name">${s.name || '未命名'}</div>
+        <div class="session-time">${s.startTime ? new Date(s.startTime).toLocaleString() : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function newDebugSession() {
+  const sessions = JSON.parse(localStorage.getItem('pybricks_debugSessions') || '[]');
+  const id = 'sess_' + Date.now();
+  const session = {
+    id,
+    name: '调试 #' + (sessions.length + 1),
+    startTime: new Date().toISOString(),
+    logs: [],
+    finalState: {}
+  };
+  sessions.unshift(session);
+  saveSessions(sessions);
+  state.currentSessionId = id;
+  renderSessionList(sessions);
+  logConsole('success', '新建', `创建调试会话: ${session.name}`, '已就绪');
+}
+
+function loadSession(id) {
+  state.currentSessionId = id;
+  const sessions = JSON.parse(localStorage.getItem('pybricks_debugSessions') || '[]');
+  const session = sessions.find(s => s.id === id);
+  if (session && session.logs) {
+    document.getElementById('consoleBody').innerHTML = '';
+    session.logs.forEach(l => {
+      const body = document.getElementById('consoleBody');
+      const line = document.createElement('div');
+      line.className = `console-line ${l.type}`;
+      line.innerHTML = `<span class="console-ts">[${formatTime(l.ts)}]</span><span class="console-action">[${l.action}]</span><span class="console-msg">${l.params} → ${l.result}</span>`;
+      body.appendChild(line);
+    });
+  }
+  renderSessionList(sessions);
+}
+
+// ── 内存监控 ──
+function updateMemoryMonitor() {
+  document.getElementById('memMotors').textContent = state.objects.motors;
+  document.getElementById('memSensors').textContent = state.objects.sensors;
+  document.getElementById('memTotal').textContent = state.objects.motors + state.objects.sensors + 1;
+  const obEl = document.getElementById('memObserve');
+  obEl.textContent = state.observeChannels ? 'active' : 'inactive';
+  obEl.className = 'mem-value ' + (state.observeChannels ? 'active' : 'inactive');
+}
+
+// ── 导出Python ──
+function exportPython() {
+  const code = `# Pybricks 程序 - 自动生成
+# 导出时间: ${new Date().toLocaleString()}
+
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor, ColorSensor
+from pybricks.parameters import Direction, Port
+from pybricks.robotics import DriveBase
+
+hub = PrimeHub()
+
+# 初始化
+left_motor = Motor(Port.A, Direction.CLOCKWISE)
+right_motor = Motor(Port.B, Direction.CLOCKWISE)
+robot = DriveBase(left_motor, right_motor, wheel_diameter=${state.vehicle.wheelDiameter}, axle_track=${state.vehicle.wheelBase})
+
+# 主程序
+while True:
+    pass
+`;
+  const blob = new Blob([code], { type: 'text/x-python' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `debug_session_${Date.now()}.py`;
+  a.click();
+  URL.revokeObjectURL(url);
+  logConsole('success', '导出', '生成Python文件', '下载已开始');
+}
+
+// ── 杂项 ──
+function toggleSimOptions() { logConsole('warn', '选项', '', '功能开发中'); }
+function clearChart() { state.reflectionData = []; drawChart(); }
+
+// ── 初始化 ──
+function init() {
+  resizeCanvases();
+  loadState();
+
+  // 车辆初始位置居中
+  state.vehicle.x = simCanvas.clientWidth / 2 || 300;
+  state.vehicle.y = simCanvas.clientHeight / 2 || 200;
+
+  drawSimulator();
+  drawChart();
+  drawVehicleHub();
+  updateDataPanel();
+
+  window.addEventListener('resize', () => {
+    resizeCanvases();
+    drawSimulator();
+    drawChart();
+  });
+}
+
+// 点击弹窗背景关闭
+document.getElementById('vehicleModal').addEventListener('click', function(e) {
+  if (e.target === this) closeVehicleModal();
+});
+</script>
+
+<!-- PWA / IndexedDB -->
+<script src="../js/db.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* ===== DEBUG PAGE - PWA 初始化 ===== */
+document.addEventListener('DOMContentLoaded', async () => {
+  // 注册 Service Worker
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('../sw.js');
+      console.log('[SW] Registered');
+    } catch (err) {
+      console.warn('[SW] Registration failed:', err);
+    }
+  }
+
+  // 等待 IndexedDB 就绪
+  try {
+    await window.pybricksDB.init();
+
+    // 迁移 localStorage 调试会话数据（如有）
+    migrateLocalDebugSessionsToIDB();
+
+    // 从 IndexedDB 加载所有数据（用于模拟器）
+    const [vehicles, maps, programs] = await Promise.all([
+      window.pybricksDB.getAllVehicles(),
+      window.pybricksDB.getAllMaps(),
+      window.pybricksDB.getAllPrograms()
+    ]);
+
+    // 恢复调试会话列表
+    const sessions = JSON.parse(localStorage.getItem('pybricks_debugSessions') || '[]');
+    renderSessionList(sessions);
+
+    // 尝试从 IndexedDB 恢复车辆配置（如有）
+    if (vehicles.length > 0) {
+      const settings = await window.pybricksDB.getAppState('currentVehicleId');
+      const active = vehicles.find(v => v.id === settings) || vehicles[0];
+      if (active.wheelGroup) {
+        state.vehicle.wheelDiameter = active.wheelGroup.wheelDiameter || 62;
+        state.vehicle.wheelBase = active.wheelGroup.axleTrack || 114;
+      }
+      state.objects.motors = Object.values(active.ports || {}).filter(p => p && (p.className === 'MotorMedium' || p.className === 'MotorLarge')).length;
+      state.objects.sensors = Object.values(active.ports || {}).filter(p => p && (p.className === 'ColorSensor' || p.className === 'ColorDistanceSensor')).length;
+    }
+
+    updateMemoryMonitor();
+
+    // 车辆初始位置居中
+    state.vehicle.x = simCanvas.clientWidth / 2 || 300;
+    state.vehicle.y = simCanvas.clientHeight / 2 || 200;
+
+    drawSimulator();
+    drawChart();
+    drawVehicleHub();
+    updateDataPanel();
+
+    console.log('[Debug] Loaded from IndexedDB:', vehicles.length, 'vehicles,', maps.length, 'maps,', programs.length, 'programs');
+  } catch (err) {
+    console.error('[Debug] IDB init failed, using localStorage fallback:', err);
+    init(); // 回退到原有的 localStorage 初始化
+  }
+});
+
+// 迁移 localStorage 调试会话数据到 IndexedDB
+function migrateLocalDebugSessionsToIDB() {
+  try {
+    const localSessions = JSON.parse(localStorage.getItem('pybricks_debugSessions') || '[]');
+    if (localSessions.length > 0) {
+      console.log('[Debug] Found', localSessions.length, 'sessions in localStorage (kept for reference)');
+      // 调试会话保留在 localStorage（历史记录，不需要严格持久化）
+    }
+  } catch (err) {
+    console.warn('[Debug] Session migration check failed:', err);
+  }
+}
+
+// 覆盖 saveSessions：同时保持 localStorage（调试会话可保留双写）
+const _origSaveSessions = saveSessions;
+function saveSessions(sessions) {
+  _origSaveSessions(sessions); // 保留 localStorage
+  // 调试会话可以选择性地也存到 IndexedDB appState
+  window.pybricksDB.setAppState('lastDebugSessionId', sessions[0]?.id || null).catch(() => {});
+}
+</script>
+</body>
+</html>

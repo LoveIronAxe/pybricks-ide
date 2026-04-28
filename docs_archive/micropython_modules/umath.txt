@@ -1,0 +1,367 @@
+umath – Math functions &mdash; pybricks v3.6.1 documentation
+      
+      
+      
+      
+    
+  
+    
+  
+  
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+
+ 
+  
+    
+
+    
+
+      
+        
+          
+  
+      
+      umath – Math functions
+      
+      
+  
+  
+
+          
+           
+             
+  
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+umath – Math functions¶
+This MicroPython module is similar to the math module in Python.
+See also the built-in math functions that can be used
+without importing anything.
+
+Rounding and sign¶
+
+0ceil
+
+ceil(x) &#x2192; int¶
+Rounds up.
+
+Parameters:
+x (float) – The value to be rounded.
+
+Returns:
+Value rounded towards positive infinity.
+
+0floor
+
+floor(x) &#x2192; int¶
+Rounds down.
+
+Parameters:
+x (float) – The value to be rounded.
+
+Returns:
+Value rounded towards negative infinity.
+
+trunc(x) &#x2192; int¶
+Truncates decimals to get the integer part of a value.
+This is the same as rounding towards 0.
+
+Parameters:
+x (float) – The value to be truncated.
+
+Returns:
+Integer part of the value.
+
+fmod(x, y) &#x2192; float¶
+Gets the remainder of x / y.
+Not to be confused with modf().
+
+Parameters:
+
+x (float) – The numerator.
+y (float) – The denominator.
+
+Returns:
+Remainder after division
+
+fabs(x) &#x2192; float¶
+Gets the absolute value.
+
+Parameters:
+x (float) – The value.
+
+Returns:
+Absolute value of x.
+
+copysign(x, y) &#x2192; float¶
+Gets x with the sign of y.
+
+Parameters:
+
+x (float) – Determines the magnitude of the return value.
+y (float) – Determines the sign of the return value.
+
+Returns:
+x with the sign of y.
+
+Powers and logarithms¶
+
+e = 2.718282¶
+The mathematical constant e.
+
+0e^
+
+exp(x) &#x2192; float¶
+Gets e raised to the power of x.
+
+Parameters:
+x (float) – The exponent.
+
+Returns:
+e raised to the power of x.
+
+11^
+
+010^
+
+pow(x, y) &#x2192; float¶
+Gets x raised to the power of y.
+
+Parameters:
+
+x (float) – The base number.
+y (float) – The exponent.
+
+Returns:
+x raised to the power of y.
+
+0ln
+
+log(x) &#x2192; float¶
+Gets the natural logarithm.
+
+Parameters:
+x (float) – The value.
+
+Returns:
+The natural logarithm of x.
+
+0√
+
+sqrt(x) &#x2192; float¶
+Gets the square root.
+
+Parameters:
+x (float) – The value x.
+
+Returns:
+The square root of x.
+
+Trigonometry¶
+
+pi = 3.141593¶
+The mathematical constant π.
+
+degrees(x) &#x2192; float¶
+Converts an angle from radians to degrees.
+
+Parameters:
+x (float) – Angle in radians.
+
+Returns:
+Angle in degrees.
+
+radians(x) &#x2192; float¶
+Converts an angle from degrees to radians.
+
+Parameters:
+x (float) – Angle in degrees.
+
+Returns:
+Angle in radians.
+
+0sin
+
+sin(x) &#x2192; float¶
+Gets the sine of an angle.
+
+Parameters:
+x (float) – Angle in radians.
+
+Returns:
+Sine of x.
+
+0asin
+
+asin(x) &#x2192; float¶
+Applies the inverse sine operation.
+
+Parameters:
+x (float) – Opposite / hypotenuse.
+
+Returns:
+Arcsine of x, in radians.
+
+0cos
+
+cos(x) &#x2192; float¶
+Gets the cosine of an angle.
+
+Parameters:
+x (float) – Angle in radians.
+
+Returns:
+Cosine of x.
+
+0acos
+
+acos(x) &#x2192; float¶
+Applies the inverse cosine operation.
+
+Parameters:
+x (float) – Adjacent / hypotenuse.
+
+Returns:
+Arccosine of x, in radians.
+
+0tan
+
+tan(x) &#x2192; float¶
+Gets the tangent of an angle.
+
+Parameters:
+x (float) – Angle in radians.
+
+Returns:
+Tangent of x.
+
+0atan
+
+atan(x) &#x2192; float¶
+Applies the inverse tangent operation.
+
+Parameters:
+x (float) – Opposite / adjacent.
+
+Returns:
+Arctangent of x, in radians.
+
+00atan2
+
+atan2(b, a) &#x2192; float¶
+Applies the inverse tangent operation on b / a, and accounts for
+the signs of b and a to produce the expected angle.
+
+Parameters:
+
+b (float) – Opposite side of the triangle.
+a (float) – Adjacent side of the triangle.
+
+Returns:
+Arctangent of b / a, in radians.
+
+Other math functions¶
+
+isfinite(x) &#x2192; bool¶
+Checks if a value is finite.
+
+Parameters:
+x (float) – The value to be checked.
+
+Returns:
+True if x is finite, else False.
+
+isinfinite(x) &#x2192; bool¶
+Checks if a value is infinite.
+
+Parameters:
+x (float) – The value to be checked.
+
+Returns:
+True if x is infinite, else False.
+
+isnan(x) &#x2192; bool¶
+Checks if a value is not-a-number.
+
+Parameters:
+x (float) – The value to be checked.
+
+Returns:
+True if x is not-a-number, else False.
+
+modf(x) &#x2192; Tuple[float, float]¶
+Gets the fractional and integral parts of x, both with the same sign
+as x.
+Not to be confused with fmod().
+
+Parameters:
+x (float) – The value to be decomposed.
+
+Returns:
+Tuple of fractional and integral parts.
+
+frexp(x) &#x2192; Tuple[float, float]¶
+Decomposes a value x into a
+tuple (m, p), such that x == m * (2 ** p).
+
+Parameters:
+x (float) – The value to be decomposed.
+
+Returns:
+Tuple of m and p.
+
+ldexp(m, p) &#x2192; float¶
+Computes m * (2 ** p).
+
+Parameters:
+
+m (float) – The value.
+p (float) – The exponent.
+
+Returns:
+Result of m * (2 ** p).

@@ -1,0 +1,30 @@
+{
+  "maps": [
+    {
+      "id": "test_map_001",
+      "name": "测试地图-方形场地",
+      "width": 1000,
+      "height": 1000,
+      "unit": "mm",
+      "gridSize": 50,
+      "imageData": null,
+      "obstacles": [
+        { "id": "obs_1", "type": "rect", "x": 100, "y": 100, "width": 200, "height": 20, "label": "横墙1", "color": "#333333" },
+        { "id": "obs_2", "type": "rect", "x": 100, "y": 100, "width": 20, "height": 200, "label": "竖墙1", "color": "#333333" },
+        { "id": "obs_3", "type": "circle", "x": 500, "y": 500, "radius": 30, "label": "中心柱", "color": "#cc0000" }
+      ],
+      "movableItems": [
+        { "id": "mov_1", "type": "box", "x": 300, "y": 300, "width": 40, "height": 40, "label": "货物A", "color": "#ffcc00" }
+      ],
+      "paths": [
+        { "id": "path_1", "type": "polyline", "points": [{"x": 50, "y": 50}, {"x": 150, "y": 50}, {"x": 150, "y": 150}], "color": "#0071e3", "lineWidth": 3, "label": "路径1" },
+        { "id": "path_2", "type": "arc", "cx": 150, "cy": 150, "r": 50, "startAngle": -90, "endAngle": 0, "color": "#34a853", "lineWidth": 3, "label": "弯道" }
+      ],
+      "rulers": [
+        { "id": "ruler_1", "x1": 0, "y1": 0, "x2": 200, "y2": 0, "label": "200mm", "color": "#9334e6" }
+      ],
+      "startPosition": { "x": 50, "y": 50, "angle": 0 },
+      "endPosition": { "x": 800, "y": 800, "angle": 90 }
+    }
+  ]
+}

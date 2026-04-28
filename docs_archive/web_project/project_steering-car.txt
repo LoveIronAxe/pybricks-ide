@@ -1,0 +1,93 @@
+Projects for LEGO® vehicles with front-wheel steering - Pybricks 
+
+ Python 27 
+
+ Block Coding 26 
+
+ Technic 23 
+
+ Remote Control 15 
+
+ SPIKE Prime 12 
+
+ Steering Car 11 
+
+ MINDSTORMS Robot Inventor 10 
+
+ Xbox Controller 9 
+
+ City 8 
+
+ SPIKE Essential 8 
+
+ Boost 7 
+
+ Powered Up Remote 7 
+
+ News 5 
+
+ Hub to Hub Communication 3 
+
+ MINDSTORMS EV3 2 
+
+ LEGO 42099 2 
+
+ LEGO 42160 2 
+
+ LEGO 42124 2 
+
+ LEGO 42109 2 
+
+ LEGO 42129 2 
+
+ LEGO 42131 2 
+
+ LEGO 42146 2 
+
+ Projects for LEGO® vehicles with front-wheel steering 
+
+ Driving the LEGO® Technic Cat D11 Bulldozer (42131) with the Xbox Controller
+
+ Control the LEGO® Technic Cat D11 Bulldozer (42131) with the Xbox Controller. No phone needed!
+
+ Driving the LEGO® Technic 4x4 Mercedes-Benz Zetros Trial Truck (42129) with the Xbox Controller
+
+ Control the LEGO® Technic 4x4 Mercedes-Benz Zetros Trial Truck (42129) with the Xbox Controller. No phone needed!
+
+ Driving the LEGO® Technic 4x4 Mercedes-Benz Zetros Trial Truck (42129) with the Powered Up Remote
+
+ Control the LEGO® Technic 4x4 Mercedes-Benz Zetros Trial Truck (42129) with the Powered Up Remote. No phone needed!
+
+ Driving the LEGO® Technic Top Gear Rally Car (42109) with the Xbox Controller
+
+ Control the LEGO® Technic Top Gear Rally Car (42109) with the Xbox Controller. Drive smoothly and precisely with the analog inputs.
+
+ Driving the LEGO® Technic Top Gear Rally Car (42109) with the Powered Up Remote
+
+ Control the LEGO® Technic Top Gear Rally Car (42109) with the Powered Up Remote. No phone needed!
+
+ Driving the LEGO® Technic Off-Road Buggy (42124) with the Xbox Controller
+
+ Control the LEGO® Technic Off-Road Buggy (42124) with the Xbox Controller. Drive smoothly and precisely with the analog inputs.
+
+ Driving the LEGO® Technic Off-Road Buggy (42124) with the Powered Up Remote
+
+ Control the LEGO® Technic Off-Road Buggy (42124) with the Powered Up Remote. No phone needed!
+
+ Driving the LEGO® Technic Audi RS Q e-tron (42160) with the Xbox Controller
+
+ Control the LEGO® Technic Audi RS Q e-tron (42160) with the Xbox Controller. Drive smoothly and precisely with the analog inputs.
+
+ Driving the LEGO® Technic Audi RS Q e-tron (42160) with the Powered Up Remote
+
+ Control the LEGO® Technic Audi RS Q e-tron (42160) with the Powered Up Remote. No phone needed!
+
+ Driving the LEGO® Technic 4X4 X-treme Off-Roader (42099) with the Xbox Controller
+
+ Control the LEGO® Technic 4X4 X-treme Off-Roader (42099) with the Xbox Controller. Drive smoothly and precisely with the analog inputs.
+
+ Driving the LEGO® Technic 4X4 X-treme Off-Roader (42099) with the Powered Up Remote
+
+ Control the LEGO® Technic 4X4 X-treme Off-Roader (42099) with the Powered Up Remote. No phone needed!
+
+ Back to Top &uarr;

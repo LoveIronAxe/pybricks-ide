@@ -1,0 +1,74 @@
+Recent posts - Pybricks 
+
+ Python 27 
+
+ Block Coding 26 
+
+ Technic 23 
+
+ Remote Control 15 
+
+ SPIKE Prime 12 
+
+ Steering Car 11 
+
+ MINDSTORMS Robot Inventor 10 
+
+ Xbox Controller 9 
+
+ City 8 
+
+ SPIKE Essential 8 
+
+ Boost 7 
+
+ Powered Up Remote 7 
+
+ News 5 
+
+ Hub to Hub Communication 3 
+
+ MINDSTORMS EV3 2 
+
+ LEGO 42099 2 
+
+ LEGO 42160 2 
+
+ LEGO 42124 2 
+
+ LEGO 42109 2 
+
+ LEGO 42129 2 
+
+ LEGO 42131 2 
+
+ LEGO 42146 2 
+
+ Recent posts 
+
+ We're updating the project pages one by one! In the mean time, you can find the
+ original projects here .
+
+ Groceries with machine learning
+
+ A LEGO SPIKE Prime robot goes shopping. Find the broccoli with machine learning.
+
+ Robotic arm with vision
+
+ A LEGO SPIKE Prime robotic arm with a camera to detect colored objects to pick up.
+
+ Saving LEGO® MINDSTORMS® …
+
+ Pybricks reboots LEGO® MINDSTORMS® for use in the modern classroom. Help us save hundreds of thousands of robots from the e-waste pile!
+
+ Using Pybricks with Visual Studio Code and other editors
+
+ You can use Pybricks in your favorite code editor like Visual Studio Code. Here’s how.
+
+ Using Pybricks on Linux
+
+ Tips and tricks for using Pybricks successfully on Linux. With udev rules and snap configurations for Chromium.
+
+ Playing Tic Tac Toe with SPIKE Essential
+
+ Learn to build and program a simple Tic Tac Toe game and get inspired to make your programs to play games.

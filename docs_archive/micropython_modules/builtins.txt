@@ -1,0 +1,2887 @@
+Built-in classes and functions &mdash; pybricks v3.6.1 documentation
+      
+      
+      
+      
+    
+  
+    
+  
+  
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+
+ 
+  
+    
+
+    
+
+      
+        
+          
+  
+      
+      Built-in classes and functions
+      
+      
+  
+  
+
+          
+           
+             
+  
+Built-in classes and functions¶
+The classes and functions shown on this page can be used without
+importing anything.
+
+Input and output¶
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+input() &#x2192; str¶
+
+input(prompt) &#x2192; str
+Gets input from the user in the terminal window. It waits until
+the user presses Enter.
+
+Parameters:
+prompt (str) – If given, this is printed in the terminal window first.
+This can be used to ask a question so the user knows what to type.
+
+Returns:
+Everything the user typed before pressing Enter.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+abcprint
+
+abcprint abc abc
+
+print(*objects, sep=' ', end='\n', file=usys.stdin)¶
+Prints text or other objects in the terminal window.
+
+Parameters:
+objects – Zero or more objects to print.
+
+Keyword Arguments:
+
+sep (str) – This is printed between objects, if there is more than one.
+end (str) – This is printed after the last object.
+file (FileIO) – By default, the result is printed in the terminal window. This
+argument lets you print it to a file instead, if files are
+supported.
+
+Basic types¶
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+false
+
+true
+
+class bool(​)¶
+
+class bool(x)
+Creates a boolean value, which is either True or False.
+The input value is converted using the standard truth testing
+procedure. If no input is given, it is assumed to be False.
+
+Parameters:
+x – Value to be converted.
+
+Returns:
+Result of the truth-test.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class complex(string)¶
+
+class complex(a=0, b=0)
+Creates a complex number from a string or from a pair of numbers.
+If a string is given, it must be of the form '1+2j'.
+If a pair of numbers is provided, the result is computed
+as: a + b * j.
+
+Parameters:
+
+string (str) – A string of the form '1+2j' .
+a (float or complex) – A real-valued or complex number.
+b (float or complex) – A real-valued or complex number.
+
+Returns:
+The resulting complex number.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class dict(**kwargs)¶
+
+class dict(mapping, **kwargs)
+
+class dict(iterable, **kwargs)
+Creates a dictionary object.
+See the standard
+Python documentation
+for a comprehensive reference with examples.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class float(x=0.0)¶
+Creates a floating point number from a given object.
+
+Parameters:
+x (int or float or str) – Number or string to be converted.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class int(x=0)¶
+Creates an integer.
+
+Parameters:
+x (int or float or str) – Object to be converted.
+
+to_bytes(length, byteorder) &#x2192; bytes¶
+Get a bytes representation of the integer.
+
+Parameters:
+
+length (int) – How many bytes to use.
+byteorder (str) – Choose &quot;big&quot; to put the most significant byte
+first. Choose &quot;little&quot; to put the least significant byte
+first.
+
+Returns:
+Byte sequence that represents the integer.
+
+classmethod from_bytes(bytes, byteorder) &#x2192; int¶
+Convert a byte sequence to the number it represents.
+
+Parameters:
+
+bytes (bytes) – The bytes to convert.
+byteorder (str) – Choose &quot;big&quot; if the most significant byte is
+the first element. Choose &quot;little&quot; if the least significant
+byte is the first element.
+
+Returns:
+The number represented by the bytes.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class object¶
+Creates a new, featureless object.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class type(object)¶
+Gets the type of an object. This can be used to check if an object
+is an instance of a particular class.
+
+Parameters:
+object – Object of which to check the type.
+
+Sequences¶
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class bytearray(​)¶
+
+class bytearray(integer)
+
+class bytearray(iterable)
+
+class bytearray(string)
+Creates a new bytearray object, which is a sequence of integers
+in the range \(0 \leq x \leq 255\). This object is mutable, which
+means that you can change its contents after you create it.
+If no argument is given, this creates an empty bytearray object.
+
+Parameters:
+
+integer (int) – If the argument is a single integer, this creates
+a bytearray object of zeros. The argument specifies how many.
+iterable (iter) – If the argument is a bytearray, bytes
+object, or some other iterable of integers, this creates
+a bytearray object with the same byte sequence as the argument.
+string (str) – If the argument is a string, this creates
+a bytearray object containing the encoded string.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class bytes(​)¶
+
+class bytes(integer)
+
+class bytes(iterable)
+
+class bytes(string, encoding)
+Creates a new bytes object, which is a sequence of integers
+in the range \(0 \leq x \leq 255\). This object is immutable,
+which means that you cannot change its contents after you create it.
+If no argument is given, this creates an empty bytes object.
+
+Parameters:
+
+integer (int) – If the argument is a single integer, this creates
+a bytes object of zeros. The argument specifies how many.
+iterable (iter) – If the argument is a bytearray, bytes
+object, or some other iterable of integers, this creates a bytes
+object with the same byte sequence as the argument.
+string (str) – If the argument is a string, this creates a bytes
+object containing the encoded string.
+encoding (str) – Specifies which encoding to use for the string
+argument. Only &quot;utf-8&quot;  is supported.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+listlength of
+
+len(s) &#x2192; int¶
+Gets the length (the number of items) of an object.
+
+Parameters:
+s (Sequence) – The sequence of which to get the length.
+
+Returns:
+The length.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+empty list
+
+000list with
+
+listdataunpackto
+
+listlistgetfirst
+0listlistget#
+listlistgetlast
+listlistgetrandom
+123listlistprefix
+0123listlistinsert at #as
+123listlistappend
+listlistremove first
+0listlistremove #
+listlistremove last
+123listlistset firstto
+0123listlistset #to
+123listlistset lastto
+
+class list(​)¶
+
+class list(iterable)
+Creates a new list. If no argument is given, this creates an empty
+list object.
+A list is mutable, which means that you can change its contents
+after you create it.
+
+Parameters:
+iterable (iter) – Iterable from which to build the list.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class set¶
+
+class set(iterable)
+Creates a new set.
+With no arguments, creates a new empty set, otherwise creates a set
+containing unique items of iterable.
+Sets can also be created using a set literal:
+my_set = {1, 2, 3}
+
+Elements of a set must be hashable. There are only a few types, like
+list that aren’t hashable.
+
+Parameters:
+iterable – An iterable of hashable objects.
+
+copy() &#x2192; set¶
+Returns a shallow copy of the set.
+
+Returns:
+A new set.
+
+difference(other1, other2, ...) &#x2192; set¶
+Returns a new set with elements that are not in any of the other sets.
+The difference can also be computed using the - operator:
+diff = s - other
+
+Parameters:
+others – 1 or more other sets.
+
+Returns:
+A new set.
+
+intersection(other1, other2, ...) &#x2192; set¶
+Returns a new set with elements that are common between this set and
+all other sets.
+The intersection can also be computed using the &amp; operator:
+intersect = s &amp; other
+
+Parameters:
+others – 1 or more other sets.
+
+Returns:
+A new set.
+
+isdisjoint(other) &#x2192; bool¶
+Tests if a set and other have no elements in common.
+
+Parameters:
+other – Another set.
+
+Returns:
+True if this set has no elements in common with other,
+otherwise False.
+
+issubset(other) &#x2192; bool¶
+Tests if a set is a subset of other.
+The test can also be performed using using the &lt;= operator:
+if s &lt;= other:
+    # s is subset of other
+    ...
+
+Parameters:
+other – Another set.
+
+Returns:
+True if this set is a subset of other, otherwise False.
+
+issuperset(other) &#x2192; bool¶
+Tests if a set is a superset of other.
+The test can also be performed using using the &gt;= operator:
+if s &gt;= other:
+    # s is superset of other
+    ...
+
+Parameters:
+other – Another set.
+
+Returns:
+True if this set is a superset of other, otherwise False.
+
+symmetric_difference(other) &#x2192; bool¶
+Returns a new set with elements in one set or the other but not in both.
+The symmetric difference can also be computed using the ^ operator:
+diff = s ^ other
+
+Parameters:
+other – Another set.
+
+Returns:
+A new set.
+
+union(other1, other2, ...) &#x2192; set¶
+Returns a new set with elements from this set and all other sets.
+The union can also be computed using the | operator:
+u = s | other
+
+Parameters:
+others – 1 or more other sets.
+
+Returns:
+A new set.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class slice(​)¶
+Creating instances of this class is not supported.
+Use indexing syntax instead. For
+example: a[start:stop:step] or a[start:stop, i].
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+abc
+
+class str(​)¶
+
+class str(object)
+
+class str(object, encoding)
+Gets the string representation of an object.
+If no argument is given, this creates an empty str object.
+
+Parameters:
+
+object – If only this argument is given, this returns the string
+representation of the object.
+encoding (str) – If the first argument is a bytearray or bytes
+object and the encoding argument is &quot;utf-8&quot;, this will decode
+the byte data to get a string representation.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class tuple(​)¶
+
+class tuple(iterable)
+Creates a new tuple. If no argument is given, this creates an empty
+tuple object.
+A tuple is immutable, which means that you cannot change its
+contents after you create it.
+
+Parameters:
+iterable (iter) – Iterable from which to build the tuple.
+
+Iterators¶
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+all(x) &#x2192; bool¶
+Checks if all elements of the iterable are true.
+Equivalent to:
+def all(x):
+    for element in x:
+        if not element:
+            return False
+    return True
+
+Parameters:
+x (Iterable) – The iterable to be checked.
+
+Returns:
+True if the iterable x is empty or if all elements
+are true. Otherwise False.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+any(x) &#x2192; bool¶
+Checks if at least one elements of the iterable is true.
+Equivalent to:
+def any(x):
+    for element in x:
+        if element:
+            return True
+    return False
+
+Parameters:
+x (Iterable) – The iterable to be checked.
+
+Returns:
+True if at least one element in x is true. Otherwise False.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class enumerate(iterable, start=0)¶
+Enumerates an existing iterator by adding a numeric index.
+This function is equivalent to:
+def enumerate(sequence, start=0):
+    n = start
+    for elem in sequence:
+        yield n, elem
+        n += 1
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+iter(object) &#x2192; Iterator¶
+Gets the iterator of the object if available.
+
+Parameters:
+object – Object for which to get the iterator.
+
+Returns:
+The iterator.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+map(function, iterable) &#x2192; Iterator¶
+
+map(function, iterable1, iterable2...) &#x2192; Iterator
+Creates a new iterator that applies the given function to each item in the
+given iterable and yields the results.
+
+Parameters:
+
+function (callable) – Function that computes a result for one item in the
+iterable(s). The number of arguments to this function must match
+the number of iterables given.
+iterable (iter) – One or more source interables from which to draw data.
+With multiple iterables, the iterator stops when the shortest
+iterable is exhausted.
+
+Returns:
+The new, mapped iterator.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+next(iterator) &#x2192; Any¶
+Retrieves the next item from the iterator by calling its __next__() method.
+
+Parameters:
+iterator (iter) – Initialized generator object from which to draw the next
+value.
+
+Returns:
+The next value from the generator.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+class range(stop)¶
+
+class range(start, stop)
+
+class range(start, stop, step)
+Creates a generator that yields values from start up to
+stop, with increments of step.
+
+Parameters:
+
+start (int) – Starting value. Defaults to 0 if only one argument is given.
+stop (int) – Endpoint. This value is not included.
+step (int) – Increment between values. Defaults to 1 if only one
+or two arguments are given.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+reversed(seq) &#x2192; Iterator¶
+Gets an iterator that yields the values from the sequence in the reverse, if
+supported.
+
+Parameters:
+seq – Sequence from which to draw samples.
+
+Returns:
+Iterator that yields values in reverse order, starting with the last value.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+sorted(iterable: Iterable, key=None, reverse=False) &#x2192; List¶
+Sorts objects.
+
+Parameters:
+
+iterable (iter) – Objects to be sorted. This can also be a generator that
+yield a finite number of objects.
+key (callable) – Function def(item) -&gt; int that maps an object to a
+numerical value. This is used to figure out the order of the sorted
+items.
+reverse (bool) – Whether to sort in reverse, putting the highest value
+first.
+
+Returns:
+A new list with the sorted items.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+zip(iter_a, iter_b, ...) &#x2192; Iterable[Tuple]¶
+Returns an iterator of tuples, where the i-th tuple contains the i-th
+element from each of the argument sequences or iterables. The iterator
+stops when the shortest input iterable is exhausted.
+With a single iterable argument, it returns an iterator of 1-tuples.
+With no arguments, it returns an empty iterator.
+This functionality is equivalent to:
+def zip(*iterables):
+    sentinel = object()
+    iterators = [iter(it) for it in iterables]
+    while iterators:
+        result = []
+        for it in iterators:
+            elem = next(it, sentinel)
+            if elem is sentinel:
+                return
+            result.append(elem)
+        yield tuple(result)
+
+Parameters:
+
+iter_a (iter) – The first iterable. This provides the first value for
+each of the yielded tuples.
+iter_b (iter) – The second iterable. This provides the second value in
+each of the yielded tuples. And so on.
+
+Returns:
+A new iterator that yields tuples containing the values of the
+individual iterables.
+
+Conversion functions¶
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+bin(x) &#x2192; str¶
+Converts an integer to its binary representation. The result is a
+string prefixed with 0b. The result is a valid Python expression.
+For example, bin(5) gives &quot;0b101&quot;.
+
+Parameters:
+x (int) – Value to be converted.
+
+Returns:
+A string representing the binary form of the input.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+chr(x) &#x2192; str¶
+Returns the string representing a character whose Unicode code is the
+integer x. This is the inverse of ord(). For
+example, chr(97) gives &quot;a&quot;.
+
+Parameters:
+x (int) – Value to be converted (0-255).
+
+Returns:
+A string with one character, corresponding to the given Unicode value.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+hex(x) &#x2192; str¶
+Converts an integer to its hexadecimal representation. The result is a
+lowercase string prefixed with 0x. The result is a valid Python
+expression. For example, hex(25) gives &quot;0x19&quot;.
+
+Parameters:
+x (int) – Value to be converted.
+
+Returns:
+A string representing the hexadecimal form of the input.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+oct(x) &#x2192; str¶
+Converts an integer to its octal representation. The result is a
+string prefixed with 0o. The result is a valid Python
+expression. For example, oct(25) gives &quot;0o31&quot;.
+
+Parameters:
+x (int) – Value to be converted.
+
+Returns:
+A string representing the octal form of the input.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+ord(c) &#x2192; int¶
+Converts a string consisting of one Unicode character to the
+corresponding number. This is the inverse of chr().
+
+Parameters:
+c (str) – Character to be converted.
+
+Returns:
+Number that represents the character (0–255).
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+repr(object) &#x2192; str¶
+Gets the string that represents an object.
+
+Parameters:
+x (object) – Object to be converted.
+
+Returns:
+String representation implemented by the object’s __repr__ method.
+
+Math functions¶
+See also umath for floating point math operations.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+0abs
+
+abs(x) &#x2192; Any¶
+Returns the absolute value of a number.
+The argument may be an integer, a
+floating point number, or any object implementing __abs__().
+If the argument is a complex number, its magnitude is returned.
+
+Parameters:
+x (Any) – The value.
+
+Returns:
+Absolute value of x.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+divmod(a, b) &#x2192; Tuple[int, int]¶
+Gets the quotient and remainder for dividing two integers.
+See the standard Python divmod documentation for
+the expected behavior when a or b are floating point numbers
+instead.
+
+Parameters:
+
+a (int) – Numerator.
+b (int) – Denominator.
+
+Returns:
+A tuple with the quotient a // b and the remainder a % b.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+00max
+
+max(iterable) &#x2192; Any¶
+
+max(arg1, arg2, ....) &#x2192; Any
+Gets the object with largest value.
+The argument may be a single iterable, or any number of objects.
+
+Returns:
+The object with the largest value.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+00min
+
+min(iterable) &#x2192; Any¶
+
+min(arg1, arg2, ....) &#x2192; Any
+Gets the object with smallest value.
+The argument may be a single iterable, or any number of objects.
+
+Returns:
+The object with the smallest value.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+pow(base, exp) &#x2192; Number¶
+Raises the base to the given exponent: \(\text{base}^{\mathrm{exp}}\).
+This is the same as doing base ** exp.
+
+Parameters:
+
+base (Number) – The base.
+exp (Number) – The exponent.
+
+Returns:
+The result.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+0round
+
+round(number) &#x2192; int¶
+
+round(number, ndigits) &#x2192; float
+Round a number to a given number of digits after the decimal point.
+If ndigits is omitted or None, it returns the nearest integer.
+Rounding with one or more digits after the decimal point will not always
+truncate trailing zeros. To print numbers nicely, format strings instead:
+# print two decimal places
+print(&#39;my number: %.2f&#39; % number)
+print(&#39;my number: {:.2f}&#39;.format(number))
+print(f&#39;my number: {number:.2f}&#39;)
+
+Parameters:
+
+number (float) – The number to be rounded.
+ndigits (int) – The number of digits remaining after the decimal point.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+sum(iterable) &#x2192; Number¶
+
+sum(iterable, start) &#x2192; Number
+Sums the items from the iterable and the start value.
+
+Parameters:
+
+iterable (iter) – Values to be summed, starting with the first value.
+start (Number) – Value added to the total.
+
+Returns:
+The total sum.
+
+Runtime functions¶
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+eval(expression) &#x2192; Any¶
+
+eval(expression, globals) &#x2192; Any
+
+eval(expression, globals, locals) &#x2192; Any
+Evaluates the result of an expression.
+Syntax errors are reported as exceptions.
+
+Parameters:
+
+expression (str) – Expression to evaluate result of.
+globals (dict) – If given, this controls what functions are available
+for use in the expression. By default the global scope is accessible.
+locals (dict) – If given, this controls what functions are available
+for use in the expression. Defaults to the same as globals.
+
+Returns:
+The value obtained by executing the expression.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+exec(expression)¶
+
+exec(expression, globals) &#x2192; None
+
+exec(expression, globals, locals) &#x2192; None
+Executes MicroPython code.
+Syntax errors are reported as exceptions.
+
+Parameters:
+
+expression (str) – Code to be executed.
+globals (dict) – If given, this controls what functions are available
+for use in the expression. By default the global scope is accessible.
+locals (dict) – If given, this controls what functions are available
+for use in the expression. Defaults to the same as globals.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+globals() &#x2192; dict¶
+Gets a dictionary representing the current global symbol table.
+
+Returns:
+The dictionary of globals.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+hash(object) &#x2192; int¶
+Gets the hash value of an object, if the object supports it.
+
+Parameters:
+object – Object for which to get a hash value.
+
+Returns:
+The hash value.
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+help()¶
+
+help(object) &#x2192; None
+Get information about an object.
+If no arguments are given, this function prints instructions to operate the
+REPL. If the argument is &quot;modules&quot;, it prints the available modules.
+
+Parameters:
+object – Object for which to print help information.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+id(object) &#x2192; int¶
+Gets the identity of an object. This is an integer which is guaranteed
+to be unique and constant for this object during its lifetime.
+
+Parameters:
+object – Object of which to get the identifier.
+
+Returns:
+The identifier.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+locals() &#x2192; dict¶
+Gets a dictionary representing the current local symbol table.
+
+Returns:
+The dictionary of locals.
+
+Class functions¶
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+callable(object) &#x2192; bool¶
+Checks if an object is callable.
+
+Parameters:
+object – Object to check.
+
+Returns:
+True if the object argument appears callable, False if not.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+dir() &#x2192; List[str]¶
+
+dir(object) &#x2192; List[str]
+Gets a list of attributes of an object.
+If no object argument is given, this function gets the list of names in the
+current local scope.
+
+Parameters:
+object – Object to check for valid attributes.
+
+Returns:
+List of object attributes or list of names in current local scope.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+getattr(object, name) &#x2192; Any¶
+
+getattr(object, name, default) &#x2192; Any
+Looks up the attribute called name in the given object.
+
+Parameters:
+
+object – Object in which to look for the attribute.
+name (str) – Name of the attribute.
+default – Object to return if the attribute is not found.
+
+Returns:
+Returns the value of the named attribute.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+hasattr(object, name) &#x2192; bool¶
+Checks if an attribute exists on an object.
+
+Parameters:
+
+object – Object in which to look for the attribute.
+name (str) – Name of the attribute.
+
+Returns:
+True if an attribute by that name exists, False if not.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+isinstance(object, classinfo) &#x2192; bool¶
+Checks if an object is an instance of a certain class.
+
+Parameters:
+
+object – Object to check the type of.
+classinfo (type or tuple) – Class information.
+
+Returns:
+True if the object argument is an instance of the classinfo
+argument, or of a subclass thereof.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+issubclass(cls, classinfo) &#x2192; bool¶
+Checks if one class is a subclass of another class.
+
+Parameters:
+
+cls – Class type.
+classinfo (type or tuple) – Class information.
+
+Returns:
+True if cls is a subclass of classinfo.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+setattr(object, name, value)¶
+Assigns a value to an attribute, provided that the object allows it.
+This is the counterpart of getattr().
+
+Parameters:
+
+object – Object in which to store the attribute.
+name (str) – Name of the attribute.
+value – Value to store.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+super() &#x2192; type¶
+
+super(type) &#x2192; type
+
+super(type, object_or_type) &#x2192; type
+Gets an object that delegates method calls to a parent, or a sibling class
+of the given type.
+
+Returns:
+The matching super() object.
+
+Method decorators¶
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+&#64;classmethod¶
+Transforms a method into a class method.
+
+        
+            
+                
+                    
+                        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+&#64;staticmethod¶
+Transforms a method into a static method.

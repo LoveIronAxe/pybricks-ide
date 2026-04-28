@@ -1,0 +1,121 @@
+uio – Input/output streams &mdash; pybricks v3.6.1 documentation
+      
+      
+      
+      
+    
+  
+    
+  
+  
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+
+ 
+  
+    
+
+    
+
+      
+        
+          
+  
+      
+      uio – Input/output streams
+      
+      
+  
+  
+
+          
+           
+             
+  
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+uio – Input/output streams¶
+This module contains stream objects that behave like files.
+
+class BytesIO(​)¶
+
+class BytesIO(data)
+
+class BytesIO(alloc_size)
+A binary stream using an in-memory bytes buffer.
+
+Parameters:
+
+data (bytes or bytearray) – Optional bytes-like object
+that contains initial data.
+alloc_size (int) – Optional number of preallocated bytes. This
+parameter is unique to MicroPython. It is not recommended to
+use it in end-user code.
+
+getvalue() &#x2192; bytes¶
+Gets the contents of the underlying buffer.
+
+class StringIO(​)¶
+
+class StringIO(string)
+
+class StringIO(alloc_size)
+A stream using an in-memory string buffer.
+
+Parameters:
+
+string (str) – Optional string with initial data.
+alloc_size (int) – Optional number of preallocated bytes. This
+parameter is unique to MicroPython. It is not recommended to
+use it in end-user code.
+
+getvalue() &#x2192; str¶
+Gets the contents of the underlying buffer.
+
+class FileIO¶
+This type represents a file opened in binary mode with open(name, 'rb').
+You should not instantiate this class directly.

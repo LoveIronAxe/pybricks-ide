@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pybricks IDE - 程序编辑器</title>
+<!-- PWA -->
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0071e3">
+<meta name="description" content="Pybricks 机器车可视化编程IDE - 可离线使用">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230071e3'/><text x='256' y='320' font-size='280' text-anchor='middle' fill='white'>P</text></svg>">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --font: 'Roboto', 'Noto Sans SC', sans-serif;
+  --primary: #0071e3;
+  --primary-container: #d4e3ff;
+  --on-primary-container: #001c38;
+  --on-primary: #ffffff;
+  --surface: #ffffff;
+  --surface-variant: #f5f5f5;
+  --on-surface: #1c1b1f;
+  --on-surface-variant: #49454f;
+  --outline: #74777f;
+  --outline-variant: #c5c5d0;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-full: 9999px;
+  --sidebar-width: 56px;
+  --list-width: 260px;
+  --palette-w: 180px;
+  --manual-w: 220px;
+  --code-preview-w: 240px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.18);
+  --elevation-1: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-2: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  --surface-container: #fef7ff;
+  --surface-container-low: #f8f2ff;
+  --on-error: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: var(--font); background: var(--surface); color: var(--on-surface); overflow: hidden; }
+button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+input, textarea, select { font-family: inherit; outline: none; }
+
+/* === Layout === */
+.app-layout { display: flex; height: 100vh; }
+
+/* === Sidebar === */
+.sidebar { width: var(--sidebar-w); background: var(--surface-variant); border-right: 1px solid var(--outline); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px; flex-shrink: 0; }
+.sidebar-item { width: 44px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 10px; cursor: pointer; transition: background 0.15s; position: relative; color: var(--on-surface-variant); font-size: 10px; font-weight: 500; }
+.sidebar-item:hover { background: var(--primary-container); color: var(--primary); }
+.sidebar-item.active { background: var(--primary-container); color: var(--on-primary-container); }
+.sidebar-item.active::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; background: var(--primary); border-radius: 0 2px 2px 0; }
+.sidebar-item .icon { font-size: 22px; line-height: 1; }
+
+/* === List Panel === */
+.list-panel { width: var(--list-w); background: var(--surface); border-right: 1px solid var(--outline); display: flex; flex-direction: column; flex-shrink: 0; }
+.list-header { padding: 14px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--outline); }
+.list-header h2 { font-size: 14px; font-weight: 600; }
+.btn-add { width: 26px; height: 26px; border-radius: 8px; background: var(--primary); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; line-height: 1; }
+.btn-add:hover { background: color-mix(in srgb, var(--primary) 85%, black); }
+.list-items { flex: 1; overflow-y: auto; padding: 6px 8px; }
+.list-item { padding: 9px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; transition: background 0.12s; margin-bottom: 2px; color: var(--on-surface-variant); }
+.list-item:hover { background: var(--surface-variant); color: var(--on-surface); }
+.list-item.active { background: var(--primary-container); color: var(--on-primary-container); font-weight: 500; }
+.list-item .item-icon { font-size: 16px; }
+.list-empty { padding: 24px 12px; text-align: center; color: var(--on-surface-variant); font-size: 12px; }
+
+/* === Detail Panel === */
+.detail-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.detail-toolbar { padding: 10px 16px; border-bottom: 1px solid var(--outline); display: flex; align-items: center; justify-content: space-between; background: var(--surface); gap: 8px; }
+.toolbar-left { display: flex; align-items: center; gap: 8px; }
+.toolbar-title { font-size: 14px; font-weight: 600; }
+.view-tabs { display: flex; background: var(--surface-variant); border-radius: 8px; padding: 2px; gap: 2px; }
+.view-tab { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--on-surface-variant); cursor: pointer; transition: all 0.15s; border: none; background: none; }
+.view-tab.active { background: var(--surface); color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.btn-export { padding: 6px 14px; background: var(--primary); color: #fff; border-radius: 8px; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; transition: background 0.15s; }
+.btn-export:hover { background: color-mix(in srgb, var(--primary) 85%, black); }
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.btn-icon-toolbar {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--outline);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s;
+}
+.btn-icon-toolbar:hover { background: rgba(0,0,0,0.06); }
+
+.export-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: 10px;
+  box-shadow: var(--elevation-3);
+  min-width: 200px;
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.export-dropdown.show { display: flex; }
+
+.dropdown-item-prog {
+  padding: 9px 14px;
+  font-size: 12px;
+  color: var(--on-surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+.dropdown-item-prog:hover { background: var(--surface-variant); }
+
+/* === Detail Content === */
+.detail-content { flex: 1; display: flex; overflow: hidden; }
+
+/* === Code Block Palette === */
+.code-palette { width: var(--palette-w); background: var(--surface-variant); border-right: 1px solid var(--outline); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+.palette-tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--outline); background: var(--surface); padding: 4px 4px 0; gap: 2px; }
+.palette-tab { padding: 4px 6px; font-size: 10px; font-weight: 500; border-radius: 6px 6px 0 0; cursor: pointer; color: var(--on-surface-variant); transition: all 0.15s; border: none; background: none; white-space: nowrap; }
+.palette-tab.active { color: var(--primary); background: var(--primary-container); }
+.palette-tab:hover:not(.active) { background: var(--surface-variant); }
+.palette-blocks { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.palette-section-label { font-size: 10px; color: var(--on-surface-variant); font-weight: 600; padding: 4px 0 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.code-block { padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 500; cursor: grab; user-select: none; transition: transform 0.1s, box-shadow 0.1s; display: flex; align-items: center; gap: 5px; border: 1.5px solid transparent; position: relative; }
+.code-block:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.code-block:active { cursor: grabbing; transform: scale(1.03); box-shadow: 0 5px 16px rgba(0,0,0,0.15); }
+.code-block.dragging { opacity: 0.5; }
+.code-block .block-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.code-block .block-label { flex: 1; }
+.code-block .block-params { font-size: 9px; opacity: 0.7; }
+
+.block-cat-basic { background: #e8f2fc; color: #004099; border-color: #b8d4f5; }
+.block-cat-vehicle { background: #e6f4ea; color: #1e6b30; border-color: #b2ddb0; }
+.block-cat-follow { background: #e6f0e6; color: #2d6a2d; border-color: #b0d4a0; }
+.block-cat-sensor { background: #fff3e0; color: #993d00; border-color: #f5c99a; }
+.block-cat-struct { background: #f3e8ff; color: #6a1b9a; border-color: #d4a8f5; }
+
+/* === Main Editor === */
+.main-editor { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* Code Block View */
+.editor-blocks { flex: 1; display: flex; overflow: hidden; }
+.blocks-area { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.drop-zone { min-height: 60px; border: 2px dashed var(--outline); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--on-surface-variant); font-size: 12px; transition: all 0.2s; flex-direction: column; gap: 4px; }
+.drop-zone.drag-over { border-color: var(--primary); background: var(--primary-container); color: var(--primary); }
+.drop-zone-text { font-size: 12px; }
+
+.editor-block { background: var(--surface); border: 1.5px solid var(--outline); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; transition: border-color 0.15s; position: relative; }
+.editor-block:hover { border-color: var(--primary); }
+.editor-block.block-cat-basic { border-left: 4px solid #0071e3; }
+.editor-block.block-cat-vehicle { border-left: 4px solid #34a853; }
+.editor-block.block-cat-follow { border-left: 4px solid #2d6a2d; }
+.editor-block.block-cat-sensor { border-left: 4px solid #e8710a; }
+.editor-block.block-cat-struct { border-left: 4px solid #9334e6; }
+
+.block-header { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.block-header .block-dot { width: 8px; height: 8px; border-radius: 50%; }
+.block-delete { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; background: var(--surface-variant); color: var(--on-surface-variant); font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+.block-delete:hover { background: #fee; color: #c00; }
+.block-fields { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.field-group { display: flex; align-items: center; gap: 3px; font-size: 11px; }
+.field-label { color: var(--on-surface-variant); white-space: nowrap; }
+.field-input { width: 52px; padding: 3px 6px; border: 1px solid var(--outline); border-radius: 6px; font-size: 11px; text-align: center; }
+.field-input:focus { border-color: var(--primary); }
+.block-children { margin-top: 6px; padding-left: 16px; border-left: 2px solid var(--outline); display: flex; flex-direction: column; gap: 6px; min-height: 30px; }
+.block-child-drop { min-height: 30px; border: 1.5px dashed var(--outline); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--on-surface-variant); font-size: 11px; transition: all 0.2s; }
+.block-child-drop.drag-over { border-color: var(--primary); background: var(--primary-container); }
+
+/* Nested block connector line */
+.nested-indicator { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--on-surface-variant); margin-bottom: 2px; }
+.nested-indicator::before { content: ''; width: 16px; height: 1px; background: var(--outline); }
+
+/* === Flowchart View === */
+.flowchart-view { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.flowchart-view.active { display: flex; }
+.flowchart-canvas { flex: 1; overflow: auto; position: relative; background: var(--surface-variant); background-image: radial-gradient(circle, var(--outline) 1px, transparent 1px); background-size: 20px 20px; }
+.fc-node { position: absolute; background: var(--surface); border: 2px solid var(--outline); border-radius: 10px; padding: 8px 12px; min-width: 120px; max-width: 180px; cursor: move; transition: box-shadow 0.15s; font-size: 11px; }
+.fc-node:hover { box-shadow: var(--elevation-3); }
+.fc-node.action { border-color: var(--primary); border-left-width: 4px; }
+.fc-node.condition { border-color: #f5a623; border-left-width: 4px; }
+.fc-node.loop { border-color: #34a853; border-left-width: 4px; }
+.fc-node .fc-node-title { font-weight: 600; margin-bottom: 4px; font-size: 12px; }
+.fc-node .fc-node-params { font-size: 10px; color: var(--on-surface-variant); }
+.fc-connector { position: absolute; pointer-events: none; }
+
+/* === Python Preview === */
+.python-preview { width: var(--code-preview-w); background: var(--surface); border-left: 1px solid var(--outline); display: flex; flex-direction: column; flex-shrink: 0; }
+.preview-header { padding: 8px 12px; border-bottom: 1px solid var(--outline); font-size: 11px; font-weight: 600; color: var(--on-surface-variant); display: flex; align-items: center; justify-content: space-between; }
+.preview-code { flex: 1; overflow-y: auto; padding: 10px 12px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 11px; line-height: 1.6; color: var(--on-surface); white-space: pre-wrap; background: #fafafa; }
+.py-keyword { color: #0033cc; font-weight: 600; }
+.py-string { color: #c41a16; }
+.py-comment { color: #007400; font-style: italic; }
+.py-func { color: #5c2699; }
+.py-num { color: #1c00cf; }
+.py-op { color: #000000; }
+.btn-copy { font-size: 10px; padding: 3px 8px; border-radius: 5px; background: var(--surface-variant); color: var(--on-surface-variant); border: 1px solid var(--outline); cursor: pointer; }
+.btn-copy:hover { background: var(--primary-container); color: var(--primary); border-color: var(--primary); }
+
+/* === Right Reference Panel === */
+.ref-panel { width: var(--manual-w); background: var(--surface); border-left: 1px solid var(--outline); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+.ref-header { padding: 8px 12px; border-bottom: 1px solid var(--outline); font-size: 11px; font-weight: 600; color: var(--on-surface-variant); }
+.ref-search { padding: 8px; border-bottom: 1px solid var(--outline); }
+.ref-search input { width: 100%; padding: 6px 8px; border: 1px solid var(--outline); border-radius: 8px; font-size: 11px; }
+.ref-search input:focus { border-color: var(--primary); }
+.ref-tabs { display: flex; border-bottom: 1px solid var(--outline); background: var(--surface-variant); }
+.ref-tab { flex: 1; padding: 5px 4px; font-size: 10px; font-weight: 500; text-align: center; cursor: pointer; color: var(--on-surface-variant); border-radius: 0; border: none; background: none; transition: all 0.15s; }
+.ref-tab.active { background: var(--surface); color: var(--primary); }
+.ref-content { flex: 1; overflow-y: auto; padding: 8px; }
+.ref-section { margin-bottom: 12px; }
+.ref-section-title { font-size: 11px; font-weight: 600; color: var(--primary); margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1px solid var(--outline); }
+.ref-item { padding: 5px 8px; border-radius: 6px; cursor: pointer; transition: background 0.12s; font-size: 11px; margin-bottom: 2px; }
+.ref-item:hover { background: var(--primary-container); }
+.ref-item .ref-name { font-weight: 500; color: var(--on-surface); }
+.ref-item .ref-desc { font-size: 10px; color: var(--on-surface-variant); margin-top: 1px; }
+.ref-code { background: var(--surface-variant); border-radius: 6px; padding: 6px 8px; font-family: monospace; font-size: 10px; color: var(--on-surface); margin-top: 3px; white-space: pre-wrap; }
+
+/* === Modal === */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--elevation-3); padding: 28px; width: 360px; max-width: 90vw; transform: translateY(20px); transition: transform 0.2s; backdrop-filter: blur(20px); }
+.modal-overlay.show .modal { transform: translateY(0); }
+.modal-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+.modal-field { margin-bottom: 14px; }
+.modal-field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--on-surface-variant); }
+.modal-field input, .modal-field select { width: 100%; padding: 9px 12px; border: 1.5px solid var(--outline); border-radius: 10px; font-size: 13px; transition: border-color 0.15s; }
+.modal-field input:focus, .modal-field select:focus { border-color: var(--primary); }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.btn-cancel { padding: 9px 18px; border: 1.5px solid var(--outline); border-radius: 20px; background: var(--surface); color: var(--on-surface-variant); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.btn-cancel:hover { background: var(--surface-variant); }
+.btn-primary { padding: 9px 18px; background: var(--primary); color: #fff; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.btn-primary:hover { background: color-mix(in srgb, var(--primary) 85%, black); }
+
+/* === Toast === */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--on-surface); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; z-index: 2000; opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* === Scrollbar === */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--on-surface-variant); }
+
+/* === Block nested structure === */
+.struct-wrapper { border: 1.5px solid var(--outline); border-radius: 10px; overflow: hidden; }
+.struct-header { padding: 8px 12px; background: var(--surface-variant); display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.struct-body { padding: 10px; background: var(--surface); min-height: 60px; }
+
+/* === Parallell task indicator === */
+.parallel-badge { background: #9334e6; color: #fff; border-radius: 4px; padding: 1px 5px; font-size: 9px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-item" data-page="vehicle" onclick="switchPage('vehicle')">
+      <span class="icon material-icons">directions_car</span>
+      <span>车辆</span>
+    </div>
+    <div class="sidebar-item" data-page="map" onclick="switchPage('map')">
+      <span class="icon material-icons">map</span>
+      <span>地图</span>
+    </div>
+    <div class="sidebar-item active" data-page="program" onclick="switchPage('program')">
+      <span class="icon material-icons">code</span>
+      <span>程序</span>
+    </div>
+    <div class="sidebar-item" data-page="debug" onclick="switchPage('debug')">
+      <span class="icon material-icons">bug_report</span>
+      <span>调试</span>
+    </div>
+  </nav>
+
+  <!-- List Panel -->
+  <div class="list-panel">
+    <div class="list-header">
+      <h2>程序项目</h2>
+      <button class="btn-add" onclick="showNewProgramModal()">+</button>
+    </div>
+    <div class="list-items" id="programList"></div>
+  </div>
+
+  <!-- Detail Panel -->
+  <div class="detail-panel">
+    <div class="detail-toolbar">
+      <div class="toolbar-left">
+        <div class="toolbar-title" id="currentProgramName">未选择项目</div>
+        <div class="view-tabs">
+          <button class="view-tab active" onclick="switchView('blocks')">积木</button>
+          <button class="view-tab" onclick="switchView('flowchart')">流程图</button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-icon-toolbar" onclick="importProgramsJSON()" title="导入程序">📤 导入</button>
+        <button class="btn-export" onclick="showExportMenu()">📥 导出 ▼</button>
+        <div class="export-dropdown" id="exportDropdown">
+          <div class="dropdown-item-prog" onclick="exportCurrentProgramJSON()">📋 导出当前程序 (JSON)</div>
+          <div class="dropdown-item-prog" onclick="exportAllProgramsJSON()">📋 导出全部程序 (JSON)</div>
+          <div class="dropdown-item-prog" onclick="exportPython()">🐍 导出当前程序 (Python)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-content" id="detailContent">
+      <!-- Code Block Palette -->
+      <div class="code-palette">
+        <div class="palette-tabs" id="paletteTabs"></div>
+        <div class="palette-blocks" id="paletteBlocks"></div>
+      </div>
+
+      <!-- Main Editor -->
+      <div class="main-editor">
+        <!-- Blocks View -->
+        <div class="editor-blocks" id="blocksView">
+          <div class="blocks-area" id="blocksArea">
+            <div class="drop-zone" id="mainDropZone">
+              <span>👇 从左侧拖拽代码块到这里</span>
+              <span class="drop-zone-text">或点击代码块添加</span>
+            </div>
+          </div>
+          <!-- Python Preview -->
+          <div class="python-preview">
+            <div class="preview-header">
+              <span>Python 预览</span>
+              <button class="btn-copy" onclick="copyPython()">复制</button>
+            </div>
+            <pre class="preview-code" id="pythonPreview"><span class="py-comment"># 从左侧拖入代码块</span>
+<span class="py-comment"># 实时生成 Python 代码</span>
+</pre>
+          </div>
+        </div>
+
+        <!-- Flowchart View -->
+        <div class="flowchart-view" id="flowchartView">
+          <div class="flowchart-canvas" id="flowchartCanvas">
+            <svg id="fcSvg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;"></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reference Panel -->
+      <div class="ref-panel">
+        <div class="ref-header">📖 代码手册</div>
+        <div class="ref-search">
+          <input type="text" placeholder="搜索 API..." id="refSearchInput" oninput="filterRef()">
+        </div>
+        <div class="ref-tabs">
+          <button class="ref-tab active" onclick="switchRefTab('pybricks')">Pybricks</button>
+          <button class="ref-tab" onclick="switchRefTab('python')">Python</button>
+        </div>
+        <div class="ref-content" id="refContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Program Modal -->
+<div class="modal-overlay" id="newProgramModal">
+  <div class="modal">
+    <div class="modal-title">新建程序项目</div>
+    <div class="modal-field">
+      <label>项目名称</label>
+      <input type="text" id="newProgramName" placeholder="例如：巡线程序" onkeydown="if(event.key==='Enter')createProgram()">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-primary" onclick="createProgram()">创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== DATA ====================
+const CATEGORIES = ['基础语法', '车辆控制', '巡线', '传感器', '结构控制', '电机控制', '底盘控制', '参数', 'Hub', '工具函数'];
+
+const PALETTE_BLOCKS = {
+  // 基础语法
+  'var_assign': { category: '基础语法', label: '变量赋值', color: '#0071e3', fields: [{name:'name',label:'变量名',default:'x'},{name:'value',label:'值',default:'0'}], pyCode: f => `${f.name} = ${f.value}` },
+  'arithmetic': { category: '基础语法', label: '四则运算', color: '#0071e3', fields: [{name:'a',label:'a',default:'a'},{name:'op',label:'运算符',default:'+'},{name:'b',label:'b',default:'b'}], pyCode: f => `${f.a} ${f.op} ${f.b}` },
+  'compare': { category: '基础语法', label: '比较运算', color: '#0071e3', fields: [{name:'a',label:'a',default:'a'},{name:'op',label:'运算符',default:'=='},{name:'b',label:'b',default:'b'}], pyCode: f => `${f.a} ${f.op} ${f.b}` },
+  'logic': { category: '基础语法', label: '逻辑运算', color: '#0071e3', fields: [{name:'op',label:'运算符',default:'and'},{name:'a',label:'条件A',default:'True'},{name:'b',label:'条件B',default:'False'}], pyCode: f => `${f.a} ${f.op} ${f.b}` },
+  'string_op': { category: '基础语法', label: '字符串', color: '#0071e3', fields: [{name:'op',label:'操作',default:'拼接'},{name:'a',label:'字符串A',default:'"Hello"'},{name:'b',label:'字符串B',default:'"World"'}], pyCode: f => f.op==='拼接'?`${f.a} + ${f.b}`:`f"{$}{f.a}{"}"` },
+  'list_op': { category: '基础语法', label: '列表操作', color: '#0071e3', fields: [{name:'op',label:'操作',default:'append'},{name:'list',label:'列表',default:'my_list'},{name:'val',label:'值',default:'item'}], pyCode: f => `${f.list}.${f.op}(${f.val})` },
+  'def_func': { category: '基础语法', label: 'def函数', color: '#0071e3', fields: [{name:'name',label:'函数名',default:'my_func'},{name:'args',label:'参数',default:'a, b'}], pyCode: f => `def ${f.name}(${f.args}):\n    pass`, isStruct: true },
+  'import': { category: '基础语法', label: 'import', color: '#0071e3', fields: [{name:'module',label:'模块',default:'pybricks.tools'}], pyCode: f => `from ${f.module} import *` },
+  'if_block': { category: '基础语法', label: 'if 条件', color: '#0071e3', fields: [{name:'cond',label:'条件',default:'x > 0'}], pyCode: f => `if ${f.cond}:`, isStruct: true },
+  'else_block': { category: '基础语法', label: 'else', color: '#0071e3', fields: [], pyCode: () => `else:`, isStruct: true },
+  'for_loop': { category: '基础语法', label: 'for 循环', color: '#0071e3', fields: [{name:'var',label:'变量',default:'i'},{name:'range',label:'范围',default:'10'}], pyCode: f => `for ${f.var} in range(${f.range}):`, isStruct: true },
+  'while_loop': { category: '基础语法', label: 'while 循环', color: '#0071e3', fields: [{name:'cond',label:'条件',default:'True'}], pyCode: f => `while ${f.cond}:`, isStruct: true },
+  'try_except': { category: '基础语法', label: 'try-except', color: '#0071e3', fields: [{name:'exc',label:'异常',default:'Exception'}], pyCode: f => `try:\n    pass\nexcept ${f.exc}:\n    pass`, isStruct: true },
+  'return_stmt': { category: '基础语法', label: 'return', color: '#0071e3', fields: [{name:'val',label:'返回值',default:'result'}], pyCode: f => `return ${f.val}` },
+  // 车辆控制
+  'init_vehicle': { category: '车辆控制', label: 'init() 初始化', color: '#34a853', fields: [], pyCode: () => `init()` },
+  'follow_line': { category: '车辆控制', label: 'follow_line()', color: '#34a853', fields: [{name:'dist',label:'距离(mm)',default:'300'},{name:'kp',label:'Kp',default:'1.5'},{name:'speed',label:'速度',default:'300'},{name:'wait_ms',label:'采样(ms)',default:'10'}], pyCode: f => `follow_line(${f.dist}, True, ${f.speed}, kp=${f.kp}, wait_ms=${f.wait_ms})` },
+  'turn_vehicle': { category: '车辆控制', label: 'turn() 转弯', color: '#34a853', fields: [{name:'deg',label:'角度(°)',default:'90'},{name:'speed',label:'速度',default:'300'}], pyCode: f => `turn(${f.deg}, 0, ${f.speed})` },
+  'drive_forward': { category: '车辆控制', label: 'drive_forward()', color: '#34a853', fields: [{name:'dist',label:'距离(mm)',default:'200'},{name:'speed',label:'速度',default:'300'}], pyCode: f => `drive_forward(${f.dist}, ${f.speed})` },
+  'claw_open': { category: '车辆控制', label: 'claw_open()', color: '#34a853', fields: [], pyCode: () => `claw_open()` },
+  'claw_close': { category: '车辆控制', label: 'claw_close()', color: '#34a853', fields: [], pyCode: () => `claw_close()` },
+  'fork_up': { category: '车辆控制', label: 'fork_up()', color: '#34a853', fields: [], pyCode: () => `fork_up()` },
+  'fork_down': { category: '车辆控制', label: 'fork_down()', color: '#34a853', fields: [], pyCode: () => `fork_down()` },
+  // 巡线
+  'lf_pid': { category: '巡线', label: '单光巡线PID', color: '#2d6a2d', fields: [{name:'dist',label:'距离',default:'500'},{name:'kp',label:'Kp',default:'1.5'},{name:'speed',label:'速度',default:'300'},{name:'wait_ms',label:'采样',default:'10'}], pyCode: f => `follow_line(${f.dist}, True, ${f.speed}, kp=${f.kp}, wait_ms=${f.wait_ms})` },
+  'lf_dual': { category: '巡线', label: '双光巡线', color: '#2d6a2d', fields: [{name:'dist',label:'距离',default:'500'},{name:'speed',label:'速度',default:'200'}], pyCode: f => `follow_line_dual(${f.dist}, ${f.speed})` },
+  'lf_stop': { category: '巡线', label: '停止巡线', color: '#2d6a2d', fields: [], pyCode: () => `follow_line(0, False, 0)` },
+  // 传感器
+  'reflection': { category: '传感器', label: 'reflection()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `sensor_${f.port.toLowerCase().replace('port.','')}.reflection()` },
+  'color_sensor': { category: '传感器', label: 'color()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `sensor_${f.port.toLowerCase().replace('port.','')}.color()` },
+  'distance_sensor': { category: '传感器', label: 'distance()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `sensor_${f.port.toLowerCase().replace('port.','')}.distance()` },
+  'button_pressed': { category: '传感器', label: 'button.pressed()', color: '#e8710a', fields: [], pyCode: () => `hub.button.pressed()` },
+  'force_sensor': { category: '传感器', label: 'force.force()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `force_sensor_${f.port.toLowerCase().replace('port.','')}.force()` },
+  // 结构控制
+  'parallel': { category: '结构控制', label: '并行任务', color: '#9334e6', fields: [{name:'n',label:'并行数',default:'2'}], pyCode: f => `# 并行任务 (${f.n}个)`, isStruct: true },
+
+  // ========== 电机控制（Motor）==========
+  'motor_run_time': { category: '电机控制', label: 'motor.run_time()', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'},{name:'time',label:'时间(ms)',default:'1000'},{name:'speed',label:'速度(°/s)',default:'500'},{name:'stop',label:'停止方式',default:'Stop.HOLD'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.run_time(${f.speed}, ${f.time}, then=${f.stop})` },
+  'motor_run_angle': { category: '电机控制', label: 'motor.run_angle()', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'},{name:'angle',label:'角度(°)',default:'90'},{name:'speed',label:'速度(°/s)',default:'500'},{name:'stop',label:'停止方式',default:'Stop.HOLD'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.run_angle(${f.speed}, ${f.angle}, then=${f.stop})` },
+  'motor_dc': { category: '电机控制', label: 'motor.dc() 功率控制', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'},{name:'power',label:'功率(%)',default:'50'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.dc(${f.power})` },
+  'motor_stop': { category: '电机控制', label: 'motor.stop()', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'},{name:'stop',label:'停止方式',default:'Stop.COAST'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.stop(${f.stop})` },
+  'motor_hold': { category: '电机控制', label: 'motor.hold()', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.hold()` },
+  'motor_angle': { category: '电机控制', label: 'motor.angle() 获取角度', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.angle()` },
+  'motor_speed': { category: '电机控制', label: 'motor.speed() 获取速度', color: '#0071e3', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `motor_${f.port.toLowerCase().replace('port.','')}.speed()` },
+  // ========== 底盘控制（DriveBase）==========
+  'db_straight': { category: '底盘控制', label: 'db.straight() 直行', color: '#34a853', fields: [{name:'dist',label:'距离(mm)',default:'500'},{name:'speed',label:'速度(mm/s)',default:'200'},{name:'stop',label:'停止方式',default:'Stop.HOLD'}], pyCode: f => `db.straight(${f.dist}, then=${f.stop})` },
+  'db_turn': { category: '底盘控制', label: 'db.turn() 转弯', color: '#34a853', fields: [{name:'angle',label:'角度(°)',default:'90'},{name:'speed',label:'速度(°/s)',default:'200'},{name:'stop',label:'停止方式',default:'Stop.HOLD'}], pyCode: f => `db.turn(${f.angle}, then=${f.stop})` },
+  'db_drive': { category: '底盘控制', label: 'db.drive() 持续行驶', color: '#34a853', fields: [{name:'speed',label:'速度(mm/s)',default:'200'},{name:'turn',label:'转弯率(°/s)',default:'0'}], pyCode: f => `db.drive(${f.speed}, ${f.turn})` },
+  'db_stop': { category: '底盘控制', label: 'db.stop() 停车', color: '#34a853', fields: [], pyCode: () => `db.stop()` },
+  'db_settings': { category: '底盘控制', label: 'db.settings() 速度设置', color: '#34a853', fields: [{name:'straight_speed',label:'直行速度',default:'200'},{name:'straight_accel',label:'直行加速度',default:'200'},{name:'turn_rate',label:'转弯速度',default:'200'},{name:'turn_accel',label:'转弯加速度',default:'200'}], pyCode: f => `db.settings(${f.straight_speed}, ${f.straight_accel}, ${f.turn_rate}, ${f.turn_accel})` },
+  'db_distance': { category: '底盘控制', label: 'db.distance() 已行距离', color: '#34a853', fields: [], pyCode: () => `db.distance()` },
+  'db_heading': { category: '底盘控制', label: 'db.heading() 行驶角度', color: '#34a853', fields: [], pyCode: () => `db.heading()` },
+  // ========== 颜色传感器（ColorSensor）==========
+  'cs_color': { category: '传感器', label: 'color_sensor.color()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cs_${f.port.toLowerCase().replace('port.','')}.color()` },
+  'cs_reflection': { category: '传感器', label: 'color_sensor.reflection()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cs_${f.port.toLowerCase().replace('port.','')}.reflection()` },
+  'cs_rgb': { category: '传感器', label: 'color_sensor.rgb()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cs_${f.port.toLowerCase().replace('port.','')}.rgb()` },
+  'cs_hsv': { category: '传感器', label: 'color_sensor.hsv()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cs_${f.port.toLowerCase().replace('port.','')}.hsv()` },
+  // ========== 颜色距离传感器（ColorDistanceSensor）==========
+  'cds_color': { category: '传感器', label: 'cds.color()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cds_${f.port.toLowerCase().replace('port.','')}.color()` },
+  'cds_distance': { category: '传感器', label: 'cds.distance()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cds_${f.port.toLowerCase().replace('port.','')}.distance()` },
+  'cds_reflection': { category: '传感器', label: 'cds.reflection()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cds_${f.port.toLowerCase().replace('port.','')}.reflection()` },
+  'cds_ambient': { category: '传感器', label: 'cds.ambient() 环境光', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cds_${f.port.toLowerCase().replace('port.','')}.ambient()` },
+  'cds_hsv': { category: '传感器', label: 'cds.hsv()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.E'}], pyCode: f => `cds_${f.port.toLowerCase().replace('port.','')}.hsv()` },
+  // ========== 力传感器（ForceSensor）==========
+  'fs_force': { category: '传感器', label: 'force.force()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `fs_${f.port.toLowerCase().replace('port.','')}.force()` },
+  'fs_pressed': { category: '传感器', label: 'force.pressed()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.A'},{name:'force',label:'最小压力(N)',default:'3'}], pyCode: f => `fs_${f.port.toLowerCase().replace('port.','')}.pressed(${f.force})` },
+  'fs_distance': { category: '传感器', label: 'force.distance()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `fs_${f.port.toLowerCase().replace('port.','')}.distance()` },
+  'fs_touched': { category: '传感器', label: 'force.touched()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.A'}], pyCode: f => `fs_${f.port.toLowerCase().replace('port.','')}.touched()` },
+  // ========== 超声波传感器（UltrasonicSensor）==========
+  'us_distance': { category: '传感器', label: 'ultrasonic.distance()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.B'}], pyCode: f => `us_${f.port.toLowerCase().replace('port.','')}.distance()` },
+  'us_presence': { category: '传感器', label: 'ultrasonic.presence()', color: '#e8710a', fields: [{name:'port',label:'端口',default:'Port.B'}], pyCode: f => `us_${f.port.toLowerCase().replace('port.','')}.presence()` },
+  // ========== 参数类==========
+  'param_port': { category: '参数', label: 'Port 端口', color: '#5e5e5e', fields: [{name:'port',label:'端口',default:'A',type:'select',options:['A','B','C','D','E','F']}], pyCode: f => `Port.${f.port}` },
+  'param_direction': { category: '参数', label: 'Direction 方向', color: '#5e5e5e', fields: [{name:'dir',label:'方向',default:'CLOCKWISE',type:'select',options:['CLOCKWISE','COUNTERCLOCKWISE']}], pyCode: f => `Direction.${f.dir}` },
+  'param_stop': { category: '参数', label: 'Stop 停止方式', color: '#5e5e5e', fields: [{name:'stop',label:'方式',default:'HOLD',type:'select',options:['HOLD','COAST','BRAKE']}], pyCode: f => `Stop.${f.stop}` },
+  'param_side': { category: '参数', label: 'Side 侧面', color: '#5e5e5e', fields: [{name:'side',label:'侧面',default:'TOP',type:'select',options:['TOP','BOTTOM','LEFT','RIGHT','FRONT','BACK']}], pyCode: f => `Side.${f.side}` },
+  'param_color': { category: '参数', label: 'Color 颜色', color: '#5e5e5e', fields: [{name:'color',label:'颜色',default:'RED',type:'select',options:['RED','BLUE','GREEN','YELLOW','WHITE','BLACK','MAGENTA','CYAN','ORANGE','VIOLET']}], pyCode: f => `Color.${f.color}` },
+  'param_button': { category: '参数', label: 'Button 按钮', color: '#5e5e5e', fields: [{name:'btn',label:'按钮',default:'CENTER',type:'select',options:['LEFT','RIGHT','CENTER','BLUETOOTH']}], pyCode: f => `Button.${f.btn}` },
+  'param_axis': { category: '参数', label: 'Axis 轴', color: '#5e5e5e', fields: [{name:'axis',label:'轴',default:'X',type:'select',options:['X','Y','Z']}], pyCode: f => `Axis.${f.axis}` },
+  // ========== Hub（PrimeHub/InventorHub）==========
+  'hub_light_on': { category: 'Hub', label: 'hub.light.on()', color: '#9334e6', fields: [{name:'color',label:'颜色',default:'RED',type:'select',options:['RED','BLUE','GREEN','YELLOW','WHITE','BLACK','MAGENTA','CYAN','ORANGE','VIOLET']},{name:'brightness',label:'亮度(%)',default:'100'}], pyCode: f => `hub.light.on(Color.${f.color})` },
+  'hub_light_off': { category: 'Hub', label: 'hub.light.off()', color: '#9334e6', fields: [], pyCode: () => `hub.light.off()` },
+  'hub_light_blink': { category: 'Hub', label: 'hub.light.blink()', color: '#9334e6', fields: [{name:'color',label:'颜色',default:'RED',type:'select',options:['RED','BLUE','GREEN','YELLOW','WHITE','BLACK','MAGENTA','CYAN','ORANGE','VIOLET']},{name:'on_ms',label:'亮(ms)',default:'500'},{name:'off_ms',label:'灭(ms)',default:'500'}], pyCode: f => `hub.light.blink(Color.${f.color}, [${f.on_ms}, ${f.off_ms}])` },
+  'hub_buttons': { category: 'Hub', label: 'hub.buttons.pressed()', color: '#9334e6', fields: [], pyCode: () => `hub.buttons.pressed()` },
+  'hub_display_pixel': { category: 'Hub', label: 'display.pixel()', color: '#9334e6', fields: [{name:'row',label:'行(0-4)',default:'2'},{name:'col',label:'列(0-4)',default:'2'},{name:'bright',label:'亮度(%)',default:'100'}], pyCode: f => `hub.display.pixel(${f.row}, ${f.col}, ${f.bright})` },
+  'hub_display_number': { category: 'Hub', label: 'display.number()', color: '#9334e6', fields: [{name:'num',label:'数字',default:'42'}], pyCode: f => `hub.display.number(${f.num})` },
+  'hub_display_char': { category: 'Hub', label: 'display.char()', color: '#9334e6', fields: [{name:'char',label:'字符',default:'"A"'}], pyCode: f => `hub.display.char(${f.char})` },
+  'hub_display_text': { category: 'Hub', label: 'display.text()', color: '#9334e6', fields: [{name:'text',label:'文本',default:'"Hello"'},{name:'on_ms',label:'亮(ms)',default:'500'},{name:'off_ms',label:'灭(ms)',default:'50'}], pyCode: f => `hub.display.text(${f.text}, ${f.on_ms}, ${f.off_ms})` },
+  'hub_display_off': { category: 'Hub', label: 'display.off()', color: '#9334e6', fields: [], pyCode: () => `hub.display.off()` },
+  'hub_imu_up': { category: 'Hub', label: 'imu.up() 哪面朝上', color: '#9334e6', fields: [], pyCode: () => `hub.imu.up()` },
+  'hub_imu_tilt': { category: 'Hub', label: 'imu.tilt() 倾斜角', color: '#9334e6', fields: [], pyCode: () => `hub.imu.tilt()` },
+  'hub_imu_heading': { category: 'Hub', label: 'imu.heading() 航向角', color: '#9334e6', fields: [], pyCode: () => `hub.imu.heading()` },
+  'hub_imu_accel': { category: 'Hub', label: 'imu.acceleration() 加速度', color: '#9334e6', fields: [{name:'axis',label:'轴',default:'Axis.X',type:'select',options:['Axis.X','Axis.Y','Axis.Z']}], pyCode: f => `hub.imu.acceleration(${f.axis})` },
+  'hub_imu_gyro': { category: 'Hub', label: 'imu.angular_velocity() 角速度', color: '#9334e6', fields: [{name:'axis',label:'轴',default:'Axis.Z',type:'select',options:['Axis.X','Axis.Y','Axis.Z']}], pyCode: f => `hub.imu.angular_velocity(${f.axis})` },
+  'hub_speaker_beep': { category: 'Hub', label: 'speaker.beep() 蜂鸣', color: '#9334e6', fields: [{name:'freq',label:'频率(Hz)',default:'500'},{name:'dur',label:'时长(ms)',default:'200'}], pyCode: f => `hub.speaker.beep(${f.freq}, ${f.dur})` },
+  'hub_speaker_notes': { category: 'Hub', label: 'speaker.play_notes() 音符', color: '#9334e6', fields: [{name:'notes',label:'音符',default:'["C4/4","E4/4","G4/4"]'},{name:'tempo',label:'速度(BPM)',default:'120'}], pyCode: f => `hub.speaker.play_notes(${f.notes}, ${f.tempo})` },
+  'hub_battery_voltage': { category: 'Hub', label: 'battery.voltage() 电压', color: '#9334e6', fields: [], pyCode: () => `hub.battery.voltage()` },
+  'hub_system_shutdown': { category: 'Hub', label: 'system.shutdown() 关机', color: '#9334e6', fields: [], pyCode: () => `hub.system.shutdown()` },
+  // ========== 工具函数==========
+  'tool_wait': { category: '工具函数', label: 'wait() 等待', color: '#e5710a', fields: [{name:'ms',label:'毫秒(ms)',default:'1000'}], pyCode: f => `wait(${f.ms})` },
+  'tool_stopwatch': { category: '工具函数', label: 'StopWatch 计时器', color: '#e5710a', fields: [{name:'op',label:'操作',default:'time',type:'select',options:['time','reset']}], pyCode: f => `stopwatch_${f.op}()` },
+};
+
+const REF_PYBRICKS = [
+  { name: 'PrimeHub', section: 'Hub', desc: '主控制单元（SPIKE Prime）', code: 'hub = PrimeHub()' },
+  { name: 'InventorHub', section: 'Hub', desc: '发明家Hub（与PrimeHub相同）', code: 'hub = InventorHub()' },
+  { name: 'Motor', section: '电机', desc: '中型/大型电机', code: 'motor = Motor(Port.A, Direction.CLOCKWISE)' },
+  { name: 'DCMotor', section: '电机', desc: '直流电机（无角度控制）', code: 'dcm = DCMotor(Port.A)' },
+  { name: 'DriveBase', section: '底盘', desc: '双电机驱动底盘', code: 'db = DriveBase(left, right, 62, 112)' },
+  { name: 'ColorSensor', section: '传感器', desc: '颜色+反射率传感器', code: 'cs = ColorSensor(Port.E)' },
+  { name: 'ColorDistanceSensor', section: '传感器', desc: '颜色距离传感器', code: 'cds = ColorDistanceSensor(Port.E)' },
+  { name: 'UltrasonicSensor', section: '传感器', desc: '超声波测距', code: 'us = UltrasonicSensor(Port.B)' },
+  { name: 'ForceSensor', section: '传感器', desc: '力传感器（SPIKE）', code: 'fs = ForceSensor(Port.A)' },
+  { name: 'wait()', section: '工具', desc: '等待（毫秒）', code: 'from pybricks.tools import wait\nwait(100)' },
+  { name: 'StopWatch', section: '工具', desc: '计时器', code: 'from pybricks.tools import StopWatch\nwatch = StopWatch()' },
+  { name: 'Stop', section: '参数', desc: '停止方式', code: 'Stop.HOLD / Stop.COAST / Stop.BRAKE' },
+  { name: 'Direction', section: '参数', desc: '旋转方向', code: 'Direction.CLOCKWISE / COUNTERCLOCKWISE' },
+  { name: 'Port', section: '参数', desc: '端口编号', code: 'Port.A / B / C / D / E / F' },
+  { name: 'Side', section: '参数', desc: '侧面方向', code: 'Side.TOP / BOTTOM / LEFT / RIGHT' },
+  { name: 'Color', section: '参数', desc: '颜色常量', code: 'Color.RED / BLUE / GREEN / YELLOW...' },
+  { name: 'Button', section: '参数', desc: '按钮', code: 'Button.LEFT / RIGHT / CENTER' },
+  { name: 'Axis', section: '参数', desc: '轴方向', code: 'Axis.X / Axis.Y / Axis.Z' },
+  { name: 'Icon', section: '参数', desc: '内置图标', code: 'Icon.UP / Icon.HEART / Icon.ARROW...' },
+];
+
+const REF_PYTHON = [
+  { name: '变量赋值', section: '基础', desc: '创建或更新变量', code: 'x = 10' },
+  { name: 'if-elif-else', section: '基础', desc: '条件分支', code: 'if x > 0:\n    print("positive")\nelif x < 0:\n    print("negative")\nelse:\n    print("zero")' },
+  { name: 'for 循环', section: '基础', desc: '固定次数循环', code: 'for i in range(10):\n    print(i)' },
+  { name: 'while 循环', section: '基础', desc: '条件循环', code: 'while x > 0:\n    x -= 1' },
+  { name: 'def 函数', section: '基础', desc: '定义函数', code: 'def add(a, b):\n    return a + b' },
+  { name: '列表', section: '数据结构', desc: '列表操作', code: 'lst = [1, 2, 3]\nlst.append(4)\nlst.pop()' },
+  { name: '字典', section: '数据结构', desc: '键值对', code: 'd = {"a": 1, "b": 2}\nd["c"] = 3' },
+  { name: 'try-except', section: '异常', desc: '异常捕获', code: 'try:\n    x = 1 / 0\nexcept Exception as e:\n    print(e)' },
+  { name: '字符串格式化', section: '字符串', desc: 'f-string 格式化', code: 'name = "Pybricks"\nf"Hello, {name}!"' },
+  { name: 'range()', section: '内置函数', desc: '生成整数序列', code: 'for i in range(5):\n    print(i)' },
+  { name: 'len()', section: '内置函数', desc: '获取长度', code: 'len("hello")  # 5' },
+  { name: 'abs()', section: '内置函数', desc: '绝对值', code: 'abs(-10)  # 10' },
+];
+
+// ==================== STATE ====================
+let state = {
+  activePage: 'program',
+  activeProgramId: null,
+  programs: [],
+  blocks: [], // { id, blockType, fields, children[] }
+  activePaletteTab: '基础语法',
+  activeRefTab: 'pybricks',
+  blockCounter: 0,
+};
+
+// ==================== INIT ====================
+function init() {
+  loadFromStorage();
+  renderProgramList();
+  renderPalette();
+  renderRefPanel();
+  updatePythonPreview();
+  setupDropZones();
+}
+
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('pybricks_programs');
+    if (saved) state.programs = JSON.parse(saved);
+    const active = localStorage.getItem('pybricks_activeProgramId');
+    if (active) state.activeProgramId = active;
+  } catch(e) {}
+  if (state.programs.length === 0) {
+    // Create a default demo program
+    const demo = { id: genId(), name: '演示程序', blocks: [] };
+    state.programs.push(demo);
+    state.activeProgramId = demo.id;
+    saveToStorage();
+  }
+}
+
+function saveToStorage() {
+  localStorage.setItem('pybricks_programs', JSON.stringify(state.programs));
+  if (state.activeProgramId) localStorage.setItem('pybricks_activeProgramId', state.activeProgramId);
+}
+
+function genId() {
+  return 'prog_' + Math.random().toString(36).substr(2, 9);
+}
+
+function getActiveProgram() {
+  return state.programs.find(p => p.id === state.activeProgramId) || null;
+}
+
+// ==================== NAVIGATION ====================
+function switchPage(page) {
+  window.location.href = page + '.html';
+}
+
+// ==================== PROGRAM LIST ====================
+function renderProgramList() {
+  const container = document.getElementById('programList');
+  if (state.programs.length === 0) {
+    container.innerHTML = '<div class="list-empty">暂无程序<br>点击 + 创建新项目</div>';
+    return;
+  }
+  container.innerHTML = state.programs.map(p => `
+    <div class="list-item ${p.id === state.activeProgramId ? 'active' : ''}" onclick="selectProgram('${p.id}')">
+      <span class="item-icon">📄</span>
+      <span>${escHtml(p.name)}</span>
+    </div>
+  `).join('');
+}
+
+function selectProgram(id) {
+  // Save current blocks first
+  saveCurrentBlocks();
+  state.activeProgramId = id;
+  const prog = getActiveProgram();
+  if (prog) {
+    document.getElementById('currentProgramName').textContent = prog.name;
+  } else {
+    document.getElementById('currentProgramName').textContent = '未选择项目';
+  }
+  renderProgramList();
+  loadBlocksForProgram();
+  updatePythonPreview();
+  saveToStorage();
+}
+
+function loadBlocksForProgram() {
+  const prog = getActiveProgram();
+  if (!prog) { state.blocks = []; renderBlocks(); return; }
+  state.blocks = JSON.parse(JSON.stringify(prog.blocks || []));
+  state.blockCounter = state.blocks.reduce((max, b) => Math.max(max, parseInt(b.id.replace('blk_',''))||0), 0);
+  renderBlocks();
+}
+
+function saveCurrentBlocks() {
+  const prog = getActiveProgram();
+  if (prog) prog.blocks = JSON.parse(JSON.stringify(state.blocks));
+}
+
+function showNewProgramModal() {
+  document.getElementById('newProgramModal').classList.add('show');
+  document.getElementById('newProgramName').value = '';
+  document.getElementById('newProgramName').focus();
+}
+
+function closeModal() {
+  document.getElementById('newProgramModal').classList.remove('show');
+}
+
+function createProgram() {
+  const name = document.getElementById('newProgramName').value.trim() || '新程序';
+  const prog = { id: genId(), name, blocks: [] };
+  state.programs.push(prog);
+  state.activeProgramId = prog.id;
+  saveToStorage();
+  renderProgramList();
+  document.getElementById('currentProgramName').textContent = name;
+  loadBlocksForProgram();
+  updatePythonPreview();
+  closeModal();
+  showToast(`项目「${name}」已创建`);
+}
+
+// ==================== PALETTE ====================
+function renderPalette() {
+  const tabs = document.getElementById('paletteTabs');
+  tabs.innerHTML = CATEGORIES.map(cat => 
+    `<button class="palette-tab ${cat === state.activePaletteTab ? 'active' : ''}" onclick="switchPaletteTab('${cat}')">${cat}</button>`
+  ).join('');
+  renderPaletteBlocks();
+}
+
+function switchPaletteTab(cat) {
+  state.activePaletteTab = cat;
+  renderPalette();
+}
+
+function renderPaletteBlocks() {
+  const container = document.getElementById('paletteBlocks');
+  const catBlocks = Object.entries(PALETTE_BLOCKS).filter(([,b]) => b.category === state.activePaletteTab);
+  
+  if (catBlocks.length === 0) {
+    container.innerHTML = '<div style="padding:12px;font-size:11px;color:var(--on-surface-variant);text-align:center;">该分类暂无代码块</div>';
+    return;
+  }
+  
+  container.innerHTML = catBlocks.map(([key, block]) => {
+    const catClass = getCatClass(block.category);
+    const paramsHint = block.fields.length > 0 
+      ? `<span class="block-params">${block.fields.map(f=>f.label).join(', ')}</span>` 
+      : '';
+    return `<div class="code-block ${catClass}" draggable="true" 
+      ondragstart="onDragStart(event,'${key}')"
+      ondragend="onDragEnd(event)"
+      onclick="addBlockFromPalette('${key}')">
+      <span class="block-dot" style="background:${block.color}"></span>
+      <span class="block-label">${block.label}</span>
+      ${paramsHint}
+    </div>`;
+  }).join('');
+}
+
+function getCatClass(category) {
+  const map = { '基础语法': 'block-cat-basic', '车辆控制': 'block-cat-vehicle', '巡线': 'block-cat-follow', '传感器': 'block-cat-sensor', '结构控制': 'block-cat-struct', '电机控制': 'block-cat-basic', '底盘控制': 'block-cat-vehicle', '参数': 'block-cat-basic', 'Hub': 'block-cat-struct', '工具函数': 'block-cat-sensor' };
+  return map[category] || 'block-cat-basic';
+}
+
+// ==================== DRAG & DROP ====================
+let dragBlockType = null;
+let dragBlockId = null;
+let dragFromStruct = false;
+
+function onDragStart(e, blockType, blockId, fromStruct) {
+  dragBlockType = blockType;
+  dragBlockId = blockId || null;
+  dragFromStruct = !!fromStruct;
+  e.dataTransfer.effectAllowed = 'copy';
+  e.target.classList.add('dragging');
+}
+
+function onDragEnd(e) {
+  e.target.classList.remove('dragging');
+  dragBlockType = null;
+  dragBlockId = null;
+  dragFromStruct = false;
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+
+function setupDropZones() {
+  const mainZone = document.getElementById('mainDropZone');
+  mainZone.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; mainZone.classList.add('drag-over'); });
+  mainZone.addEventListener('dragleave', () => mainZone.classList.remove('drag-over'));
+  mainZone.addEventListener('drop', e => { e.preventDefault(); mainZone.classList.remove('drag-over'); handleMainDrop(e); });
+}
+
+function handleMainDrop(e) {
+  e.preventDefault();
+  if (!dragBlockType) return;
+  addBlockAtIndex(state.blocks.length);
+}
+
+function addBlockFromPalette(blockType) {
+  if (!getActiveProgram()) { showToast('请先创建或选择一个程序项目'); return; }
+  saveCurrentBlocks();
+  const blockDef = PALETTE_BLOCKS[blockType];
+  const newBlock = createBlockObject(blockType);
+  if (blockDef.isStruct) {
+    newBlock.children = [];
+  }
+  state.blocks.push(newBlock);
+  saveToStorage();
+  renderBlocks();
+  updatePythonPreview();
+}
+
+function addBlockAtIndex(index, parentId) {
+  if (!dragBlockId && !dragBlockType) return;
+  if (!getActiveProgram()) { showToast('请先创建或选择一个程序项目'); return; }
+  
+  if (dragBlockId) {
+    // Moving existing block
+    const block = findBlockById(state.blocks, dragBlockId);
+    if (!block) return;
+    removeBlockById(state.blocks, dragBlockId);
+    if (parentId) {
+      const parent = findBlockById(state.blocks, parentId);
+      if (parent) {
+        parent.children = parent.children || [];
+        parent.children.push(block);
+      }
+    } else {
+      const insertIdx = Math.min(index, state.blocks.length);
+      state.blocks.splice(insertIdx, 0, block);
+    }
+  } else {
+    // Adding new block from palette
+    const newBlock = createBlockObject(dragBlockType);
+    const blockDef = PALETTE_BLOCKS[dragBlockType];
+    if (blockDef && blockDef.isStruct) newBlock.children = [];
+    
+    if (parentId) {
+      const parent = findBlockById(state.blocks, parentId);
+      if (parent) {
+        parent.children = parent.children || [];
+        parent.children.push(newBlock);
+      }
+    } else {
+      state.blocks.splice(index, 0, newBlock);
+    }
+  }
+  saveToStorage();
+  renderBlocks();
+  updatePythonPreview();
+}
+
+function createBlockObject(blockType) {
+  const blockDef = PALETTE_BLOCKS[blockType];
+  const fields = {};
+  (blockDef.fields || []).forEach(f => { fields[f.name] = f.default; });
+  return {
+    id: 'blk_' + (++state.blockCounter),
+    blockType,
+    fields,
+    children: [],
+  };
+}
+
+function findBlockById(blocks, id) {
+  for (const b of blocks) {
+    if (b.id === id) return b;
+    if (b.children && b.children.length > 0) {
+      const found = findBlockById(b.children, id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function removeBlockById(blocks, id) {
+  for (let i = 0; i < blocks.length; i++) {
+    if (blocks[i].id === id) { blocks.splice(i, 1); return true; }
+    if (blocks[i].children) {
+      if (removeBlockById(blocks[i].children, id)) return true;
+    }
+  }
+  return false;
+}
+
+// ==================== RENDER BLOCKS ====================
+function renderBlocks() {
+  const area = document.getElementById('blocksArea');
+  if (state.blocks.length === 0) {
+    area.innerHTML = `<div class="drop-zone" id="mainDropZone" style="min-height:80px;">
+      <span>👇 从左侧拖拽代码块到这里</span>
+      <span class="drop-zone-text">或点击代码块添加</span>
+    </div>`;
+    setupDropZones();
+    return;
+  }
+  area.innerHTML = state.blocks.map(b => renderBlockHTML(b, false)).join('');
+  setupBlockEvents();
+  setupDropZones();
+}
+
+function renderBlockHTML(block, isChild) {
+  const def = PALETTE_BLOCKS[block.blockType] || {};
+  const catClass = getCatClass(def.category || '基础语法');
+  const fieldsHTML = (def.fields || []).map(f => `
+    <div class="field-group">
+      <span class="field-label">${f.label}:</span>
+      <input class="field-input" type="text" value="${escHtml(block.fields[f.name] || f.default)}" 
+        onchange="updateBlockField('${block.id}','${f.name}',this.value)">
+    </div>
+  `).join('');
+  
+  const childrenHTML = block.children && block.children.length > 0
+    ? block.children.map(c => renderBlockHTML(c, true)).join('')
+    : `<div class="block-child-drop" data-parent="${block.id}" 
+        ondragover="e=>{e.preventDefault();e.currentTarget.classList.add('drag-over');}"
+        ondragleave="e=>e.currentTarget.classList.remove('drag-over')"
+        ondrop="e=>{e.preventDefault();e.currentTarget.classList.remove('drag-over');handleChildDrop(e,'${block.id}');}">
+        <span style="font-size:10px;color:var(--on-surface-variant)">拖入子代码块</span>
+      </div>`;
+
+  return `
+  <div class="editor-block ${catClass}" data-id="${block.id}">
+    <div class="block-header">
+      <span class="block-dot" style="background:${def.color || '#0071e3'}"></span>
+      <span>${def.label || block.blockType}</span>
+      <button class="block-delete" onclick="deleteBlock('${block.id}')" title="删除">×</button>
+    </div>
+    ${fieldsHTML ? `<div class="block-fields">${fieldsHTML}</div>` : ''}
+    ${def.isStruct ? `<div class="block-children">${childrenHTML}</div>` : ''}
+  </div>`;
+}
+
+function setupBlockEvents() {
+  // Setup child drop zones
+  document.querySelectorAll('.block-child-drop').forEach(el => {
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const parentId = el.dataset.parent;
+      handleChildDrop(e, parentId);
+    });
+  });
+}
+
+function handleChildDrop(e, parentId) {
+  if (!dragBlockType) return;
+  const parent = findBlockById(state.blocks, parentId);
+  if (!parent) return;
+  parent.children = parent.children || [];
+  const newBlock = createBlockObject(dragBlockType);
+  const def = PALETTE_BLOCKS[dragBlockType];
+  if (def && def.isStruct) newBlock.children = [];
+  parent.children.push(newBlock);
+  saveToStorage();
+  renderBlocks();
+  updatePythonPreview();
+}
+
+function deleteBlock(id) {
+  removeBlockById(state.blocks, id);
+  saveToStorage();
+  renderBlocks();
+  updatePythonPreview();
+}
+
+function updateBlockField(id, fieldName, value) {
+  const block = findBlockById(state.blocks, id);
+  if (block) {
+    block.fields[fieldName] = value;
+    saveToStorage();
+    updatePythonPreview();
+  }
+}
+
+// ==================== PYTHON PREVIEW ====================
+function updatePythonPreview() {
+  const code = generatePythonCode();
+  const highlighted = highlightPython(code);
+  document.getElementById('pythonPreview').innerHTML = highlighted || '<span class="py-comment"># 无代码块</span>';
+}
+
+function generatePythonCode() {
+  if (state.blocks.length === 0) return '';
+  let code = '# === AUTO GENERATED ===\n';
+  code += 'from pybricks.hubs import PrimeHub\n';
+  code += 'from pybricks.pupdevices import Motor, ColorSensor\n';
+  code += 'from pybricks.parameters import Port, Direction, Stop, Color\n';
+  code += 'from pybricks.robotics import DriveBase\n';
+  code += 'from pybricks.tools import wait\n\n';
+  code += 'MAX_MOTOR_SPEED = 1180\n\n';
+  code += 'hub = None\n';
+  code += 'left_motor = None\n';
+  code += 'right_motor = None\n';
+  code += 'line_sensor = None\n';
+  code += 'drive_base = None\n\n';
+  code += 'def init():\n';
+  code += '    global hub, left_motor, right_motor, line_sensor, drive_base\n';
+  code += '    hub = PrimeHub()\n';
+  code += '    # 初始化电机（请根据实际连接的端口修改）\n';
+  code += '    left_motor = Motor(Port.A, Direction.CLOCKWISE)\n';
+  code += '    right_motor = Motor(Port.B, Direction.CLOCKWISE)\n';
+  code += '    # 初始化传感器\n';
+  code += '    line_sensor = ColorSensor(Port.E)\n';
+  code += '    drive_base = DriveBase(left_motor, right_motor, wheel_diameter=62, axle_track=112)\n\n';
+  code += '# === USER CODE START ===\n';
+  code += blocksToPython(state.blocks, 0);
+  code += '# === USER CODE END ===\n\n';
+  code += 'init()\n';
+  return code;
+}
+
+function blocksToPython(blocks, indent) {
+  const pad = '    '.repeat(indent);
+  let code = '';
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    const def = PALETTE_BLOCKS[block.blockType];
+    if (!def) continue;
+    const pyLine = def.pyCode(block.fields);
+    const hasChildren = block.children && block.children.length > 0;
+    const lastChild = hasChildren ? block.children[block.children.length - 1] : null;
+    const lastChildIsElse = lastChild && (lastChild.blockType === 'else_block' || lastChild.blockType === 'elif_block');
+
+    if (pyLine.includes('\n')) {
+      // Multi-line (struct blocks like if/for/while/def)
+      const lines = pyLine.split('\n');
+      for (let j = 0; j < lines.length; j++) {
+        code += pad + lines[j] + '\n';
+      }
+      if (hasChildren) {
+        // If last child is else/elif, it goes at the same indent as if body (dedent)
+        if (lastChildIsElse) {
+          code += blocksToPython(block.children.slice(0, -1), indent + 1);
+          code += pad + lastChild.pyCode(lastChild.fields) + '\n';
+        } else {
+          code += blocksToPython(block.children, indent + 1);
+        }
+      } else {
+        code += pad + '    pass\n';
+      }
+    } else {
+      code += pad + pyLine + '\n';
+      if (hasChildren) {
+        if (lastChildIsElse) {
+          code += blocksToPython(block.children.slice(0, -1), indent + 1);
+          code += pad + lastChild.pyCode(lastChild.fields) + '\n';
+        } else {
+          code += blocksToPython(block.children, indent + 1);
+        }
+      }
+    }
+  }
+  return code;
+}
+
+function highlightPython(code) {
+  if (!code) return '';
+  return code
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(#.*)/g, '<span class="py-comment">$1</span>')
+    .replace(/(".*?"|'.*?')/g, '<span class="py-string">$1</span>')
+    .replace(/\b(def|class|import|from|if|elif|else|for|while|try|except|finally|return|and|or|not|in|is|True|False|None|pass|as|with)\b/g, '<span class="py-keyword">$1</span>')
+    .replace(/\b(\d+\.?\d*)\b/g, '<span class="py-num">$1</span>')
+    .replace(/\b(wait|Port|Direction|Stop|Motor|PrimeHub|ColorSensor|DriveBase|ForceSensor|UltrasonicSensor|MAX_MOTOR_SPEED)\b/g, '<span class="py-func">$1</span>');
+}
+
+function copyPython() {
+  const code = generatePythonCode();
+  navigator.clipboard.writeText(code).then(() => showToast('代码已复制到剪贴板')).catch(() => {});
+}
+
+// ==================== VIEW SWITCHING ====================
+function switchView(view) {
+  document.querySelectorAll('.view-tab').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  if (view === 'blocks') {
+    document.getElementById('blocksView').style.display = 'flex';
+    document.getElementById('flowchartView').classList.remove('active');
+  } else {
+    document.getElementById('blocksView').style.display = 'none';
+    document.getElementById('flowchartView').classList.add('active');
+    renderFlowchart();
+  }
+}
+
+// ==================== FLOWCHART ====================
+function renderFlowchart() {
+  const canvas = document.getElementById('flowchartCanvas');
+  const svg = document.getElementById('fcSvg');
+  svg.innerHTML = '';
+  
+  if (state.blocks.length === 0) {
+    canvas.innerHTML += '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--on-surface-variant);font-size:13px;">流程图：先在积木视图中添加代码块</div>';
+    return;
+  }
+
+  let y = 60;
+  const nodeW = 160;
+  const nodeH = 50;
+  const gap = 20;
+  const nodes = [];
+
+  state.blocks.forEach((block, i) => {
+    const def = PALETTE_BLOCKS[block.blockType] || {};
+    const color = def.color || '#0071e3';
+    let type = 'action';
+    if (['if_block','else_block'].includes(block.blockType)) type = 'condition';
+    if (['for_loop','while_loop'].includes(block.blockType)) type = 'loop';
+
+    const node = document.createElement('div');
+    node.className = `fc-node ${type}`;
+    node.style.cssText = `left:${80 + (i % 2) * 60}px;top:${y}px;`;
+    node.innerHTML = `<div class="fc-node-title">${def.label || block.blockType}</div>`;
+    if (def.fields && def.fields.length > 0) {
+      const params = def.fields.map(f => `${f.label}=${block.fields[f.name]||f.default}`).join(', ');
+      node.innerHTML += `<div class="fc-node-params">${params}</div>`;
+    }
+    canvas.appendChild(node);
+    nodes.push({ x: 80 + (i % 2) * 60, y, w: nodeW, h: nodeH, node });
+
+    // Draw connector line
+    if (i > 0) {
+      const prev = nodes[i-1];
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', prev.x + prev.w/2);
+      line.setAttribute('y1', prev.y + prev.h);
+      line.setAttribute('x2', 80 + (i % 2) * 60 + nodeW/2);
+      line.setAttribute('y2', y);
+      line.setAttribute('stroke', '#74777f');
+      line.setAttribute('stroke-width', '2');
+      svg.appendChild(line);
+    }
+
+    y += nodeH + gap;
+  });
+}
+
+// ==================== REFERENCE PANEL ====================
+function switchRefTab(tab) {
+  state.activeRefTab = tab;
+  document.querySelectorAll('.ref-tab').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  renderRefPanel();
+}
+
+function renderRefPanel() {
+  const content = document.getElementById('refContent');
+  const data = state.activeRefTab === 'pybricks' ? REF_PYBRICKS : REF_PYTHON;
+  const sections = {};
+  data.forEach(item => {
+    if (!sections[item.section]) sections[item.section] = [];
+    sections[item.section].push(item);
+  });
+  
+  content.innerHTML = Object.entries(sections).map(([sec, items]) => `
+    <div class="ref-section">
+      <div class="ref-section-title">${escHtml(sec)}</div>
+      ${items.map(item => `
+        <div class="ref-item" onclick="insertRefCode('${escHtml(item.name)}','${escHtml(item.code.replace(/\n/g,'↵'))}')">
+          <div class="ref-name">${escHtml(item.name)}</div>
+          <div class="ref-desc">${escHtml(item.desc)}</div>
+          <div class="ref-code">${escHtml(item.code)}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function filterRef() {
+  const q = document.getElementById('refSearchInput').value.toLowerCase();
+  document.querySelectorAll('.ref-item').forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+function insertRefCode(name, code) {
+  showToast(`已复制：${name}`);
+  navigator.clipboard.writeText(code.replace(/↵/g,'\n')).catch(() => {});
+}
+
+// ==================== EXPORT ====================
+function exportPython() {
+  if (!getActiveProgram()) { showToast('请先选择程序项目'); return; }
+  const code = generatePythonCode();
+  const blob = new Blob([code], { type: 'text/x-python' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const progName = getActiveProgram().name;
+  a.download = `${progName}.py`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Python 文件已下载');
+}
+
+// ===== IMPORT / EXPORT FUNCTIONS =====
+
+/**
+ * 显示/隐藏导出下拉菜单
+ */
+function showExportMenu() {
+  const dropdown = document.getElementById('exportDropdown');
+  dropdown.classList.toggle('show');
+  document.addEventListener('click', function closeMenu(e) {
+    if (!e.target.closest('.toolbar-right')) {
+      dropdown.classList.remove('show');
+      document.removeEventListener('click', closeMenu);
+    }
+  });
+}
+
+/**
+ * 导出当前程序为 JSON
+ */
+function exportCurrentProgramJSON() {
+  document.getElementById('exportDropdown').classList.remove('show');
+  const prog = getActiveProgram();
+  if (!prog) { showToast('请先选择程序项目'); return; }
+  const data = {
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    programs: [prog]
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_program_${prog.name}_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`已导出「${prog.name}」`);
+}
+
+/**
+ * 导出全部程序为 JSON
+ */
+function exportAllProgramsJSON() {
+  document.getElementById('exportDropdown').classList.remove('show');
+  if (state.programs.length === 0) {
+    showToast('暂无程序可导出');
+    return;
+  }
+  const data = {
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    programs: state.programs
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_programs_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`已导出 ${state.programs.length} 个程序`);
+}
+
+/**
+ * 导入程序 JSON 文件
+ */
+function importProgramsJSON() {
+  document.getElementById('exportDropdown').classList.remove('show');
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,.py';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      if (file.name.endsWith('.py')) {
+        // Python 文件：提取 userCode 区域
+        await importPythonFile(text, file.name);
+        return;
+      }
+      const data = JSON.parse(text);
+      let imported = [];
+      if (Array.isArray(data)) {
+        imported = data;
+      } else if (data.programs && Array.isArray(data.programs)) {
+        imported = data.programs;
+      } else {
+        showToast('无效的文件格式');
+        return;
+      }
+      if (imported.length === 0) {
+        showToast('文件中没有程序数据');
+        return;
+      }
+      // 合并：追加新程序，ID重复则跳过
+      let added = 0;
+      for (const p of imported) {
+        if (!p.id || !p.name) continue;
+        const exists = state.programs.find(orig => orig.id === p.id);
+        if (!exists) {
+          state.programs.push(p);
+          added++;
+        }
+      }
+      saveToStorage();
+      renderProgramList();
+      showToast(`成功导入 ${added} 个程序（${imported.length - added}个重复跳过）`);
+    } catch (err) {
+      console.error('[Program] Import failed:', err);
+      showToast('导入失败：文件格式错误');
+    }
+  };
+  input.click();
+}
+
+/**
+ * 从 Python 文件导入（提取 userCode 区域）
+ */
+async function importPythonFile(code, filename) {
+  // 尝试提取 # === USER CODE START === 到 # === USER CODE END === 之间的内容
+  const userCodeMatch = code.match(/# === USER CODE START ===\n([\s\S]*?)# === USER CODE END ===/);
+  let userCode = '';
+  if (userCodeMatch && userCodeMatch[1]) {
+    userCode = userCodeMatch[1].trim();
+  } else {
+    // 如果没有标记，使用整个文件（去掉开头的 import 等）
+    userCode = code;
+  }
+  
+  // 创建新程序
+  const prog = {
+    id: genId(),
+    name: filename.replace(/\.(py|json)$/i, ''),
+    blocks: [], // 纯 Python 导入不支持图形化
+    userCode: userCode, // 存储提取的代码
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  state.programs.push(prog);
+  state.activeProgramId = prog.id;
+  saveToStorage();
+  renderProgramList();
+  document.getElementById('currentProgramName').textContent = prog.name;
+  showToast(`已导入「${prog.name}」（Python代码，不支持图形化编辑）`);
+  showToast('提示：从 .py 导入仅保存为文本，无法还原为图形块');
+}
+
+// ==================== UTILS ====================
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ==================== START ====================
+// PWA: 使用 IndexedDB 版本的 init
+async function initProgramPage() {
+  try {
+    // 等待 IndexedDB 就绪
+    await window.pybricksDB.init();
+
+    // 迁移 localStorage 程序数据（如有）
+    migrateLocalProgramsToIDB();
+
+    // 从 IndexedDB 加载程序列表
+    state.programs = await window.pybricksDB.getAllPrograms();
+
+    // 恢复上次选中的程序
+    const savedId = await window.pybricksDB.getAppState('currentProgramId');
+    if (savedId && state.programs.find(p => p.id === savedId)) {
+      state.activeProgramId = savedId;
+    } else if (state.programs.length > 0) {
+      state.activeProgramId = state.programs[0].id;
+    }
+
+    const prog = getActiveProgram();
+    if (prog) {
+      document.getElementById('currentProgramName').textContent = prog.name;
+    } else {
+      document.getElementById('currentProgramName').textContent = '未选择项目';
+    }
+
+    renderProgramList();
+    loadBlocksForProgram();
+    updatePythonPreview();
+
+    console.log('[Program] Loaded', state.programs.length, 'programs from IndexedDB');
+  } catch (err) {
+    console.error('[Program] IDB init failed, falling back to localStorage:', err);
+    // 回退到纯 localStorage
+    state.programs = [];
+    const demo = { id: genId(), name: '演示程序', blocks: [] };
+    state.programs.push(demo);
+    state.activeProgramId = demo.id;
+    renderProgramList();
+    loadBlocksForProgram();
+    updatePythonPreview();
+  }
+}
+
+// 迁移 localStorage 程序数据到 IndexedDB
+function migrateLocalProgramsToIDB() {
+  try {
+    const localPrograms = JSON.parse(localStorage.getItem('pybricks_programs') || '[]');
+    if (localPrograms.length > 0) {
+      window.pybricksDB.getAllPrograms().then(idbPrograms => {
+        if (idbPrograms.length === 0 && localPrograms.length > 0) {
+          console.log('[Program] Migrating', localPrograms.length, 'programs from localStorage');
+          localPrograms.forEach(p => window.pybricksDB.saveProgram(p));
+        }
+      });
+    }
+  } catch (err) {
+    console.warn('[Program] Migration check failed:', err);
+  }
+}
+
+// 覆盖 saveToStorage：同时保存到 IndexedDB
+const _origSaveToStorage = saveToStorage;
+async function saveToStorage() {
+  _origSaveToStorage(); // 保留 localStorage 回退
+  try {
+    const prog = getActiveProgram();
+    if (prog) {
+      await window.pybricksDB.saveProgram(prog);
+      await window.pybricksDB.setAppState('currentProgramId', state.activeProgramId);
+    }
+  } catch (err) {
+    console.warn('[Program] Failed to save to IDB:', err);
+  }
+}
+
+// 覆盖 selectProgram：保存选中状态
+const _origSelectProgram = selectProgram;
+function selectProgram(id) {
+  _origSelectProgram(id);
+  window.pybricksDB.setAppState('currentProgramId', id).catch(() => {});
+}
+
+// 覆盖 saveCurrentBlocks
+const _origSaveCurrentBlocks = saveCurrentBlocks;
+function saveCurrentBlocks() {
+  _origSaveCurrentBlocks();
+  const prog = getActiveProgram();
+  if (prog) {
+    window.pybricksDB.saveProgram(prog).catch(err => {
+      console.warn('[Program] Failed to save blocks to IDB:', err);
+    });
+  }
+}
+
+init();
+</script>
+
+<!-- PWA / IndexedDB -->
+<script src="../js/db.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* ===== PROGRAM PAGE - PWA 初始化 ===== */
+document.addEventListener('DOMContentLoaded', async () => {
+  // 注册 Service Worker
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('../sw.js');
+      console.log('[SW] Registered');
+    } catch (err) {
+      console.warn('[SW] Registration failed:', err);
+    }
+  }
+
+  // 等待 IndexedDB 并初始化页面
+  await window.pybricksDB.init();
+  await initProgramPage();
+
+  // 重新绑定 saveToStorage 覆盖（确保在 db.js/app.js 加载后生效）
+  window.pybricksEvents?.on('appReady', async () => {
+    await initProgramPage();
+  });
+});
+</script>
+</body>
+</html>

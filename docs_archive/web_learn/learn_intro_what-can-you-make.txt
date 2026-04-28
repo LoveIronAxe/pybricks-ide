@@ -1,0 +1,175 @@
+URL: https://pybricks.com/learn/intro/what-can-you-make/
+Title: learn_intro_what-can-you-make.txt
+================================================================================
+
+What can you make with Pybricks?
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+    
+      
+    
+  
+
+    
+      
+
+  
+
+  
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+    
+  
+  
+  
+
+  
+    
+    
+    
+    
+
+    
+      
+        
+      
+
+      
+        
+          
+        
+        If your recent LEGO set has batteries, chances are it can run Pybricks. No
+matter your favorite LEGO theme, you can get creative and start inventing.
+Here’s just a few highlights for inspiration!
+
+LEGO® SPIKE Prime
+
+Pybricks is becoming increasingly popular among FLL and WRO teams, who have
+successfully obtained high scores and competition wins.
+
+    
+
+Video credit: FLL Team OFDL Robotics Taiwan with a 550 point run
+
+    
+
+Video credit: FLL Team Exploding Ketchup with a 550 point run
+
+This is a good short example of accurate navigation with Pybricks in competitions.
+
+    
+
+Video credit: WRO team from ProgrammierenFuerKids
+
+You can do much more beyond competitions, too!
+
+    
+
+LEGO® SPIKE Essential
+
+Despite having just two ports, the SPIKE Essential set lets you get creative
+since Pybricks programs truly run on the hub, instead of running on the tablet.
+You can use the button as a sensor in your programs too.
+
+    
+
+    
+
+LEGO® MINDSTORMS Robot Inventor
+
+While the official LEGO® MINDSTORMS Robot Inventor set is discontinued, Pybricks
+will support it long after the official app disappears. Pybricks run a lot
+faster too, so you can even make a robot
+that balances itself on the ball
+that comes with the set.
+
+    
+
+    
+
+Video credit: Dave Parker from OneKitProjects
+
+LEGO® Technic
+
+With Pybricks, your LEGO® Technic hub works just like a MINDSTORMS® hub. This
+means it can run all by itself, without having your phone connected all the time.
+
+You can also connect the LEGO train remote or
+the Xbox Controller directly to
+the hub, for very responsive operation without having to work with a touch
+screen.
+
+    
+
+    
+
+    
+
+LEGO® City Trains
+
+Out of the box, LEGO trains are primarily remote controlled. You can do that
+with Pybricks too, but you can also make your trains run by themselves! By
+adding a color sensor, you can detect markers on the track. This lets you
+make them work interactively, so you don’t need to build endless loops.
+
+    
+
+    
+
+You can automate your rail switches too.
+
+    
+
+LEGO® BOOST & City
+
+With Pybricks, your LEGO BOOST set becomes much like a junior MINDSTORMS! You
+can learn many of the same coding and building techniques, with a much lower
+cost set.
+
+    
+
+The same applies to the City Hub, which you can use to automate all
+kinds of LEGO sets.
+
+    
+
+Hub to Hub communication
+
+Because Pybricks makes all your smart LEGO hubs the same, they can all run
+autonomous programs and communicate with each other wirelessly. This lets you
+create big machines or a network of small machines that work together.
+
+    
+
+    
+
+You can even take this technique beyond LEGO hubs. This lets you communicate
+with other Bluetooth enabled devices such as certain Arduino boards.

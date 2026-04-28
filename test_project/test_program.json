@@ -1,0 +1,98 @@
+{
+  "programs": [
+    {
+      "id": "test_prog_001",
+      "vehicleId": "test_vehicle_001",
+      "name": "测试程序-完整示例",
+      "blocks": [
+        {
+          "id": "blk_1",
+          "blockType": "init_vehicle",
+          "fields": {},
+          "children": []
+        },
+        {
+          "id": "blk_2",
+          "blockType": "lf_pid",
+          "fields": { "dist": "500", "kp": "1.5", "speed": "300", "wait_ms": "10" },
+          "children": []
+        },
+        {
+          "id": "blk_3",
+          "blockType": "db_straight",
+          "fields": { "dist": "200", "speed": "200", "stop": "Stop.HOLD" },
+          "children": []
+        },
+        {
+          "id": "blk_4",
+          "blockType": "if_block",
+          "fields": { "cond": "line_sensor.reflection() < 30" },
+          "children": [
+            {
+              "id": "blk_4_1",
+              "blockType": "db_stop",
+              "fields": {},
+              "children": []
+            },
+            {
+              "id": "blk_4_2",
+              "blockType": "hub_light_on",
+              "fields": { "color": "Color.RED", "brightness": "100" },
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "blk_5",
+          "blockType": "for_loop",
+          "fields": { "var": "i", "range": "5" },
+          "children": [
+            {
+              "id": "blk_5_1",
+              "blockType": "motor_run_angle",
+              "fields": { "port": "C", "angle": "90", "speed": "300", "stop": "Stop.HOLD" },
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "blk_6",
+          "blockType": "db_turn",
+          "fields": { "angle": "90", "speed": "200", "stop": "Stop.HOLD" },
+          "children": []
+        },
+        {
+          "id": "blk_7",
+          "blockType": "hub_display_text",
+          "fields": { "text": "\"Done\"", "on_ms": "500", "off_ms": "50" },
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "test_prog_002",
+      "vehicleId": "test_vehicle_002",
+      "name": "测试程序-最小示例",
+      "blocks": [
+        {
+          "id": "blk_1",
+          "blockType": "init_vehicle",
+          "fields": {},
+          "children": []
+        },
+        {
+          "id": "blk_2",
+          "blockType": "db_straight",
+          "fields": { "dist": "100", "speed": "200", "stop": "Stop.HOLD" },
+          "children": []
+        },
+        {
+          "id": "blk_3",
+          "blockType": "db_turn",
+          "fields": { "angle": "90", "speed": "200", "stop": "Stop.HOLD" },
+          "children": []
+        }
+      ]
+    }
+  ]
+}

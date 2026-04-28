@@ -1,0 +1,64 @@
+Groceries with machine learning - Pybricks 
+
+ Laurens Valk 
+
+ Let’s build, code, and learn! 
+
+ Follow 
+
+ Website 
+
+ Facebook 
+
+ GitHub 
+
+ Instagram 
+
+ YouTube 
+
+ Custom Social Profile Link
+
+-->
+
+ Groceries with machine learning
+
+ This project extends the  image classification tutorial  with
+something more practical: a robot that does the shopping for you! 
+
+ If you haven’t followed the introduction to machine learning yet, be sure to
+ check it out first . In this project, the robot is trained
+to recognize various categories of groceries, such as strawberries, broccoli,
+or cake. 
+
+ When you try this project, be sure to train your own model with pictures of
+your own items (toy groceries or otherwise), otherwise the robot won’t
+recognize anything. 
+
+ Download block code project 
+
+ This program makes the robot drive past groceries spaced 300mm apart,
+checking each item against the broccoli category and driving to it when found.
+
+ You can see the result in the video below. 
+
+ Facebook  
+
+ LinkedIn  
+
+ You May Also Enjoy 
+
+ Robotic arm with vision
+
+ A LEGO SPIKE Prime robotic arm with a camera to detect colored objects to pick up.
+
+ Saving LEGO® MINDSTORMS® …
+
+ Pybricks reboots LEGO® MINDSTORMS® for use in the modern classroom. Help us save hundreds of thousands of robots from the e-waste pile!
+
+ Using Pybricks with Visual Studio Code and other editors
+
+ You can use Pybricks in your favorite code editor like Visual Studio Code. Here’s how.
+
+ Using Pybricks on Linux
+
+ Tips and tricks for using Pybricks successfully on Linux. With udev rules and snap configurations for Chromium.

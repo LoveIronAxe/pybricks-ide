@@ -1,0 +1,128 @@
+URL: https://pybricks.com/learn/building-a-robot/boost/
+Title: learn_building-a-robot_boost.txt
+================================================================================
+
+LEGO BOOST StarterBot - Pybricks
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+    
+      
+    
+  
+
+    
+      
+
+  
+
+  
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+    
+  
+  
+  
+
+  
+    
+    
+    
+    
+
+    
+      
+        
+      
+
+      
+        
+          
+        
+        The BOOST Move Hub is unique because it has two motors builtin already. You can
+use these to make a BOOST variant of the StarterBot very quickly.
+You can also use one of the standard robots using the instructions that come
+with the kit.
+
+    
+        
+    
+    
+
+How to build it
+
+The hub is placed upright in this design. This ensures that most of the weight
+of the motors and batteries rests on the powered wheels. This creates extra
+grip, which makes its movements much more accurate.
+
+  
+    
+      
+          
+      
+    
+  
+    
+      
+          
+      
+    
+  
+  
+
+You can adjust the design if you want to use bigger wheels. The BOOST set also
+contains many elements to make this quick build look a bit more interesting.
+
+Adding sensors
+
+The BOOST set comes with
+the Color and Distance Sensor (88007)
+ which works well for most of the
+lessons. By mounting it on the robot as shown above, you can easily tilt it to
+face either downward or forward, depending on the application at hand.
+
+Setup blocks
+
+If you use the design shown above, you can use the following setup blocks in
+your program. This can be a useful starting point for many of your programs.
+
+Whenever you see code for driving throughout this guide, just use the following
+parameters instead of the setup blocks used for the default SPIKE robot.
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    Setup blocks for the BOOST StarterBot. This example makes it drive in a square.

@@ -1,0 +1,239 @@
+ustruct – Pack and unpack binary data &mdash; pybricks v3.6.1 documentation
+      
+      
+      
+      
+    
+  
+    
+  
+  
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+
+ 
+  
+    
+
+    
+
+      
+        
+          
+  
+      
+      ustruct – Pack and unpack binary data
+      
+      
+  
+  
+
+          
+           
+             
+  
+
+        
+            
+                
+                    
+                        
+        
+        ❌
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+        
+        ✅
+        
+        
+                    
+                
+            
+        
+        
+
+ustruct – Pack and unpack binary data¶
+This module provides functions to convert between Python values and C-like
+data structs.
+
+calcsize(format: str) &#x2192; int¶
+Gets the data size corresponding to a format string
+
+Parameters:
+format (str) – Data format string.
+
+Returns:
+The number of bytes needed to represent this format.
+
+pack(format, value1, value2, ...)¶
+Packs the values using the given format.
+
+Parameters:
+format (str) – Data format string.
+
+Returns:
+The data encoded as bytes.
+
+pack_into(format, buffer, offset, value1, value2, ...)¶
+Encode the values using the given format and write them to a given buffer.
+
+Parameters:
+
+format (str) – Data format string.
+buffer (bytearray) – Buffer to store the encoded data.
+offset (int) – Offset from the start of the buffer. Use a negative value
+to count from the end of the buffer.
+
+unpack(format, data) &#x2192; Tuple¶
+Decodes the binary data using the given format.
+
+Parameters:
+
+format (str) – Data format string.
+data (bytes or bytearray) – Data to unpack.
+
+Returns:
+The decoded data as a tuple of values.
+
+unpack_from(format, data, offset) &#x2192; Tuple¶
+Decodes binary data from a buffer using the given format.
+
+Parameters:
+
+format (str) – Data format string.
+data (bytes or bytearray) – Data buffer to unpack.
+offset (int) – Offset from the start of the data. Use a negative value
+to count from the end of the data.
+
+Returns:
+The decoded data as a tuple of values.
+
+The following byte orders are supported:
+
+Character
+Byte order
+Size
+Alignment
+
+&#64;
+native
+native
+native
+
+&lt;
+little-endian
+standard
+none
+
+&gt;
+big-endian
+standard
+none
+
+!
+network (= big-endian)
+standard
+none
+
+The following data types are supported:
+
+Format
+C Type
+Python type
+Standard size
+
+b
+signed char
+integer
+1
+
+B
+unsigned char
+integer
+1
+
+h
+short
+integer
+2
+
+H
+unsigned short
+integer
+2
+
+i
+int
+integer
+4
+
+I
+unsigned int
+integer
+4
+
+l
+long
+integer (1)
+4
+
+L
+unsigned long
+integer (1)
+4
+
+q
+long long
+integer (1)
+8
+
+Q
+unsigned long long
+integer (1)
+8
+
+f
+float
+float
+4
+
+d
+double
+float
+8
+
+s
+char[]
+bytes
+
+P
+void *
+integer
+
+(1) Supports values up to +/-1073741823

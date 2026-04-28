@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pybricks IDE - 地图</title>
+<!-- PWA -->
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0071e3">
+<meta name="description" content="Pybricks 机器车可视化编程IDE - 可离线使用">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230071e3'/><text x='256' y='320' font-size='280' text-anchor='middle' fill='white'>P</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #0071e3;
+  --on-primary: #ffffff;
+  --primary-container: #d4e3ff;
+  --on-primary-container: #001c38;
+  --surface: #ffffff;
+  --surface-variant: #f5f5f5;
+  --on-surface: #1c1b1f;
+  --on-surface-variant: #49454f;
+  --outline: #74777f;
+  --outline-variant: #c5c5d0;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --surface-container: #fef7ff;
+  --surface-container-low: #f8f2ff;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --font: 'Roboto','Noto Sans SC',sans-serif;
+  --sidebar-width: 56px;
+  --list-width: 260px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.18);
+  --elevation-1: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-2: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--on-surface);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== LAYOUT ===== */
+.app {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 56px;
+  min-width: 56px;
+  background: var(--surface);
+  border-right: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 4px;
+  z-index: 10;
+}
+
+.sidebar-item {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+  gap: 1px;
+  border: none;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-family: var(--font);
+}
+
+.sidebar-item:hover { background: rgba(0,0,0,0.05); }
+.sidebar-item.active { background: var(--primary-container); color: var(--on-primary-container); }
+.sidebar-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 24px;
+  background: var(--primary);
+  border-radius: 0 3px 3px 0;
+}
+.sidebar-item .icon { font-size: 22px; line-height: 1; }
+.sidebar-item .label { font-size: 9px; font-weight: 500; }
+
+/* ===== LIST PANEL ===== */
+.list-panel {
+  width: 260px;
+  min-width: 200px;
+  max-width: 360px;
+  background: var(--surface);
+  border-right: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.list-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--outline-variant);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.list-header h2 {
+  font-size: 16px;
+  font-weight: 500;
+  flex: 1;
+  color: var(--on-surface);
+}
+
+.list-header .btn-add {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: box-shadow 0.15s;
+  line-height: 1;
+}
+.list-header .btn-add:hover { box-shadow: 0 2px 8px rgba(0,113,227,0.3); }
+
+.list-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.btn-header-action {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.btn-header-action:hover { background: rgba(0,0,0,0.06); color: var(--on-surface); }
+
+.list-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 2px solid transparent;
+}
+.list-item:hover { background: rgba(0,0,0,0.04); }
+.list-item.selected { background: var(--primary-container); border-color: var(--primary); }
+
+.list-item .thumb {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-variant);
+  object-fit: cover;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--outline-variant);
+}
+.list-item .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.list-item .thumb .placeholder { font-size: 28px; color: var(--outline); }
+
+.list-item .info { flex: 1; min-width: 0; }
+.list-item .info .name {
+  font-size: 13px; font-weight: 500;
+  color: var(--on-surface);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.list-item .info .meta { font-size: 11px; color: var(--on-surface-variant); margin-top: 2px; }
+.list-item .btn-delete {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+.list-item:hover .btn-delete { opacity: 1; }
+.list-item .btn-delete:hover { background: rgba(0,0,0,0.08); color: var(--error); }
+
+/* Drop zone highlight */
+.list-panel.drag-over {
+  background: var(--primary-container);
+}
+
+/* ===== DETAIL PANEL ===== */
+.detail-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface-variant);
+}
+
+/* ===== TOOLBAR ===== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 4px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 8px;
+  border-right: 1px solid var(--outline-variant);
+  margin-right: 8px;
+}
+.toolbar-group:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+
+.tool-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+.tool-btn:hover { background: rgba(0,0,0,0.06); }
+.tool-btn.active { background: var(--primary); color: var(--on-primary); }
+.tool-btn .tooltip {
+  position: absolute;
+  bottom: -28px; left: 50%; transform: translateX(-50%);
+  background: #333; color: #fff;
+  font-size: 11px; white-space: nowrap;
+  padding: 2px 6px; border-radius: 4px;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+.tool-btn:hover .tooltip { opacity: 1; }
+
+/* Toolbar label */
+.toolbar-label {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+/* Split screen controls */
+.split-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.split-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 20px;
+  border: 1px solid var(--outline);
+  background: transparent;
+  color: var(--on-surface);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  transition: background 0.15s;
+  font-family: var(--font);
+}
+.split-btn:hover { background: rgba(0,0,0,0.05); }
+.split-btn.active { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+
+/* ===== MAP EDITOR ===== */
+.editor-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-canvas-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #e8e8e8;
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+#mapCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  cursor: grab;
+}
+#mapCanvas.panning { cursor: grabbing; }
+#mapCanvas.crosshair { cursor: crosshair; }
+
+/* Scale indicator */
+.scale-indicator {
+  position: absolute;
+  bottom: 12px; right: 12px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--on-surface-variant);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Zoom controls */
+.zoom-controls {
+  position: absolute;
+  bottom: 12px; left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 5;
+}
+.zoom-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--outline-variant);
+  background: rgba(255,255,255,0.9);
+  color: var(--on-surface);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: background 0.15s;
+}
+.zoom-btn:hover { background: rgba(255,255,255,1); }
+
+/* ===== SPLIT PANES ===== */
+.split-h { display: flex; flex: 1; overflow: hidden; }
+.split-v { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+.split-pane {
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.split-pane.primary { flex: 1; min-width: 100px; }
+.split-pane.secondary { flex: 1; min-width: 100px; }
+
+.split-divider-h {
+  width: 6px;
+  background: var(--outline-variant);
+  cursor: col-resize;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.split-divider-h:hover, .split-divider-h.dragging { background: var(--primary); }
+
+.split-divider-v {
+  height: 6px;
+  background: var(--outline-variant);
+  cursor: row-resize;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.split-divider-v:hover, .split-divider-v.dragging { background: var(--primary); }
+
+/* Secondary panel header */
+.pane-header {
+  padding: 8px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(20px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: scale(0.95);
+  transition: transform 0.2s;
+  box-shadow: var(--elevation-3);
+}
+.modal-overlay.show .modal { transform: scale(1); }
+
+.modal-header {
+  display: flex; align-items: center; gap: 12px;
+}
+.modal-header h3 { font-size: 20px; font-weight: 500; flex: 1; }
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: rgba(0,0,0,0.06); }
+
+.modal-body { display: flex; flex-direction: column; gap: 12px; }
+
+.modal-actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+
+/* Form elements */
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label {
+  font-size: 12px; font-weight: 500;
+  color: var(--on-surface-variant);
+}
+.field input, .field select {
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--on-surface);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus { border-color: var(--primary); border-width: 2px; }
+
+/* Buttons */
+.btn-filled {
+  height: 40px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 20px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.btn-filled:hover { box-shadow: 0 2px 8px rgba(0,113,227,0.3); }
+.btn-outlined {
+  height: 40px;
+  padding: 0 24px;
+  border: 1px solid var(--outline);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--on-surface);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.15s;
+}
+.btn-outlined:hover { background: rgba(0,0,0,0.05); }
+.btn-tonal {
+  height: 40px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 20px;
+  background: var(--primary-container);
+  color: var(--primary);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+/* Color swatches */
+.color-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+}
+.color-swatch.selected { border-color: var(--primary); }
+.color-dot { width: 16px; height: 16px; border-radius: 50%; }
+
+/* Shape selector */
+.shape-btn {
+  width: 40px; height: 40px;
+  border: 2px solid var(--outline-variant);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+  font-size: 20px;
+}
+.shape-btn.selected { border-color: var(--primary); background: var(--primary-container); }
+
+/* Obstacle item in panel */
+.obstacle-item, .movable-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-variant);
+  font-size: 12px;
+}
+.obstacle-item .color-dot { width: 12px; height: 12px; border-radius: 2px; }
+.obstacle-item .type-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+.obstacle-item .type-badge.blocked { background: #fee2e2; color: #dc2626; }
+.obstacle-item .type-badge.pushable { background: #fef9c3; color: #a16207; }
+
+/* Image preview in modal */
+.img-preview {
+  width: 100%;
+  max-height: 200px;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  background: var(--surface-variant);
+  display: flex; align-items: center; justify-content: center;
+}
+.img-preview img { max-width: 100%; max-height: 200px; object-fit: contain; }
+
+/* Info text */
+.info-text {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  padding: 4px 0;
+}
+
+/* Path list */
+.path-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-variant);
+  font-size: 12px;
+}
+.path-item .color-line {
+  width: 24px; height: 4px;
+  border-radius: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+
+/* Empty state */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--on-surface-variant);
+  padding: 32px;
+  text-align: center;
+}
+.empty-state .icon { font-size: 48px; opacity: 0.5; }
+.empty-state p { font-size: 14px; }
+.empty-state small { font-size: 12px; opacity: 0.7; }
+
+/* Settings panel */
+.settings-panel {
+  width: 220px;
+  background: var(--surface);
+  border-left: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.settings-panel-header {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--outline-variant);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.settings-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.setting-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.setting-section-title {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--on-surface-variant);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  background: var(--outline-variant);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-switch.on { background: var(--primary); }
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: white;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch.on::after { left: 18px; }
+
+/* Properties panel for selected object */
+.props-panel {
+  background: var(--surface);
+  border-top: 1px solid var(--outline-variant);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.props-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <button class="sidebar-item" data-page="vehicle" title="车辆">
+      <span class="icon material-icons">directions_car</span>
+      <span class="label">车辆</span>
+    </button>
+    <button class="sidebar-item active" data-page="map" title="地图">
+      <span class="icon material-icons">map</span>
+      <span class="label">地图</span>
+    </button>
+    <button class="sidebar-item" data-page="program" title="程序">
+      <span class="icon material-icons">code</span>
+      <span class="label">程序</span>
+    </button>
+    <button class="sidebar-item" data-page="debug" title="调试">
+      <span class="icon material-icons">bug_report</span>
+      <span class="label">调试</span>
+    </button>
+  </nav>
+
+  <!-- LIST PANEL -->
+  <aside class="list-panel" id="listPanel">
+    <div class="list-header">
+      <h2>🗺️ 地图</h2>
+      <div class="list-header-actions">
+        <button class="btn-header-action" onclick="importMapsJSON()" title="导入地图">📤</button>
+        <button class="btn-header-action" onclick="exportMapsJSON()" title="导出地图">📥</button>
+        <button class="btn-add" id="btnAddMap" title="新建地图">+</button>
+      </div>
+    </div>
+    <div class="list-content" id="mapListContent">
+      <!-- Map items rendered here -->
+    </div>
+  </aside>
+
+  <!-- DETAIL PANEL -->
+  <main class="detail-panel" id="detailPanel">
+    <!-- Empty state shown when no map selected -->
+    <div class="empty-state" id="emptyState">
+      <div class="icon">🗺️</div>
+      <p>选择一个地图开始编辑</p>
+      <small>或者拖拽图片文件到左侧列表创建新地图</small>
+    </div>
+
+    <!-- Map Editor (hidden until map selected) -->
+    <div id="mapEditor" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <span class="toolbar-label">工具:</span>
+        <div class="toolbar-group">
+          <button class="tool-btn active" data-tool="select" title="选择">
+            ↖️<span class="tooltip">选择</span>
+          </button>
+          <button class="tool-btn" data-tool="ruler" title="标尺">
+            📏<span class="tooltip">标尺</span>
+          </button>
+          <button class="tool-btn" data-tool="line" title="划线">
+            ✏️<span class="tooltip">划线</span>
+          </button>
+          <button class="tool-btn" data-tool="measure" title="点到点测量">
+            📐<span class="tooltip">测量</span>
+          </button>
+          <button class="tool-btn" data-tool="obstacle" title="障碍物">
+            🧱<span class="tooltip">障碍物</span>
+          </button>
+          <button class="tool-btn" data-tool="movable" title="搬运物">
+            📦<span class="tooltip">搬运物</span>
+          </button>
+        </div>
+        <div class="toolbar-group">
+          <span class="toolbar-label">分屏:</span>
+          <button class="split-btn" data-split="none" id="splitNoneBtn">无</button>
+          <button class="split-btn" data-split="horiz" id="splitH">左右</button>
+          <button class="split-btn" data-split="vert" id="splitV">上下</button>
+        </div>
+        <div class="toolbar-group">
+          <span class="toolbar-label">文件:</span>
+          <button class="tool-btn" onclick="exportCurrentMapJSON()" title="导出当前地图(JSON)">
+            📥<span class="tooltip">导出当前地图</span>
+          </button>
+          <button class="tool-btn" onclick="exportCurrentMapPNG()" title="导出当前地图(PNG图片)">
+            🖼️<span class="tooltip">导出PNG</span>
+          </button>
+          <button class="tool-btn" onclick="exportCurrentMapSVG()" title="导出当前地图(SVG矢量图)">
+            📊<span class="tooltip">导出SVG</span>
+          </button>
+          <button class="tool-btn" onclick="exportCurrentMapMermaid()" title="导出当前地图(Mermaid流程图)">
+            🔀<span class="tooltip">导出Mermaid</span>
+          </button>
+          <button class="tool-btn" onclick="exportAllMapsJSON()" title="导出全部地图(JSON)">
+            📁<span class="tooltip">导出全部</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- EDITOR AREA -->
+      <div class="editor-area" id="editorArea">
+        <div class="map-canvas-wrap" id="canvasWrap">
+          <canvas id="mapCanvas"></canvas>
+          <div class="zoom-controls">
+            <button class="zoom-btn" id="zoomIn">+</button>
+            <button class="zoom-btn" id="zoomOut">−</button>
+          </div>
+          <div class="scale-indicator" id="scaleIndicator">比例: —</div>
+        </div>
+        <!-- Secondary pane for split view -->
+        <div class="split-divider-h" id="splitDivH" style="display:none;"></div>
+        <div class="split-pane secondary" id="secondaryPaneH" style="display:none;">
+          <div class="pane-header">📋 任务规划</div>
+          <div style="flex:1; padding:12px; overflow-y:auto;">
+            <p style="font-size:12px; color:var(--on-surface-variant);">在左侧地图上规划搬运路线和放置点。</p>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; font-weight:500; margin-bottom:8px;">障碍物列表</div>
+              <div id="obstacleList" style="display:flex; flex-direction:column; gap:4px;"></div>
+            </div>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; font-weight:500; margin-bottom:8px;">搬运物列表</div>
+              <div id="movableList" style="display:flex; flex-direction:column; gap:4px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="split-divider-v" id="splitDivV" style="display:none;"></div>
+        <div class="split-pane secondary" id="secondaryPaneV" style="display:none;">
+          <div class="pane-header">📋 任务规划</div>
+          <div style="flex:1; padding:12px; overflow-y:auto;">
+            <p style="font-size:12px; color:var(--on-surface-variant);">在左侧地图上规划搬运路线和放置点。</p>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; font-weight:500; margin-bottom:8px;">障碍物列表</div>
+              <div id="obstacleListV" style="display:flex; flex-direction:column; gap:4px;"></div>
+            </div>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; font-weight:500; margin-bottom:8px;">搬运物列表</div>
+              <div id="movableListV" style="display:flex; flex-direction:column; gap:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROPERTIES PANEL -->
+      <div class="props-panel" id="propsPanel" style="display:none;">
+        <div class="props-title" id="propsTitle">属性</div>
+        <div id="propsBody" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD/EDIT MAP MODAL -->
+<div class="modal-overlay" id="mapModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">导入地图</h3>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+</div>
+
+<!-- MEASURE INPUT MODAL -->
+<div class="modal-overlay" id="measureModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📐 点到点测量</h3>
+      <button class="modal-close" id="measureModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--on-surface-variant);">
+        两点像素距离: <strong id="pixelDist">0</strong> px
+      </p>
+      <div class="field">
+        <label>实际距离 (mm)</label>
+        <input type="number" id="realDistInput" placeholder="输入实际距离，单位毫米" min="1">
+      </div>
+      <p style="font-size:12px; color:var(--on-surface-variant);" id="scaleResult"></p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outlined" id="measureCancelBtn">取消</button>
+      <button class="btn-filled" id="measureConfirmBtn">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- OBSTACLE/MOVABLE PROPS MODAL -->
+<div class="modal-overlay" id="itemModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="itemModalTitle">障碍物属性</h3>
+      <button class="modal-close" id="itemModalClose">✕</button>
+    </div>
+    <div class="modal-body" id="itemModalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-outlined" id="itemModalCancel">取消</button>
+      <button class="btn-filled" id="itemModalConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ======================================================
+   STATE & STORAGE
+   ====================================================== */
+const STORAGE_KEY = 'pybricks_maps';
+
+function loadMaps() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveMaps(maps) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(maps));
+}
+
+let state = {
+  maps: loadMaps(),
+  activeMapId: null,
+  activeTool: 'select',
+  zoom: 1,
+  panX: 0,
+  panY: 0,
+  isPanning: false,
+  panStart: null,
+  // Drawing
+  isDrawing: false,
+  drawStart: null,
+  // Measure
+  measurePoints: [],
+  // Objects
+  obstacles: [],
+  movableItems: [],
+  paths: [],
+  rulers: [],
+  // Selection
+  selectedItem: null,
+  selectedItemType: null,
+  dragItem: null,
+  dragOffset: null,
+  // Split
+  splitMode: 'none',
+  splitRatio: 0.5,
+};
+
+let mapImage = null; // HTMLImageElement for current map
+let currentMapData = null; // map data object being edited
+
+/* ======================================================
+   UTILS
+   ====================================================== */
+function uuid() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+function hexToBase64(hex) {
+  // hex is a data URL like "data:image/png;base64,..."
+  return hex;
+}
+
+function makeThumbnail(img) {
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 64;
+  const ctx = c.getContext('2d');
+  const scale = Math.min(64 / img.width, 64 / img.height);
+  const w = img.width * scale, h = img.height * scale;
+  ctx.drawImage(img, (64 - w) / 2, (64 - h) / 2, w, h);
+  return c.toDataURL('image/jpeg', 0.7);
+}
+
+function getActiveMap() {
+  return state.maps.find(m => m.id === state.activeMapId);
+}
+
+/* ======================================================
+   RENDER MAP LIST
+   ====================================================== */
+function renderMapList() {
+  const container = document.getElementById('mapListContent');
+  if (state.maps.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:24px 12px; color:var(--on-surface-variant);">
+        <div style="font-size:36px; margin-bottom:8px; opacity:0.4;">🗺️</div>
+        <p style="font-size:12px;">暂无地图</p>
+        <p style="font-size:11px; margin-top:4px;">拖拽图片到此处导入</p>
+      </div>`;
+    return;
+  }
+  container.innerHTML = state.maps.map(m => `
+    <div class="list-item ${m.id === state.activeMapId ? 'selected' : ''}" data-id="${m.id}">
+      <div class="thumb">
+        ${m.thumbnailData ? `<img src="${m.thumbnailData}" alt="${m.name}">` : '<span class=placeholder>🗺️</span>'}
+      </div>
+      <div class="info">
+        <div class="name">${m.name}</div>
+        <div class="meta">${m.imageData ? '已导入' : '无底图'}</div>
+      </div>
+      <button class="btn-delete" data-id="${m.id}" title="删除">✕</button>
+    </div>`).join('');
+
+  // Click to select
+  container.querySelectorAll('.list-item').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.classList.contains('btn-delete')) {
+        e.stopPropagation();
+        const id = e.target.dataset.id;
+        if (confirm('删除此地图？')) {
+          state.maps = state.maps.filter(m => m.id !== id);
+          saveMaps(state.maps);
+          if (state.activeMapId === id) {
+            state.activeMapId = null;
+            currentMapData = null;
+          }
+          renderMapList();
+          renderEditor();
+        }
+        return;
+      }
+      selectMap(el.dataset.id);
+    });
+  });
+}
+
+/* ======================================================
+   SELECT / RENDER EDITOR
+   ====================================================== */
+function selectMap(id) {
+  state.activeMapId = id;
+  currentMapData = state.maps.find(m => m.id === id) || null;
+  if (currentMapData) {
+    state.obstacles = currentMapData.obstacles || [];
+    state.movableItems = currentMapData.movableItems || [];
+    state.paths = currentMapData.paths || [];
+    state.rulers = currentMapData.rulers || [];
+    state.measurePoints = [];
+    state.zoom = 1;
+    state.panX = 0;
+    state.panY = 0;
+  }
+  renderMapList();
+  renderEditor();
+}
+
+function renderEditor() {
+  const empty = document.getElementById('emptyState');
+  const editor = document.getElementById('mapEditor');
+  if (!state.activeMapId || !currentMapData) {
+    empty.style.display = 'flex';
+    editor.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  editor.style.display = 'flex';
+  editor.style.flexDirection = 'column';
+  editor.style.flex = '1';
+  editor.style.overflow = 'hidden';
+
+  // Load image
+  if (currentMapData.imageData) {
+    if (!mapImage || mapImage._mapId !== currentMapData.id) {
+      mapImage = new Image();
+      mapImage._mapId = currentMapData.id;
+      mapImage.onload = () => { resizeCanvas(); drawMap(); };
+      mapImage.src = currentMapData.imageData;
+    }
+  } else {
+    mapImage = null;
+  }
+
+  resizeCanvas();
+  drawMap();
+  updateScaleIndicator();
+  updateObstacleLists();
+}
+
+function resizeCanvas() {
+  const wrap = document.getElementById('canvasWrap');
+  const canvas = document.getElementById('mapCanvas');
+  canvas.width = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+}
+
+function drawMap() {
+  const canvas = document.getElementById('mapCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.save();
+  ctx.translate(state.panX, state.panY);
+  ctx.scale(state.zoom, state.zoom);
+
+  // Draw map image
+  if (mapImage) {
+    ctx.drawImage(mapImage, 0, 0);
+  }
+
+  // Draw grid overlay (light)
+  const gridSize = 20;
+  const startX = 0, startY = 0;
+  const endX = mapImage ? mapImage.width : canvas.width / state.zoom;
+  const endY = mapImage ? mapImage.height : canvas.height / state.zoom;
+  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+  ctx.lineWidth = 1 / state.zoom;
+  for (let x = Math.floor(startX / gridSize) * gridSize; x <= endX; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, endY); ctx.stroke();
+  }
+  for (let y = Math.floor(startY / gridSize) * gridSize; y <= endY; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(endX, y); ctx.stroke();
+  }
+
+  // Draw rulers
+  state.rulers.forEach(r => drawRuler(ctx, r));
+
+  // Draw paths
+  state.paths.forEach(p => drawPath(ctx, p));
+
+  // Draw obstacles
+  state.obstacles.forEach(o => drawObstacle(ctx, o));
+
+  // Draw movable items
+  state.movableItems.forEach(m => drawMovable(ctx, m));
+
+  // Draw measure points
+  if (state.measurePoints.length > 0) {
+    ctx.fillStyle = '#0071e3';
+    state.measurePoints.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 6 / state.zoom, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2 / state.zoom;
+      ctx.stroke();
+    });
+    if (state.measurePoints.length === 2) {
+      const [p1, p2] = state.measurePoints;
+      ctx.strokeStyle = '#0071e3';
+      ctx.lineWidth = 2 / state.zoom;
+      ctx.setLineDash([4 / state.zoom, 4 / state.zoom]);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Draw temp drawing
+  if (state.isDrawing && state.drawStart) {
+    const tool = state.activeTool;
+    if (tool === 'obstacle' || tool === 'movable') {
+      const cur = state.currentPoint || state.drawStart;
+      const x = Math.min(state.drawStart.x, cur.x);
+      const y = Math.min(state.drawStart.y, cur.y);
+      const w = Math.abs(cur.x - state.drawStart.x);
+      const h = Math.abs(cur.y - state.drawStart.y);
+      ctx.strokeStyle = 'rgba(0,113,227,0.5)';
+      ctx.lineWidth = 2 / state.zoom;
+      ctx.setLineDash([4 / state.zoom, 4 / state.zoom]);
+      if (tool === 'obstacle') {
+        ctx.strokeRect(x, y, w, h);
+      } else {
+        ctx.beginPath();
+        if (state.newMovableShape === 'circle') {
+          const r = Math.max(w, h) / 2;
+          ctx.arc(state.drawStart.x, state.drawStart.y, r, 0, Math.PI * 2);
+        } else {
+          ctx.rect(x, y, w, h);
+        }
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    } else if (tool === 'line') {
+      const cur = state.currentPoint || state.drawStart;
+      ctx.strokeStyle = 'rgba(0,113,227,0.5)';
+      ctx.lineWidth = 2 / state.zoom;
+      ctx.setLineDash([4 / state.zoom, 4 / state.zoom]);
+      ctx.beginPath();
+      ctx.moveTo(state.drawStart.x, state.drawStart.y);
+      ctx.lineTo(cur.x, cur.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  ctx.restore();
+}
+
+function drawRuler(ctx, r) {
+  const length = r.length || 100;
+  const thickness = 8;
+  ctx.save();
+  ctx.translate(r.x, r.y);
+  if (r.angle) ctx.rotate(r.angle * Math.PI / 180);
+
+  // Background
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.rect(0, -thickness / 2, length, thickness);
+  ctx.fill();
+  ctx.stroke();
+
+  // Tick marks every 10px (1cm at 1px=1mm default scale)
+  const map = getActiveMap();
+  const pxPerMm = map ? (map.pixelToMm || 1) : 1;
+  const step = Math.max(1, Math.round(10 * pxPerMm)); // 1cm = 10mm
+  ctx.fillStyle = '#333';
+  ctx.font = `${8}px Roboto`;
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= length; i += step) {
+    const tickH = (i % (step * 10) === 0) ? thickness / 2 : thickness / 4;
+    ctx.beginPath();
+    ctx.moveTo(i, -tickH / 2);
+    ctx.lineTo(i, tickH / 2);
+    ctx.stroke();
+    if (i % (step * 10) === 0 && i > 0) {
+      ctx.fillText((i / step) + 'cm', i, -thickness / 2 - 3);
+    }
+  }
+  ctx.restore();
+}
+
+function drawPath(ctx, p) {
+  if (!p.points || p.points.length < 2) return;
+  ctx.strokeStyle = p.color || '#0071e3';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(p.points[0][0], p.points[0][1]);
+  for (let i = 1; i < p.points.length; i++) {
+    ctx.lineTo(p.points[i][0], p.points[i][1]);
+  }
+  ctx.stroke();
+  // Draw arrows
+  ctx.fillStyle = p.color || '#0071e3';
+  for (let i = 0; i < p.points.length - 1; i++) {
+    const [x1, y1] = p.points[i];
+    const [x2, y2] = p.points[i + 1];
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    ctx.save();
+    ctx.translate(mx, my);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(6, 0);
+    ctx.lineTo(-4, -4);
+    ctx.lineTo(-4, 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawObstacle(ctx, o) {
+  const sel = state.selectedItemType === 'obstacle' && state.selectedItem && state.selectedItem._id === o._id;
+  ctx.fillStyle = o.type === 'blocked' ? 'rgba(220,38,38,0.25)' : 'rgba(234,179,8,0.25)';
+  ctx.strokeStyle = o.type === 'blocked' ? '#dc2626' : '#ca8a04';
+  ctx.lineWidth = sel ? 3 : 2;
+  if (sel) { ctx.setLineDash([5, 3]); }
+  ctx.beginPath();
+  ctx.rect(o.x, o.y, o.w, o.h);
+  ctx.fill();
+  ctx.stroke();
+  ctx.setLineDash([]);
+  if (sel) {
+    // Draw corner handles
+    const hs = 5;
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#0071e3';
+    ctx.lineWidth = 2;
+    [[o.x, o.y], [o.x + o.w, o.y], [o.x, o.y + o.h], [o.x + o.w, o.y + o.h]].forEach(([hx, hy]) => {
+      ctx.beginPath(); ctx.rect(hx - hs / 2, hy - hs / 2, hs, hs);
+      ctx.fill(); ctx.stroke();
+    });
+  }
+}
+
+function drawMovable(ctx, m) {
+  const sel = state.selectedItemType === 'movable' && state.selectedItem && state.selectedItem._id === m._id;
+  ctx.fillStyle = m.color || 'rgba(59,130,246,0.3)';
+  ctx.strokeStyle = m.color || '#3b82f6';
+  ctx.lineWidth = sel ? 3 : 2;
+  if (sel) { ctx.setLineDash([5, 3]); }
+  ctx.beginPath();
+  if (m.shape === 'circle') {
+    ctx.arc(m.x + m.size / 2, m.y + m.size / 2, m.size / 2, 0, Math.PI * 2);
+  } else {
+    ctx.rect(m.x, m.y, m.size, m.size);
+  }
+  ctx.fill();
+  ctx.stroke();
+  ctx.setLineDash([]);
+  if (sel) {
+    const hs = 5;
+    const cx = m.shape === 'circle' ? m.x + m.size / 2 : m.x + m.size / 2;
+    const cy = m.shape === 'circle' ? m.y + m.size / 2 : m.y + m.size / 2;
+    const r = m.shape === 'circle' ? m.size / 2 : m.size / 2;
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#0071e3';
+    ctx.lineWidth = 2;
+    const corners = m.shape === 'circle'
+      ? [0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(a => [cx + r * Math.cos(a), cy + r * Math.sin(a)])
+      : [[m.x, m.y], [m.x + m.size, m.y], [m.x, m.y + m.size], [m.x + m.size, m.y + m.size]];
+    corners.forEach(([hx, hy]) => {
+      ctx.beginPath(); ctx.rect(hx - hs / 2, hy - hs / 2, hs, hs);
+      ctx.fill(); ctx.stroke();
+    });
+  }
+}
+
+function updateScaleIndicator() {
+  const el = document.getElementById('scaleIndicator');
+  const map = getActiveMap();
+  if (map && map.pixelToMm) {
+    el.textContent = `比例: 1px = ${map.pixelToMm.toFixed(3)}mm`;
+  } else {
+    el.textContent = '比例: —';
+  }
+}
+
+function updateObstacleLists() {
+  const updateList = (containerId, items) => {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (items.length === 0) {
+      el.innerHTML = '<span style="font-size:11px;color:var(--on-surface-variant)">暂无</span>';
+      return;
+    }
+    el.innerHTML = items.map((o, i) => `
+      <div class="obstacle-item" data-idx="${i}">
+        <span class="color-dot" style="background:${o.type === 'blocked' ? '#dc2626' : '#ca8a04'}"></span>
+        <span>${o.type === 'blocked' ? '不可通行' : '可推动'}</span>
+        <span class="type-badge ${o.type}">${Math.round(o.w)}×${Math.round(o.h)}</span>
+      </div>`).join('');
+  };
+  updateList('obstacleList', state.obstacles);
+  updateList('obstacleListV', state.obstacles);
+  updateList('movableList', state.movableItems);
+  updateList('movableListV', state.movableItems);
+}
+
+/* ======================================================
+   CANVAS INTERACTION
+   ====================================================== */
+const canvas = document.getElementById('mapCanvas');
+const canvasWrap = document.getElementById('canvasWrap');
+
+function canvasPoint(e) {
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: (clientX - rect.left - state.panX) / state.zoom,
+    y: (clientY - rect.top - state.panY) / state.zoom
+  };
+}
+
+canvas.addEventListener('mousedown', e => {
+  const pt = canvasPoint(e);
+  const tool = state.activeTool;
+
+  if (tool === 'select') {
+    // Try to select an obstacle or movable item
+    let found = null, foundType = null;
+    for (let i = state.obstacles.length - 1; i >= 0; i--) {
+      const o = state.obstacles[i];
+      if (pt.x >= o.x && pt.x <= o.x + o.w && pt.y >= o.y && pt.y <= o.y + o.h) {
+        found = o; foundType = 'obstacle'; break;
+      }
+    }
+    if (!found) {
+      for (let i = state.movableItems.length - 1; i >= 0; i--) {
+        const m = state.movableItems[i];
+        if (pt.x >= m.x && pt.x <= m.x + m.size && pt.y >= m.y && pt.y <= m.y + m.size) {
+          found = m; foundType = 'movable'; break;
+        }
+      }
+    }
+    if (found) {
+      state.selectedItem = found;
+      state.selectedItemType = foundType;
+      state.dragItem = found;
+      state.dragOffset = { x: pt.x - found.x, y: pt.y - found.y };
+      showItemProps(found, foundType);
+    } else {
+      state.selectedItem = null;
+      state.selectedItemType = null;
+      hideProps();
+    }
+    drawMap();
+    return;
+  }
+
+  if (tool === 'obstacle' || tool === 'movable') {
+    state.isDrawing = true;
+    state.drawStart = pt;
+    state.currentPoint = pt;
+    state.newMovableShape = 'square';
+    canvas.classList.add('crosshair');
+    return;
+  }
+
+  if (tool === 'line') {
+    state.isDrawing = true;
+    state.drawStart = pt;
+    state.currentPoint = pt;
+    canvas.classList.add('crosshair');
+    return;
+  }
+
+  if (tool === 'measure') {
+    if (state.measurePoints.length < 2) {
+      state.measurePoints.push({ x: pt.x, y: pt.y });
+      drawMap();
+      if (state.measurePoints.length === 2) {
+        const d = Math.hypot(
+          state.measurePoints[1].x - state.measurePoints[0].x,
+          state.measurePoints[1].y - state.measurePoints[0].y
+        );
+        document.getElementById('pixelDist').textContent = Math.round(d);
+        document.getElementById('scaleResult').textContent = '';
+        document.getElementById('realDistInput').value = '';
+        showModal('measureModal');
+      }
+    } else {
+      state.measurePoints = [{ x: pt.x, y: pt.y }];
+      drawMap();
+    }
+    return;
+  }
+
+  if (tool === 'ruler') {
+    // Place ruler at click point
+    state.rulers.push({ x: pt.x, y: pt.y, angle: 0, length: 200 });
+    saveCurrentMap();
+    drawMap();
+    return;
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (state.isPanning) {
+    state.panX = e.clientX - state.panStart.x;
+    state.panY = e.clientY - state.panStart.y;
+    drawMap();
+    return;
+  }
+  if (state.dragItem) {
+    const pt = canvasPoint(e);
+    state.dragItem.x = pt.x - state.dragOffset.x;
+    state.dragItem.y = pt.y - state.dragOffset.y;
+    drawMap();
+    return;
+  }
+  if (state.isDrawing) {
+    state.currentPoint = canvasPoint(e);
+    drawMap();
+  }
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (state.isPanning) {
+    state.isPanning = false;
+    canvas.classList.remove('panning');
+    return;
+  }
+  if (state.dragItem) {
+    state.dragItem = null;
+    saveCurrentMap();
+    return;
+  }
+  if (state.isDrawing) {
+    const pt = canvasPoint(e);
+    const tool = state.activeTool;
+    canvas.classList.remove('crosshair');
+
+    if (tool === 'obstacle') {
+      const x = Math.min(state.drawStart.x, pt.x);
+      const y = Math.min(state.drawStart.y, pt.y);
+      const w = Math.abs(pt.x - state.drawStart.x);
+      const h = Math.abs(pt.y - state.drawStart.y);
+      if (w > 5 && h > 5) {
+        state.obstacles.push({ _id: uuid(), x, y, w, h, type: 'blocked' });
+        saveCurrentMap();
+      }
+    } else if (tool === 'movable') {
+      const x = Math.min(state.drawStart.x, pt.x);
+      const y = Math.min(state.drawStart.y, pt.y);
+      const s = Math.max(Math.abs(pt.x - state.drawStart.x), Math.abs(pt.y - state.drawStart.y));
+      if (s > 5) {
+        state.movableItems.push({ _id: uuid(), x, y, size: s, color: '#3b82f6', shape: state.newMovableShape });
+        saveCurrentMap();
+      }
+    } else if (tool === 'line') {
+      if (state.drawStart && pt) {
+        const dx = pt.x - state.drawStart.x, dy = pt.y - state.drawStart.y;
+        if (Math.hypot(dx, dy) > 5) {
+          state.paths.push({ _id: uuid(), points: [[state.drawStart.x, state.drawStart.y], [pt.x, pt.y]], color: '#0071e3' });
+          saveCurrentMap();
+        }
+      }
+    }
+    state.isDrawing = false;
+    state.drawStart = null;
+    state.currentPoint = null;
+    drawMap();
+    updateObstacleLists();
+  }
+});
+
+// Pan with middle mouse or space+drag
+canvasWrap.addEventListener('mousedown', e => {
+  if (e.button === 1 || e.button === 0 && e.altKey) {
+    e.preventDefault();
+    state.isPanning = true;
+    state.panStart = { x: e.clientX - state.panX, y: e.clientY - state.panY };
+    canvas.classList.add('panning');
+  }
+});
+
+// Zoom with wheel
+canvasWrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const oldZoom = state.zoom;
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  state.zoom = Math.max(0.1, Math.min(10, state.zoom * delta));
+  // Zoom toward mouse
+  const rect = canvasWrap.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  state.panX = mx - (mx - state.panX) * (state.zoom / oldZoom);
+  state.panY = my - (my - state.panY) * (state.zoom / oldZoom);
+  drawMap();
+}, { passive: false });
+
+/* ======================================================
+   TOOLBAR
+   ====================================================== */
+document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.activeTool = btn.dataset.tool;
+    document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Reset drawing state
+    state.isDrawing = false;
+    state.drawStart = null;
+    canvas.classList.remove('crosshair');
+    // Change cursor
+    if (state.activeTool === 'select') {
+      canvas.style.cursor = 'default';
+    } else {
+      canvas.style.cursor = 'crosshair';
+    }
+  });
+});
+
+document.getElementById('zoomIn').addEventListener('click', () => {
+  state.zoom = Math.min(10, state.zoom * 1.2);
+  drawMap();
+});
+document.getElementById('zoomOut').addEventListener('click', () => {
+  state.zoom = Math.max(0.1, state.zoom / 1.2);
+  drawMap();
+});
+
+/* ======================================================
+   SPLIT SCREEN
+   ====================================================== */
+let splitDragging = false;
+let splitStartPos = 0;
+
+function setSplitMode(mode) {
+  state.splitMode = mode;
+  const hDiv = document.getElementById('splitDivH');
+  const vDiv = document.getElementById('splitDivV');
+  const paneH = document.getElementById('secondaryPaneH');
+  const paneV = document.getElementById('secondaryPaneV');
+  const editorArea = document.getElementById('editorArea');
+
+  hDiv.style.display = 'none';
+  vDiv.style.display = 'none';
+  paneH.style.display = 'none';
+  paneV.style.display = 'none';
+
+  // Remove flex-direction changes on editorArea - it uses flex row by default
+  editorArea.style.flexDirection = '';
+  editorArea.style.display = '';
+
+  if (mode === 'horiz') {
+    hDiv.style.display = 'block';
+    paneH.style.display = 'flex';
+    paneH.style.flex = `0 0 ${(1 - state.splitRatio) * 100}%`;
+    const primary = editorArea.querySelector('.map-canvas-wrap');
+    if (primary) primary.style.flex = `0 0 ${state.splitRatio * 100}%`;
+    editorArea.querySelector('.map-canvas-wrap')?.style && (editorArea.querySelector('.map-canvas-wrap').style.flex = `0 0 ${state.splitRatio * 100}%`);
+  } else if (mode === 'vert') {
+    vDiv.style.display = 'block';
+    paneV.style.display = 'flex';
+    editorArea.style.display = 'flex';
+    editorArea.style.flexDirection = 'column';
+  }
+
+  document.querySelectorAll('.split-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.split-btn[data-split="${mode}"]`)?.classList.add('active');
+}
+
+// Horizontal divider drag
+const hDiv = document.getElementById('splitDivH');
+hDiv.addEventListener('mousedown', e => {
+  splitDragging = true;
+  splitStartPos = e.clientX;
+  hDiv.classList.add('dragging');
+  e.preventDefault();
+});
+document.addEventListener('mousemove', e => {
+  if (!splitDragging) return;
+  const editorArea = document.getElementById('editorArea');
+  const rect = editorArea.getBoundingClientRect();
+  const ratio = (e.clientX - rect.left) / rect.width;
+  state.splitRatio = Math.max(0.2, Math.min(0.8, ratio));
+  setSplitMode('horiz');
+});
+document.addEventListener('mouseup', () => {
+  if (splitDragging) {
+    splitDragging = false;
+    hDiv.classList.remove('dragging');
+  }
+});
+
+document.getElementById('splitNoneBtn').addEventListener('click', () => setSplitMode('none'));
+document.getElementById('splitH').addEventListener('click', () => setSplitMode('horiz'));
+document.getElementById('splitV').addEventListener('click', () => setSplitMode('vert'));
+
+/* ======================================================
+   PROPERTIES PANEL
+   ====================================================== */
+function showItemProps(item, type) {
+  const panel = document.getElementById('propsPanel');
+  const title = document.getElementById('propsTitle');
+  const body = document.getElementById('propsBody');
+  panel.style.display = 'flex';
+
+  if (type === 'obstacle') {
+    title.textContent = '障碍物属性';
+    body.innerHTML = `
+      <div class="setting-row">
+        <span>类型</span>
+        <select id="propType" style="height:32px; font-size:12px; border-radius:6px; border:1px solid var(--outline); padding:0 8px;">
+          <option value="blocked" ${item.type === 'blocked' ? 'selected' : ''}>不可通行 🔴</option>
+          <option value="pushable" ${item.type === 'pushable' ? 'selected' : ''}>可推动 🟡</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span>位置</span>
+        <span style="color:var(--on-surface-variant)">X:${Math.round(item.x)} Y:${Math.round(item.y)}</span>
+      </div>
+      <div class="setting-row">
+        <span>尺寸</span>
+        <span style="color:var(--on-surface-variant)">${Math.round(item.w)} × ${Math.round(item.h)}</span>
+      </div>
+      <button class="btn-tonal" style="height:32px; font-size:12px; border-radius:16px; align-self:flex-start;" id="propDeleteBtn">删除障碍物</button>`;
+    document.getElementById('propType').addEventListener('change', e => {
+      item.type = e.target.value;
+      saveCurrentMap();
+      drawMap();
+      updateObstacleLists();
+    });
+    document.getElementById('propDeleteBtn').addEventListener('click', () => {
+      state.obstacles = state.obstacles.filter(o => o._id !== item._id);
+      state.selectedItem = null;
+      state.selectedItemType = null;
+      hideProps();
+      saveCurrentMap();
+      drawMap();
+      updateObstacleLists();
+    });
+  } else if (type === 'movable') {
+    title.textContent = '搬运物属性';
+    const colors = ['#3b82f6', '#ef4444', '#22c55e', '#eab308', '#a855f7', '#f97316'];
+    body.innerHTML = `
+      <div class="setting-row">
+        <span>颜色</span>
+        <div style="display:flex; gap:4px;">${colors.map(c => `
+          <div class="color-dot" style="background:${c}; width:20px; height:20px; border-radius:50%; cursor:pointer; border:2px solid ${item.color === c ? 'var(--on-surface)' : 'transparent'};" data-color="${c}"></div>`).join('')}</div>
+      </div>
+      <div class="setting-row">
+        <span>形状</span>
+        <div style="display:flex; gap:4px;">
+          <button class="shape-btn ${item.shape !== 'circle' ? 'selected' : ''}" data-shape="square" style="font-size:14px;">⬜</button>
+          <button class="shape-btn ${item.shape === 'circle' ? 'selected' : ''}" data-shape="circle" style="font-size:14px;">⚪</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span>位置</span>
+        <span style="color:var(--on-surface-variant)">X:${Math.round(item.x)} Y:${Math.round(item.y)}</span>
+      </div>
+      <div class="setting-row">
+        <span>大小</span>
+        <span style="color:var(--on-surface-variant)">${Math.round(item.size)}px</span>
+      </div>
+      <button class="btn-tonal" style="height:32px; font-size:12px; border-radius:16px; align-self:flex-start;" id="propDeleteBtn2">删除</button>`;
+    body.querySelectorAll('[data-color]').forEach(el => {
+      el.addEventListener('click', () => {
+        item.color = el.dataset.color;
+        saveCurrentMap();
+        drawMap();
+        showItemProps(item, 'movable');
+      });
+    });
+    body.querySelectorAll('[data-shape]').forEach(el => {
+      el.addEventListener('click', () => {
+        item.shape = el.dataset.shape;
+        saveCurrentMap();
+        drawMap();
+        showItemProps(item, 'movable');
+      });
+    });
+    document.getElementById('propDeleteBtn2').addEventListener('click', () => {
+      state.movableItems = state.movableItems.filter(m => m._id !== item._id);
+      state.selectedItem = null;
+      state.selectedItemType = null;
+      hideProps();
+      saveCurrentMap();
+      drawMap();
+      updateObstacleLists();
+    });
+  }
+}
+
+function hideProps() {
+  document.getElementById('propsPanel').style.display = 'none';
+}
+
+/* ======================================================
+   MEASURE MODAL
+   ====================================================== */
+document.getElementById('measureConfirmBtn').addEventListener('click', () => {
+  const realDist = parseFloat(document.getElementById('realDistInput').value);
+  if (!realDist || realDist <= 0) return;
+  const pixelDist = Math.hypot(
+    state.measurePoints[1].x - state.measurePoints[0].x,
+    state.measurePoints[1].y - state.measurePoints[0].y
+  );
+  const pxPerMm = pixelDist / realDist;
+  if (currentMapData) {
+    currentMapData.pixelToMm = pxPerMm;
+    saveMaps(state.maps);
+  }
+  document.getElementById('scaleResult').textContent =
+    `比例: 1px = ${pxPerMm.toFixed(4)}mm (像素距离: ${Math.round(pixelDist)}px, 实际: ${realDist}mm)`;
+  updateScaleIndicator();
+  hideModal('measureModal');
+  drawMap();
+});
+
+document.getElementById('measureCancelBtn').addEventListener('click', () => {
+  state.measurePoints = [];
+  hideModal('measureModal');
+  drawMap();
+});
+
+/* ======================================================
+   ADD/IMPORT MAP MODAL
+   ====================================================== */
+document.getElementById('btnAddMap').addEventListener('click', openAddMapModal);
+
+function openAddMapModal(file) {
+  if (file) {
+    // Called from drag-drop
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const name = file.name.replace(/\.[^.]+$/, '');
+        showImportModal(name, e.target.result, img, file);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    showImportModal('', null, null, null);
+  }
+}
+
+function showImportModal(name, imageData, img, file) {
+  const modal = document.getElementById('mapModal');
+  const body = document.getElementById('modalBody');
+  const title = document.getElementById('modalTitle');
+  title.textContent = imageData ? '导入地图' : '新建空白地图';
+
+  let infoHtml = '';
+  if (img) {
+    infoHtml = `<div class="info-text">分辨率: ${img.width} × ${img.height}px</div>`;
+  }
+
+  body.innerHTML = `
+    ${imageData ? `<div class="img-preview"><img src="${imageData}" alt="预览"></div>${infoHtml}` : ''}
+    <div class="field">
+      <label>地图名称</label>
+      <input type="text" id="mapNameInput" value="${name}" placeholder="输入地图名称">
+    </div>`;
+
+  showModal('mapModal');
+  document.getElementById('mapNameInput').focus();
+
+  // Override confirm
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'btn-filled';
+  confirmBtn.textContent = imageData ? '导入' : '创建';
+  confirmBtn.onclick = () => {
+    const mapName = document.getElementById('mapNameInput').value.trim() || '未命名地图';
+    const thumbnail = imageData && img ? makeThumbnail(img) : null;
+    const newMap = {
+      id: uuid(),
+      name: mapName,
+      imageData: imageData || null,
+      thumbnailData: thumbnail,
+      pixelToMm: 1,
+      obstacles: [],
+      movableItems: [],
+      paths: [],
+      rulers: []
+    };
+    state.maps.push(newMap);
+    saveMaps(state.maps);
+    hideModal('mapModal');
+    selectMap(newMap.id);
+    renderMapList();
+  };
+
+  // Replace actions
+  const actions = modal.querySelector('.modal-actions') || document.createElement('div');
+  actions.className = 'modal-actions';
+  actions.innerHTML = '<button class="btn-outlined" id="modalCancelBtn">取消</button>';
+  actions.appendChild(confirmBtn);
+  if (!modal.querySelector('.modal-actions')) modal.appendChild(actions);
+  document.getElementById('modalCancelBtn').onclick = () => hideModal('mapModal');
+}
+
+document.getElementById('modalClose').addEventListener('click', () => hideModal('mapModal'));
+document.getElementById('modalCancelBtn')?.addEventListener('click', () => hideModal('mapModal'));
+
+/* ======================================================
+   DRAG & DROP - FILE UPLOAD
+   ====================================================== */
+const listPanel = document.getElementById('listPanel');
+
+listPanel.addEventListener('dragover', e => {
+  e.preventDefault();
+  listPanel.classList.add('drag-over');
+});
+
+listPanel.addEventListener('dragleave', e => {
+  if (!listPanel.contains(e.relatedTarget)) {
+    listPanel.classList.remove('drag-over');
+  }
+});
+
+listPanel.addEventListener('drop', e => {
+  e.preventDefault();
+  listPanel.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (files.length > 0) {
+    openAddMapModal(files[0]);
+  }
+});
+
+/* ======================================================
+   MODAL HELPERS
+   ====================================================== */
+function showModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+function hideModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+/* ======================================================
+   SAVE CURRENT MAP
+   ====================================================== */
+function saveCurrentMap() {
+  if (!currentMapData) return;
+  currentMapData.obstacles = state.obstacles;
+  currentMapData.movableItems = state.movableItems;
+  currentMapData.paths = state.paths;
+  currentMapData.rulers = state.rulers;
+  saveMaps(state.maps);
+}
+
+/* ======================================================
+   SIDEBAR NAVIGATION (placeholder - links to other pages)
+   ====================================================== */
+document.querySelectorAll('.sidebar-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const page = btn.dataset.page;
+    // Navigate to other pages
+    window.location.href = page + '.html';
+  });
+});
+
+/* ======================================================
+   INIT
+   ====================================================== */
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  drawMap();
+});
+
+renderMapList();
+renderEditor();
+</script>
+
+<!-- PWA / IndexedDB -->
+<script src="../js/db.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* ===== MAP PAGE - PWA 初始化 ===== */
+document.addEventListener('DOMContentLoaded', async () => {
+  // 注册 Service Worker
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('../sw.js');
+      console.log('[SW] Registered');
+    } catch (err) {
+      console.warn('[SW] Registration failed:', err);
+    }
+  }
+
+  // 等待 IndexedDB 就绪
+  try {
+    await window.pybricksDB.init();
+    
+    // 迁移 localStorage 数据到 IndexedDB（如有）
+    migrateLocalMapsToIDB();
+
+    // 从 IndexedDB 加载地图列表
+    state.maps = await window.pybricksDB.getAllMaps();
+    
+    // 恢复上次选中的地图
+    const savedId = await window.pybricksDB.getAppState('currentMapId');
+    if (savedId && state.maps.find(m => m.id === savedId)) {
+      selectMap(savedId);
+    } else if (state.maps.length > 0) {
+      selectMap(state.maps[0].id);
+    }
+
+    renderMapList();
+    if (state.activeMapId) renderEditor();
+    
+    console.log('[Map] Loaded', state.maps.length, 'maps from IndexedDB');
+  } catch (err) {
+    console.error('[Map] Failed to initialize:', err);
+    // 回退到 localStorage
+    renderMapList();
+    renderEditor();
+  }
+});
+
+// ===== IndexedDB 增强版存储函数 =====
+// 保留原有 localStorage 函数用于回退，新增 IDB 版本
+async function loadMapsFromIDB() {
+  try {
+    return await window.pybricksDB.getAllMaps();
+  } catch (err) {
+    console.warn('[Map] IDB load failed, falling back to localStorage:', err);
+    return loadMaps();
+  }
+}
+
+async function saveMapsToIDB(maps) {
+  try {
+    for (const map of maps) {
+      await window.pybricksDB.saveMap(map);
+    }
+    // 保存当前活跃地图 ID
+    await window.pybricksDB.setAppState('currentMapId', state.activeMapId);
+  } catch (err) {
+    console.warn('[Map] IDB save failed, falling back to localStorage:', err);
+    saveMaps(maps);
+  }
+}
+
+// 迁移 localStorage 中的地图数据到 IndexedDB
+function migrateLocalMapsToIDB() {
+  try {
+    const localMaps = JSON.parse(localStorage.getItem('pybricks_maps') || '[]');
+    if (localMaps.length > 0) {
+      // 检查 IDB 中是否已有数据
+      window.pybricksDB.getAllMaps().then(idbMaps => {
+        if (idbMaps.length === 0 && localMaps.length > 0) {
+          console.log('[Map] Migrating', localMaps.length, 'maps from localStorage to IndexedDB');
+          localMaps.forEach(map => window.pybricksDB.saveMap(map));
+          // 清除 localStorage（可选）
+          // localStorage.removeItem('pybricks_maps');
+        }
+      });
+    }
+  } catch (err) {
+    console.warn('[Map] Migration check failed:', err);
+  }
+}
+
+// 覆盖 saveMaps 函数：优先使用 IndexedDB
+const _origSaveMaps = saveMaps;
+async function saveMaps(maps) {
+  // 同时保留 localStorage 回退
+  _origSaveMaps(maps);
+  await saveMapsToIDB(maps);
+}
+
+// 覆盖 selectMap：保存当前选中状态
+const _origSelectMap = selectMap;
+function selectMap(id) {
+  _origSelectMap(id);
+  window.pybricksDB.setAppState('currentMapId', id).catch(() => {});
+}
+
+// 覆盖 saveCurrentMap：保存当前地图数据
+const _origSaveCurrentMap = saveCurrentMap;
+function saveCurrentMap() {
+  _origSaveCurrentMap();
+  if (currentMapData) {
+    window.pybricksDB.saveMap(currentMapData).catch(err => {
+      console.warn('[Map] Failed to save map to IDB:', err);
+    });
+  }
+}
+
+// ===== IMPORT / EXPORT FUNCTIONS =====
+
+/**
+ * 显示 Toast 提示
+ */
+function mapShowToast(msg) {
+  let toast = document.getElementById('mapToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'mapToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#333;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.2s;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(window._mapToastTimer);
+  window._mapToastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+}
+
+/**
+ * 导出全部地图为 JSON 文件
+ */
+function exportAllMapsJSON() {
+  if (state.maps.length === 0) {
+    mapShowToast('暂无地图可导出');
+    return;
+  }
+  const data = {
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    maps: state.maps
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_maps_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mapShowToast(`已导出 ${state.maps.length} 张地图`);
+}
+
+/**
+ * 导出当前选中地图为 JSON 文件
+ */
+function exportCurrentMapJSON() {
+  const map = getActiveMap();
+  if (!map) {
+    mapShowToast('请先选择一个地图');
+    return;
+  }
+  const data = {
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    maps: [map]
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_map_${map.name}_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mapShowToast(`已导出「${map.name}」`);
+}
+
+/**
+ * 导出当前地图为 PNG 图片
+ */
+function exportCurrentMapPNG() {
+  const map = getActiveMap();
+  if (!map) {
+    mapShowToast('请先选择一个地图');
+    return;
+  }
+  const canvas = document.getElementById('mapCanvas');
+  if (!canvas) return;
+  
+  // Create a temporary canvas with the full map content
+  const tempCanvas = document.createElement('canvas');
+  const ctx = tempCanvas.getContext('2d');
+  
+  // Calculate bounds from image
+  let imgWidth = mapImage ? mapImage.width : canvas.width;
+  let imgHeight = mapImage ? mapImage.height : canvas.height;
+  tempCanvas.width = imgWidth;
+  tempCanvas.height = imgHeight;
+  
+  // Draw background (white)
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, imgWidth, imgHeight);
+  
+  // Draw map image
+  if (mapImage) {
+    ctx.drawImage(mapImage, 0, 0);
+  }
+  
+  // Scale for drawing
+  const scale = 1; // canvas already at full resolution
+  
+  // Draw obstacles
+  state.obstacles.forEach(o => {
+    ctx.fillStyle = o.type === 'blocked' ? 'rgba(220,38,38,0.25)' : 'rgba(234,179,8,0.25)';
+    ctx.strokeStyle = o.type === 'blocked' ? '#dc2626' : '#ca8a04';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.rect(o.x, o.y, o.w, o.h);
+    ctx.fill();
+    ctx.stroke();
+  });
+  
+  // Draw movable items
+  state.movableItems.forEach(m => {
+    ctx.fillStyle = m.color || 'rgba(59,130,246,0.3)';
+    ctx.strokeStyle = m.color || '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (m.shape === 'circle') {
+      ctx.arc(m.x + m.size / 2, m.y + m.size / 2, m.size / 2, 0, Math.PI * 2);
+    } else {
+      ctx.rect(m.x, m.y, m.size, m.size);
+    }
+    ctx.fill();
+    ctx.stroke();
+  });
+  
+  // Draw paths
+  state.paths.forEach(p => {
+    if (!p.points || p.points.length < 2) return;
+    ctx.strokeStyle = p.color || '#0071e3';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(p.points[0][0], p.points[0][1]);
+    for (let i = 1; i < p.points.length; i++) {
+      ctx.lineTo(p.points[i][0], p.points[i][1]);
+    }
+    ctx.stroke();
+  });
+  
+  // Export as PNG
+  const dataUrl = tempCanvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = dataUrl;
+  a.download = `pybricks_map_${map.name}_${date}.png`;
+  a.click();
+  mapShowToast(`已导出「${map.name}」为 PNG`);
+}
+
+/**
+ * 导出当前地图为 SVG 矢量图
+ */
+function exportCurrentMapSVG() {
+  const map = getActiveMap();
+  if (!map) {
+    mapShowToast('请先选择一个地图');
+    return;
+  }
+  const imgW = mapImage ? mapImage.width : 800;
+  const imgH = mapImage ? mapImage.height : 600;
+
+  let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${imgW}" height="${imgH}" viewBox="0 0 ${imgW} ${imgH}">
+  <title>${map.name}</title>
+  <desc>Pybricks IDE Map Export</desc>
+`;
+
+  // Background
+  svg += `  <rect width="${imgW}" height="${imgH}" fill="#ffffff"/>\n`;
+
+  // Draw map image as embedded base64
+  if (map.imageData) {
+    svg += `  <image href="${map.imageData}" width="${imgW}" height="${imgH}"/>\n`;
+  }
+
+  // Draw obstacles
+  state.obstacles.forEach(o => {
+    const fill = o.type === 'blocked' ? 'rgba(220,38,38,0.25)' : 'rgba(234,179,8,0.25)';
+    const stroke = o.type === 'blocked' ? '#dc2626' : '#ca8a04';
+    svg += `  <rect x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>\n`;
+  });
+
+  // Draw movable items
+  state.movableItems.forEach(m => {
+    const fill = m.color || 'rgba(59,130,246,0.3)';
+    const stroke = m.color || '#3b82f6';
+    if (m.shape === 'circle') {
+      const cx = m.x + m.size / 2;
+      const cy = m.y + m.size / 2;
+      const r = m.size / 2;
+      svg += `  <circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>\n`;
+    } else {
+      svg += `  <rect x="${m.x}" y="${m.y}" width="${m.size}" height="${m.size}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>\n`;
+    }
+  });
+
+  // Draw paths (lines)
+  state.paths.forEach(p => {
+    if (!p.points || p.points.length < 2) return;
+    const color = p.color || '#0071e3';
+    const points = p.points.map(pt => `${pt[0]},${pt[1]}`).join(' ');
+    svg += `  <polyline points="${points}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>\n`;
+    // Draw arrowheads
+    for (let i = 0; i < p.points.length - 1; i++) {
+      const [x1, y1] = p.points[i];
+      const [x2, y2] = p.points[i + 1];
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      const ax = mx + 6 * Math.cos(angle), ay = my + 6 * Math.sin(angle);
+      const dx1 = -4 * Math.cos(angle - Math.PI / 6), dy1 = -4 * Math.sin(angle - Math.PI / 6);
+      const dx2 = -4 * Math.cos(angle + Math.PI / 6), dy2 = -4 * Math.sin(angle + Math.PI / 6);
+      svg += `  <polygon points="${ax},${ay} ${ax + dx1},${ay + dy1} ${ax + dx2},${ay + dy2}" fill="${color}"/>\n`;
+    }
+  });
+
+  svg += '</svg>';
+
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_map_${map.name}_${date}.svg`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mapShowToast(`已导出「${map.name}」为 SVG`);
+}
+
+/**
+ * 导出当前地图为 Mermaid 流程图
+ */
+function exportCurrentMapMermaid() {
+  const map = getActiveMap();
+  if (!map) {
+    mapShowToast('请先选择一个地图');
+    return;
+  }
+
+  // Collect named nodes from paths
+  const nodeMap = new Map(); // id -> label
+  const pathEdges = []; // [fromId, toId, label]
+
+  // Build nodes from path points
+  state.paths.forEach((p, pi) => {
+    if (!p.points || p.points.length < 2) return;
+    const color = p.color || '#0071e3';
+
+    for (let i = 0; i < p.points.length - 1; i++) {
+      const [x1, y1] = p.points[i];
+      const [x2, y2] = p.points[i + 1];
+      const nodeId1 = `P${pi}_${i}`;
+      const nodeId2 = `P${pi}_${i + 1}`;
+      nodeMap.set(nodeId1, `[${Math.round(x1)},${Math.round(y1)}]`);
+      nodeMap.set(nodeId2, `[${Math.round(x2)},${Math.round(y2)}]`);
+      pathEdges.push([nodeId1, nodeId2, color]);
+    }
+  });
+
+  // Add obstacles and movables as nodes
+  state.obstacles.forEach((o, i) => {
+    const id = `Obs${i}`;
+    const label = o.type === 'blocked' ? `障碍物 ${i + 1}` : `可推动物 ${i + 1}`;
+    nodeMap.set(id, `<${label}\n${Math.round(o.w)}×${Math.round(o.h)}>`);
+  });
+
+  state.movableItems.forEach((m, i) => {
+    const id = `Mov${i}`;
+    const label = `搬运物 ${i + 1}`;
+    nodeMap.set(id, `(${label})`);
+  });
+
+  // Build Mermaid
+  let md = '%%{init:{"theme":"base","themeVariables":{"primaryColor":"#e3f2fd","primaryTextColor":"#001d3d","primaryBorderColor":"#0071e3","lineColor":"#0071e3","secondaryColor":"#fff3e0","tertiaryColor":"#f3e5f5"}}}%%\n';
+  md += '```mermaid\n';
+  md += 'flowchart LR\n';
+
+  // Node definitions
+  nodeMap.forEach((label, id) => {
+    // Check if it's a special shape
+    if (label.startsWith('(') && label.endsWith(')')) {
+      md += `    ${id}${label}\n`;
+    } else if (label.startsWith('<') && label.endsWith('>')) {
+      md += `    ${id}${label}\n`;
+    } else {
+      md += `    ${id}${label}\n`;
+    }
+  });
+
+  // Edges
+  pathEdges.forEach(([from, to, color]) => {
+    md += `    ${from} -->|${color}| ${to}\n`;
+  });
+
+  // Mark start/end if path exists
+  if (state.paths.length > 0) {
+    md += `\n    %% Path annotations\n`;
+    md += `    style Start fill:#b3e5fc,stroke:#0071e3,stroke-width:2px\n`;
+    md += `    style End fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px\n`;
+  }
+
+  md += '```\n';
+
+  // Add legend info
+  md += '\n<!-- Map metadata -->\n';
+  md += `<!-- Map: ${map.name} -->\n`;
+  md += `<!-- Obstacles: ${state.obstacles.length}, Movables: ${state.movableItems.length}, Paths: ${state.paths.length} -->\n`;
+  md += `<!-- Pixel scale: ${map.pixelToMm || 1} mm/px -->\n`;
+
+  const blob = new Blob([md], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_map_${map.name}_${date}.mmd`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mapShowToast(`已导出「${map.name}」为 Mermaid`);
+}
+
+/**
+ * 导入地图 JSON 文件
+ */
+function importMapsJSON() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      let imported = [];
+      if (Array.isArray(data)) {
+        imported = data;
+      } else if (data.maps && Array.isArray(data.maps)) {
+        imported = data.maps;
+      } else {
+        mapShowToast('无效的文件格式');
+        return;
+      }
+      if (imported.length === 0) {
+        mapShowToast('文件中没有地图数据');
+        return;
+      }
+      // 合并：追加新地图，ID重复则跳过
+      let added = 0;
+      for (const m of imported) {
+        if (!m.id || !m.name) continue;
+        const exists = state.maps.find(orig => orig.id === m.id);
+        if (!exists) {
+          state.maps.push(m);
+          added++;
+        }
+      }
+      saveMaps(state.maps);
+      renderMapList();
+      mapShowToast(`成功导入 ${added} 张地图（${imported.length - added}张重复跳过）`);
+    } catch (err) {
+      console.error('[Map] Import failed:', err);
+      mapShowToast('导入失败：文件格式错误');
+    }
+  };
+  input.click();
+}
+
+// 保持旧函数名兼容
+function exportMapsJSON() { exportAllMapsJSON(); }
+</body>
+</html>

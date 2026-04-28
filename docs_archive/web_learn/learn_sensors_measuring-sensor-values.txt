@@ -1,0 +1,1329 @@
+URL: https://pybricks.com/learn/sensors/measuring-sensor-values/
+Title: learn_sensors_measuring-sensor-values.txt
+================================================================================
+
+Measuring sensor values - Pybricks
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+    
+      
+    
+  
+
+    
+      
+
+  
+
+  
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+    
+  
+  
+  
+
+  
+    
+    
+    
+    
+
+    
+      
+        
+      
+
+      
+        
+          
+        
+        Robots can’t actually see or feel the way humans do, but by adding sensors to
+them, they can collect and report information about the environment around
+them. LEGO robots come with a variety of sensors to measure distance, color, light
+intensity, motion, and applied force.
+
+Your programs can interpret sensor information in ways that will make
+your robot seem to respond to its environment, as if it is experiencing it. For
+example, you can make your robot drive and turn around if it sees an obstacle.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Sensor
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Hub with built-in
+motion sensors
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Buttons work
+like sensors
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Motor
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        The robot operates
+in its environment.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Your program makes the
+motors respond to what
+sensors measure.
+
+    
+    
+    
+    
+    
+
+Sensors give robots a sense of their environment.
+
+In this section, you’ll learn how to measure and report sensor values. Knowing
+what each sensor measures is essential for building robots that can reliably
+react to their environment.
+
+We’ll use Inventor Bot with the SPIKE Ultrasonic
+Sensor to measure distance in the
+following examples. This is a good way to practice with sensors because you can
+easily see what is going on. Once you’ve mastered the essentials with this
+sensor, you’ll be better prepared to apply the same techniques to the color
+sensor in the next chapter.
+
+You can also follow along
+with other sensors
+that measure distance. If you don’t have any sensors, you can still measure the
+motor angle, as you’ll see later in this chapter.
+
+Challenge #5.1.A: Robot sensations ⸺ Create a table of human senses. For
+each sense, describe what you can sense and how you sense it. Which of these
+senses are available to your robot? Which sensors can be used to measure them?
+Consider not just the sensors that you can plug in but also the sensors built
+into the hub. Research ⸺ Download the specifications for the SPIKE
+Color Sensor.
+Search the web to find specifications for the other sensors and the hub.
+To find them, use search keywords from the Color Sensor data sheet. Determine
+what each sensor measures and fill in your table with senses. For each value,
+write down which units the values are reported in and how fast you can measure
+them.
+
+Measuring sensor values
+
+Let’s start with a program to measure distance values.
+Create a new program and add the Ultrasonic Sensor Setup block. Then
+create a loop that prints sensor values repeatedly by following these steps:
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Setup blocks
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Ultrasonic Sensor Setup block
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Configure all your
+sensors in the setup
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Repeatedly print
+two text values.
+
+    
+    
+    
+    
+    
+    
+
+1. Create a new program and configure your sensor on the right port. Add a Conditional Repeat block, a Print block and a Wait Time block to print repeatedly. This will print Distance: abc four times per second. You'll add the actual sensor value in the next step.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Measure Distance block
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        If you set up multiple sensors
+that measure distance, pick the
+right one here.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Each time your program gets here,
+this block measures the distance
+and passes it to the Print block.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Measured distance
+values in mm.
+
+    
+    
+    
+    
+
+2. From the Input blocks tab, choose the Measure Distance block and drop it into the second value in the Print block. Now it will print the measured distance instead of the text abc.
+
+When you run the program, you should see a continuous stream of values in the
+output pane. Move the robot around to see the values change. If values aren’t
+coming in or appear delayed, make sure the output pane is scrolled all the way
+down. It should then continue to scroll down on its own.
+
+Notice that the Measure Distance block has a rounded shape, unlike any of the
+notched, rectangular blocks you’ve used so far. Any block that provides a
+value has such a rounded shape. It does not do anything on its own, but
+it passes its value to the block that you place it in. In this example, the
+distance value was passed to the Print block. The underlying value (abc) is
+ignored and the passed value (a number for distance) is used instead.
+
+Challenge #5.1.B: Blind spots ⸺ The Ultrasonic Sensor measures the distance
+to other objects by emitting an inaudible sound and measuring how long it takes
+for the echo to return. What is the nearest and farthest distance that you
+can measure? Begin by pointing the sensor at a solid surface
+like a wall or door. What does it report when it doesn’t detect anything at
+all? Discuss ⸺ What is the impact of different materials or the size and
+shape of objects? Prepare a list of everyday objects such as walls, curtains,
+glass windows, pencils, coffee mugs, or clothing. For each object, predict how
+well the sensor will detect it. Discuss how well it will work up close or far
+away, pointing straight at it or at an angle. Verify your hypotheses by
+observing the measured values.
+
+Challenge #5.1.C: Measure and share ⸺ The technique to display sensor
+values works with any sensor. You’ll learn to use all sensors in the coming
+chapters, but you can already explore what they measure now. Create programs
+similar to the one above, but set up different sensors. Presentation ⸺ Each
+team member explores one sensor in detail. If a sensor can measure more than one
+thing, coordinate the extra work with your team. For each sensor,
+create a short demonstration and take turns presenting your findings. What can your
+sensor measure? How accurate is it? Try it under various conditions, such
+as in the dark or outside. Is there anything that surprised you?
+
+Recording sensor values
+
+Displaying sensor values as you just did is a good way to gauge how well the
+sensor works as you place it in different positions. To get a
+better picture of what the robot sees during a mission, you can record
+measurements for some time and analyze the recording afterward.
+
+Create the following program to record distance values for
+5 seconds. It is similar to your previous program, but it adds a Stopwatch
+Setup block (from the Setup tab) and a Measure Time block (from the Input tab)
+to display the elapsed time alongside the distance measurement. Note that the
+Print block is configured to display a comma (,) between printed values.
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    Recording the distance measurement for 5 seconds.
+    
+    
+
+Run the program and move the robot around. The output pane gradually fills up
+with 50 pairs of time (in milliseconds) and distance (mm) values. The Wait Time
+block waits 100 ms between measurements, so the entire program runs in about 50
+× 100 ms = 5000 ms, or five seconds.
+
+You can display the measured data in a
+graph to better see how the robot was moved. From the following graph, you can
+see that the robot started about 320 mm from the wall. Then it was moved
+farther back for two seconds and then towards the wall again at the end
+of the experiment.
+
+    
+    
+        
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 0
+ 500
+ 1000
+ 1500
+ 2000
+ 2500
+ 3000
+ 3500
+ 4000
+ 4500
+ 5000
+ 0
+ 100
+ 200
+ 300
+ 400
+ 500
+ 600
+ 700
+ 800
+ Time (ms)
+ Distance (mm)
+
+      
+    
+    
+
+Recording of the distance measurement displayed in a graph.
+
+Making your own graphs (optional)
+
+By recording data, you can verify that your program or mission works as you
+intended. For example, you could record color
+sensor values and verify that a motor stops moving when it sees a black line.
+
+Making your own graphs is optional. You can skip this section if you are short
+on time for your competition. Otherwise, it can be a great addition to your
+presentation or innovation project. It’s also a really useful skill to learn
+beyond robotics.
+
+The following steps show how to create a graph of the data you just recorded. 
+You can use your favorite spreadsheet app if you already have one.
+We’ll use LibreOffice here. It is
+free and can be installed on most computers.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        1. Right-click the output pane.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        2. Select all data.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        3. Copy the data.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        4. Clear data before next experiment.
+    
+    
+    
+    
+    
+    
+
+1. Copy the recorded measurements.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        1. Attempt to paste
+in the first cell
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        2. Data is separated by a comma.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        3. Preview the result.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        4. Click OK.
+    
+    
+    
+    
+
+2. Paste the data into a new spreadsheet and indicate separation by comma. This creates a column for time and a column for the distance. (If you use a different app that doesn't prompt you for this automatically, choose Data > Text to Columns in your app to achieve the same. If that doesn't work, paste it into a plain text file first, and import that file into your spreadsheet.)
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        1. Select
+first column.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        2. Shift and click
+to select second
+column.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        3. Insert
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        4. Chart...
+    
+    
+    
+    
+
+3. Select the columns and begin inserting a chart. These steps should be similar in most spreadsheet apps. You may be able to go here directly by clicking on a chart icon.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        1. Create an XY chart
+    
+    
+    
+    
+    
+    
+    
+    
+        2. Lines only.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        3. Finish.
+    
+    
+    
+    
+    
+    
+
+4. Configure the chart. Choose XY (Scatter) or similar. Select 'Lines Only'.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        X-axis with time in ms.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Y-axis with
+distance in mm.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        The robot was moved away
+from the wall and back again.
+
+    
+    
+    
+    
+
+5. The end result. You can add additional labels for the X and Y axes for clarity.
+
+Challenge #5.1.D: Where did the time go? ⸺ In the experiment above, the
+measurements are spaced almost exactly 100 ms apart. This might give you the
+impression that measuring and printing values takes no time at all. Actually,
+it only appears that way because 100 ms is plenty of time to send a few numbers
+to your computer in the background without holding up your program. If you
+print more text more quickly, you will see it start to impact
+the time. To see this, try reducing the wait time to 1 ms. Click the > icon
+on the Print block to add another value and make it print something like
+“looooooong text”. Analyze the time between the measurements. What is the
+smallest and biggest gap? Are the time differences constant or do they change a
+lot? Discuss ⸺ Could you have done the original experiment with the 100 ms
+pause without the stopwatch block? Why is it still better to keep it?
+
+Recording movement  (optional)
+
+Most LEGO motors have a built-in sensor that measures the traveled angle.
+The drive base uses this information to figure out how far it has traveled. You
+can read these measurements with the Drive Base Measure block from the Input tab.
+This can be used to record information about how your robot moves, as shown in
+the following example.
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    Recording movement. This uses the Multitask block to drive and record
+values at the same time. It is configured to run until one task completes
+so that data recording stops when the experiments ends.
+    
+    
+
+As before, this program produces comma-separated data points that you can
+copy to a spreadsheet editor if you want to make your own graph. The result
+is similar to the following graph.
+
+    
+    
+        
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 0
+ 500
+ 1000
+ 1500
+ 2000
+ 2500
+ 3000
+ 3500
+ 4000
+ 4500
+ -300
+ -200
+ -100
+ 0
+ 100
+ 200
+ 300
+ 
+ 
+ Distance (mm)
+ Speed (mm/s)
+ Time (ms)
+
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Maximum position (250 mm).
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Top speed.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        500 ms
+pause.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Negative speed
+means reverse.
+
+    
+    
+    
+    
+    
+    
+
+Distance and speed recording when driving the robot back and forth using the program shown above. Even if you hadn't seen it move, you can determine much of what it did by carefully looking at the graph.
+
+Challenge #5.1.E: Ramp it up ⸺ Add two Drive Base Configuration blocks
+to your program to choose a new drive speed and acceleration. Verify that it
+reaches your configured top speed at the given acceleration. To verify the
+acceleration, take the change in speed and divide it by the time it took to get
+to top speed. You can determine this from the printed values or using a graph
+similar to the one above.
+
+Challenge #5.1.G: Where am I? ⸺ Create a program that records the
+Ultrasonic Sensor distance measurement as the robot turns around, as shown
+below. Place the robot in a corner and run the experiment. Create a graph with
+the robot angle on the x-axis and the sensor distance on the y-axis. An example
+result is given below. Based on the graph alone, can you determine the
+distances to the walls? What about the starting angle with respect to the
+walls? Discuss ⸺ Some data points appear to be missing (they are not behind
+the picture). Where are they? If you squint, you can almost see two line
+segments that dip down in the middle. Compare the angles of both dips. How far
+are they apart, and why? Why does a line graph not work in this case? Some
+angles appear to have multiple clearly distinct distance values. What does this
+overlap mean? Why does this occur just in between the two dips mentioned above?
+Why is it useful to show the robot angle on the x-axis instead of the time
+like we did so far?
+
+    
+    
+        
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 0
+ 30
+ 60
+ 90
+ 120
+ 150
+ 180
+ 210
+ 240
+ 270
+ 300
+ 330
+ 360
+ 200
+ 250
+ 300
+ 350
+ 400
+ 450
+ 500
+ Robot rotation angle (°)
+ Ultrasonic  sensor  measurement (mm)
+??
+
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Starting orientation
+    
+    
+    
+    
+
+Graph for Challenge #5.1.G: A recording of the ultrasonic sensor measurement as the robot makes several full rotations. Based on this data, can you figure out where the robot is placed relative to the walls?
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    The program for Challenge #5.1.G records the Ultrasonic Sensor distance
+while the robot turns around.
+    
+    
+
+Challenge #5.1.H: Hitting a wall ⸺ Now it is your turn to design and
+implement an experiment to determine the robot’s position. This time, have the
+robot drive in a square parallel to the walls of a corner, as shown below. You
+decide which values to record and plot in a graph. For example, you might
+record the Ultrasonic Sensor distance or drive base angle. For this experiment,
+choose time for the X-axis.  Discuss ⸺ Before you run your experiment,
+sketch what you think the graphs will look like. Assume that you start in
+corner A and that Q is 250 mm and R is 500 mm. Run the experiment and verify
+your prediction. Next, run the experiment from starting position B, C, or D.
+Based on the data, ask your teammates where they think the robot started.
+
+    
+    
+        
+
+  
+  
+    
+      
+    
+    
+      
+    
+    
+      
+    
+  
+  
+    
+    
+    
+    
+    B
+    C
+    D
+    A
+    
+    
+    Q
+    R
+  
+
+      
+    
+    
+
+Overview for Challenge #5.1.H: Record data while driving in a square to determine where the robot started relative to the walls.

@@ -1,0 +1,69 @@
+News category - Pybricks 
+
+ Python 27 
+
+ Block Coding 26 
+
+ Technic 23 
+
+ Remote Control 15 
+
+ SPIKE Prime 12 
+
+ Steering Car 11 
+
+ MINDSTORMS Robot Inventor 10 
+
+ Xbox Controller 9 
+
+ City 8 
+
+ SPIKE Essential 8 
+
+ Boost 7 
+
+ Powered Up Remote 7 
+
+ News 5 
+
+ Hub to Hub Communication 3 
+
+ MINDSTORMS EV3 2 
+
+ LEGO 42099 2 
+
+ LEGO 42160 2 
+
+ LEGO 42124 2 
+
+ LEGO 42109 2 
+
+ LEGO 42129 2 
+
+ LEGO 42131 2 
+
+ LEGO 42146 2 
+
+ News category 
+
+ Saving LEGO® MINDSTORMS® …
+
+ Pybricks reboots LEGO® MINDSTORMS® for use in the modern classroom. Help us save hundreds of thousands of robots from the e-waste pile!
+
+ Pybricks 3.5 is here!
+
+ What’s new in in Pybricks 3.5? Comment block, Xbox Controller rumble, keyboard input, and more!
+
+ MINDSTORMS EV3 archive
+
+ Where to find the MINDSTORMS EV3 software and project resources.
+
+ Get creative with your smart LEGO® bricks using Pybricks
+
+ Pybricks releases block-based coding! Now fans of all LEGO themes can bring their smart bricks together in a  single app for endless possibilities.
+
+ Make your LEGO® System &amp; LEGO® Technic creations come alive with Python coding using Pybricks
+
+ Pybricks releases Python coding for LEGO® Powered Up. LEGO fans of all ages can learn to code and make their LEGO creations come alive.
+
+ Back to Top &uarr;

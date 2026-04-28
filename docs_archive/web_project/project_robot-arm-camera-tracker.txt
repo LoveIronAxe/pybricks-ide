@@ -1,0 +1,82 @@
+Robotic arm with vision - Pybricks 
+
+ Laurens Valk 
+
+ Let’s build, code, and learn! 
+
+ Follow 
+
+ Website 
+
+ Facebook 
+
+ GitHub 
+
+ Instagram 
+
+ YouTube 
+
+ Custom Social Profile Link
+
+-->
+
+ Robotic arm with vision
+
+ What will you build when your robots can see? 
+
+ This project is a fun demo of our new
+smart sensor functionality. Your phone
+detects the position and size of a bright colored object, so your robot can
+find it and pick it up. 
+
+ How does it work? 
+
+ This project extends the basic demos from
+the  smart sensor introduction guide ,
+so be sure to try those first. Those examples use a single loop to process the
+received values and act on them, but this doesn’t always work well in bigger projects. 
+
+ Instead, you can use a background task to process and unpack the sensor
+values into your variables. Then your main program can use the variables when
+needed, as shown below. 
+
+ Download block code project 
+
+ This program has two tasks. One keeps unpacking the received sensor
+values into variables. The other task finds the object by rotating the robot
+base until the object is in the right position to be picked up.
+
+ The main task can access the received values by just reading the variables. Here
+the base keeps turning until your phone sees a colored object that is big
+enough ( width &gt; 8 ) and in the expected position ( 70 &lt; x &lt; 80 ) for pickup. 
+
+ This program also shows how you can adjust the color that the phone should try
+to detect. With the default red color ( hue=0 ), the magenta beams would
+sometimes be mistaken for red. By choosing a higher hue as the reference
+( hue=8 ), we look for colors that are slightly more orange than magenta.
+This reduces the false positives, and the red object we’re looking for is still
+well within range. 
+
+ You can see the result in the video below. 
+
+ Facebook  
+
+ LinkedIn  
+
+ You May Also Enjoy 
+
+ Groceries with machine learning
+
+ A LEGO SPIKE Prime robot goes shopping. Find the broccoli with machine learning.
+
+ Saving LEGO® MINDSTORMS® …
+
+ Pybricks reboots LEGO® MINDSTORMS® for use in the modern classroom. Help us save hundreds of thousands of robots from the e-waste pile!
+
+ Using Pybricks with Visual Studio Code and other editors
+
+ You can use Pybricks in your favorite code editor like Visual Studio Code. Here’s how.
+
+ Using Pybricks on Linux
+
+ Tips and tricks for using Pybricks successfully on Linux. With udev rules and snap configurations for Chromium.

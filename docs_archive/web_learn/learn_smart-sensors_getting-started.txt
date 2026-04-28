@@ -1,0 +1,343 @@
+URL: https://pybricks.com/learn/smart-sensors/getting-started/
+Title: learn_smart-sensors_getting-started.txt
+================================================================================
+
+Use your phone as a smart sensor - Pybricks
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+    
+      
+    
+  
+
+    
+      
+
+  
+
+  
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+    
+  
+  
+  
+
+  
+    
+    
+    
+    
+
+    
+      
+        
+      
+
+      
+        
+          
+        
+        The sensors that come with your LEGO set are simple and effective, but they are
+limited in what they can measure. Did you know there’s a perfectly good
+sensor in your pocket?
+
+In this chapter you’ll learn to use your phone as
+a smart sensor to add vision and intelligence to
+your creations.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Write programs like
+you normally do.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        Program runs
+on the hub.
+
+    
+    
+    
+    
+    
+    
+    
+    
+        Your phone sends
+values to the hub.
+It's like a sensor.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        pybricks.com/smart
+
+    
+    
+    
+    
+    
+
+Using your phone as a smart sensor. In this example, the tomato is detected at 37% horizontal (x) and 48% vertical (y). This program shows the x value (37) on the Spike Prime display.
+
+This is a new feature: This project uses new beta features. Use Pybricks
+Beta to try it early. Just update the Pybricks firmware
+and create programs as usual!
+
+Connecting your phone as a sensor
+
+You’ll create programs on your tablet or computer as usual. It probably has a
+camera, but it would be very impractical to use on a mobile robot! Instead,
+you’ll connect your phone to the Spike Prime hub at the same time.
+
+You can think of your phone as a wireless sensor. Your program can use the
+measured values in the same way as regular sensor values, as you learned
+previously. The hub runs your
+program all by itself, so you can also restart it without your computer nearby.
+
+To connect, follow these steps as shown in the video below.
+
+  On your computer or tablet, connect your Spike Prime hub with Pybricks as
+usual. Don’t start any programs yet.
+  On your phone, choose one of the smart sensor applications.
+  Press the Bluetooth button on the Spike Prime hub to make it blink again.
+  
+    On the sensor page, connect using the Bluetooth button.
+
+    On Android, this works right away. On iPhone, use a free browser app that supports Bluetooth, such as
+Bluefy.
+  
+
+  
+  
+
+Using sensor values from your phone
+
+Now that your computer and phone are both connected to the hub, let’s run the
+example program shown below.
+
+If you hold a red object in front of your phone, your hub displays the
+horizontal (x) position, as demonstrated in the video above.
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    Receive the color tracker values and display the x-coordinate.
+    
+    
+
+The App Data Setup block lets you specify which smart sensor
+you’ll use on your phone. This way your robot knows what values to expect. The
+App Data Values block gives you a list of measured values.
+
+The color tracker that you just tried gives a list of four values:
+
+  x-coordinate: Horizontal position, from the left.
+  y-coordinate: Vertical position, from the top.
+  width of the bounding box.
+  height of the bounding box.
+
+All values are percentages (0 to 100%) of the longest side of the camera
+picture. If there isn’t any matching colored object, you’ll get all zeros. If
+there are multiple, you’ll get the biggest object.
+
+You can use the elements of the list directly with list blocks, or unpack them into variables to keep things easy to follow.
+
+Following a colored object
+
+You can use the position and size information to follow a colored object by
+placing your phone on a robot:
+
+  
+  
+
+You can build your own robot or use the
+StarterBot and add a
+phone holder as shown below. If your phone is larger, use a longer axle at the
+center, and use the yellow angled beams to hold it in place.
+
+  
+    
+      
+          
+      
+    
+  
+    
+      
+          
+      
+    
+  
+    
+      
+          
+      
+    
+  
+  
+
+The color tracking program is mostly the same as before, but we’ve added drive
+blocks for three behaviors:
+
+  If we don’t see the colored object, rotate in place.
+  If we see it up close, stop.
+  Otherwise, drive at constant speed and adjust steering to steer towards it.
+
+Because the camera faces the other way with this design, we’ll consider that
+the front of the robot. This is why the motor settings are reversed compared to
+the conventional StarterBot programs.
+
+    
+        Download block code project
+    
+
+    
+        
+    
+    
+    
+    Follow a colored object.
+    
+    
+
+Using other smart sensors
+
+You can try various smart sensors. The connection procedure is
+the same in all cases. The only difference is in the values that your program
+receives. Use the menu on the left for details on each of the available
+sensors.
+
+Using other hubs (Optional)
+
+The smart sensor technique works best with SPIKE Prime and MINDSTORMS Robot
+Inventor. They can easily connect to your computer and your phone at the same
+time. You can connect with USB too, if you prefer. For other hubs, read on.
+
+  
+  
+
+SPIKE Essential
+
+This hub works almost the same, but it doesn’t have a
+Bluetooth button on the hub. So the procedure is slightly different:
+
+  Turn on the hub. The Bluetooth light blinks.
+  Using your phone, choose a smart sensor and connect with Bluetooth.
+  Now use USB to connect to your computer to write and run programs.
+
+Technic and City
+
+Technic Hub and City Hub support only one Bluetooth connection and they
+don’t have a USB port, but you can still make it work:
+
+  Connect with Bluetooth as usual and run the program.
+  Turn the hub off. This way you disconnect and the program remains saved.
+  Turn the hub on. Using your phone, choose a smart sensor and connect with Bluetooth.
+  Use the green button on the hub to start your saved program.
+
+So everything works the same; it is just more cumbersome to change
+your program. This technique does not work on the Boost Move Hub, which does not
+have enough memory for this feature.
+
+Using Python (optional)
+
+If you prefer to use Python, you can use the following example as a starting
+point. It’s the same as the block program.
+
+First, initialize the AppData class from the pybricks.tools module.
+Pass a format string
+to it, which represents the data for the smart sensor you choose. For the color
+tracker in this example, we receive 4 bytes, so the format is bbbb.
+
+Obtain the most recently received values using the get_values() method.
+Some smart sensors allow you to send a configuration command. For
+the color tracker, you can send a single byte representing half of the hue of
+the requested color. For dark blue (hue = 220 degrees), you would send 110.
+
+    Copy code
+
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Color
+from pybricks.tools import AppData
+
+# Set up.
+hub = PrimeHub()
+app = AppData('bbbb')
+app.write_bytes(bytes([Color.RED.h // 2]))
+x = 0
+y = 0
+width = 0
+height = 0
+
+# The main program starts here.
+while True:
+    # First we unpack the list of coordinates from the phone into our variables.
+    x, y, width, height = app.get_values() or [0] * 4
+    # Display the x position on the display for easy testing.
+    hub.display.number(x)
+
+Python representation of the block program.

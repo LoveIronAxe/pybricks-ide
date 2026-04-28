@@ -1,0 +1,52 @@
+{
+  "vehicles": [
+    {
+      "id": "test_vehicle_001",
+      "name": "测试车辆-皮皮号",
+      "hub": {
+        "type": "PrimeHub",
+        "ports": {
+          "A": { "device": "Motor", "className": "MotorLarge", "config": { "direction": "CCW", "reversed": true } },
+          "B": { "device": "Motor", "className": "MotorLarge", "config": { "direction": "CW", "reversed": false } },
+          "C": { "device": "Motor", "className": "MotorMedium", "config": { "direction": "CW", "reversed": false } },
+          "D": null,
+          "E": { "device": "ColorSensor", "className": "ColorSensor", "config": {} },
+          "F": { "device": "UltrasonicSensor", "className": "UltrasonicSensor", "config": {} }
+        }
+      },
+      "wheelGroup": {
+        "leftPort": "A",
+        "rightPort": "B",
+        "wheelDiameter": 62,
+        "wheelWidth": 20,
+        "axleTrack": 112
+      },
+      "lineFollow": {
+        "enabled": true,
+        "sensorPort": "E",
+        "kp": 1.5,
+        "threshold": 35,
+        "waitMs": 10
+      }
+    },
+    {
+      "id": "test_vehicle_002",
+      "name": "测试车辆-最小配置",
+      "hub": {
+        "type": "PrimeHub",
+        "ports": {
+          "A": { "device": "Motor", "className": "MotorLarge", "config": { "direction": "CW", "reversed": false } },
+          "B": { "device": "Motor", "className": "MotorLarge", "config": { "direction": "CW", "reversed": false } },
+          "C": null, "D": null, "E": null, "F": null
+        }
+      },
+      "wheelGroup": {
+        "leftPort": "A",
+        "rightPort": "B",
+        "wheelDiameter": 56,
+        "axleTrack": 112
+      },
+      "lineFollow": null
+    }
+  ]
+}

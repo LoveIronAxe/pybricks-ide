@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pybricks IDE - 车辆配置</title>
+<!-- PWA -->
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0071e3">
+<meta name="description" content="Pybricks 机器车可视化编程IDE - 可离线使用">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230071e3'/><text x='256' y='320' font-size='280' text-anchor='middle' fill='white'>P</text></svg>">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --primary: #0071e3;
+  --on-primary: #ffffff;
+  --primary-container: #d4e3ff;
+  --on-primary-container: #001c38;
+  --surface: #ffffff;
+  --surface-variant: #f5f5f5;
+  --surface-container: #fef7ff;
+  --surface-container-low: #f8f2ff;
+  --on-surface: #1c1b1f;
+  --on-surface-variant: #49454f;
+  --outline: #74777f;
+  --outline-variant: #c5c5d0;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --elevation-1: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-2: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.3);
+  --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --sidebar-width: 56px;
+  --list-width: 260px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.18);
+  --font: 'Roboto', 'Noto Sans SC', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--surface-container);
+  color: var(--on-surface);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== LAYOUT ===== */
+.ide-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 56px;
+  min-width: 56px;
+  background: var(--surface);
+  border-right: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 4px;
+  z-index: 10;
+}
+
+.sidebar-item {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.15s;
+  color: var(--on-surface-variant);
+  font-size: 10px;
+  font-weight: 500;
+  gap: 2px;
+}
+
+.sidebar-item .icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.sidebar-item:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+.sidebar-item.active {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.sidebar-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: 0 3px 3px 0;
+}
+
+/* ===== LIST PANEL ===== */
+.list-panel {
+  width: 260px;
+  min-width: 200px;
+  max-width: 360px;
+  background: var(--surface);
+  border-right: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--outline-variant);
+  flex-shrink: 0;
+}
+
+.list-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.btn-add {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.btn-add:hover { background: rgba(0,113,227,0.08); }
+
+.list-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.btn-header-action {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.btn-header-action:hover { background: rgba(0,0,0,0.06); color: var(--on-surface); }
+
+.list-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.list-item {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 14px;
+  color: var(--on-surface);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.list-item:hover { background: rgba(0,0,0,0.04); }
+
+.list-item.active {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.list-item .item-icon { font-size: 18px; }
+
+.list-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--on-surface-variant);
+  font-size: 13px;
+}
+
+/* ===== DETAIL PANEL ===== */
+.detail-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.detail-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== PRIME HUB CARD ===== */
+.hub-card {
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.hub-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+  align-self: flex-start;
+}
+
+/* Hub body - 204x164px = 2x scale of 102x82mm */
+.hub-body {
+  position: relative;
+  width: 204px;
+  height: 164px;
+  background: linear-gradient(145deg, #2B4DB0, #152E7A);
+  border-radius: 22px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 16px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+/* 5x5 display screen */
+.hub-display {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 90px;
+  background: #111;
+  border-radius: 8px;
+  border: 1px solid #333;
+  display: grid;
+  grid-template-columns: repeat(5, 14px);
+  grid-template-rows: repeat(5, 14px);
+  gap: 3px;
+  padding: 6px;
+}
+
+.display-pixel {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1a0800;
+  transition: background 0.05s, box-shadow 0.05s;
+}
+
+.display-pixel.on {
+  background: #FF6600;
+  box-shadow: 0 0 6px 2px rgba(255,100,0,0.8);
+}
+
+/* Hub buttons */
+.hub-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12px;
+  gap: 20px;
+}
+
+.hub-btn {
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.1s;
+  font-family: var(--font);
+}
+
+.btn-left, .btn-right {
+  width: 36px;
+  height: 14px;
+  background: #ddd;
+  border-radius: 7px;
+  border: 1px solid #bbb;
+}
+
+.btn-center {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ddd;
+  border: 1px solid #bbb;
+  font-size: 0;
+}
+
+.btn-bt {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  border: 1px solid #bbb;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hub ports */
+.hub-port {
+  position: absolute;
+  width: 14px;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  border: 1px solid #0a0a0a;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hub-port:hover { background: #333; }
+.hub-port.connected { background: #888; border-color: #666; }
+
+.port-label {
+  position: absolute;
+  font-size: 8px;
+  font-weight: bold;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.port-A { left: -10px; top: 58px; }
+.port-A .port-label { left: -14px; top: -1px; }
+.port-B { right: -10px; top: 58px; }
+.port-B .port-label { right: -14px; top: -1px; }
+.port-C { left: -10px; top: 128px; }
+.port-C .port-label { left: -14px; top: -1px; }
+.port-D { right: -10px; top: 128px; }
+.port-D .port-label { right: -14px; top: -1px; }
+.port-E { left: 38px; bottom: -9px; }
+.port-E .port-label { bottom: -16px; left: 50%; transform: translateX(-50%); top: auto; }
+.port-F { right: 38px; bottom: -9px; }
+.port-F .port-label { bottom: -16px; right: -1px; top: auto; }
+
+/* Status LED */
+.hub-led {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.hub-led.green.on {
+  background: #00ff00;
+  box-shadow: 0 0 8px 3px rgba(0,255,0,0.7);
+}
+
+/* Device cards on hub */
+.hub-device-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  min-height: 32px;
+}
+
+.device-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-sm);
+  min-width: 100px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+  position: relative;
+  font-size: 13px;
+}
+
+.device-card:hover { box-shadow: var(--elevation-1); }
+
+.device-card .device-emoji { font-size: 18px; }
+.device-card .device-name { flex: 1; font-weight: 500; }
+.device-card .device-port {
+  font-size: 10px;
+  color: var(--on-surface-variant);
+  background: var(--surface-variant);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.device-remove {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-variant);
+  color: var(--on-surface-variant);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.device-remove:hover { background: var(--error); color: white; }
+
+/* ===== PORT MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: var(--elevation-3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: scale(0.9);
+  transition: transform 0.2s;
+}
+
+.modal-overlay.open .modal { transform: scale(1); }
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--on-surface);
+}
+
+.modal-subtitle {
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  margin-top: -8px;
+}
+
+.device-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.device-option:hover { background: rgba(0,113,227,0.06); border-color: var(--primary); }
+.device-option.selected { background: var(--primary-container); border-color: var(--primary); }
+
+.device-option .opt-emoji { font-size: 24px; }
+.device-option .opt-name { flex: 1; font-size: 14px; font-weight: 500; }
+.device-option .opt-check { color: var(--primary); font-size: 18px; display: none; }
+.device-option.selected .opt-check { display: block; }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ===== BUTTONS ===== */
+.btn-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 20px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  box-shadow: var(--elevation-1);
+}
+
+.btn-filled:hover { background: color-mix(in srgb, var(--primary) 88%, white); box-shadow: var(--elevation-2); }
+.btn-filled:active { box-shadow: none; }
+
+.btn-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 24px;
+  border: 1px solid var(--outline);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-outlined:hover { background: rgba(0,0,0,0.06); }
+
+/* ===== WHEEL GROUP CARD ===== */
+.wheel-group-card {
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.wheel-group-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.wheel-motors {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.wheel-motor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 2px dashed var(--outline-variant);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  min-width: 90px;
+}
+
+.wheel-motor.filled {
+  border-style: solid;
+  border-color: var(--primary);
+  background: var(--primary-container);
+}
+
+.wheel-motor:hover { border-color: var(--primary); }
+.wheel-motor .wm-emoji { font-size: 28px; }
+.wheel-motor .wm-name { font-size: 12px; font-weight: 500; }
+.wheel-motor .wm-port { font-size: 10px; color: var(--on-surface-variant); background: var(--surface-variant); padding: 1px 6px; border-radius: 4px; }
+
+.wheel-arrow {
+  font-size: 20px;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+
+.wheel-arrow:hover { background: rgba(0,0,0,0.06); }
+
+.wheel-config {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+}
+
+.field-input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field-input:focus { border-color: var(--primary); border-width: 2px; }
+
+.axle-info {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  text-align: center;
+  padding: 8px;
+  background: var(--surface-variant);
+  border-radius: var(--radius-sm);
+}
+
+/* ===== LINE FOLLOW CARD ===== */
+.linefollow-card {
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.linefollow-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.linefollow-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.color-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.color-preview {
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--outline);
+  cursor: pointer;
+}
+
+.side-select {
+  display: flex;
+  gap: 8px;
+}
+
+.side-btn {
+  flex: 1;
+  height: 40px;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.side-btn.active {
+  background: var(--primary-container);
+  border-color: var(--primary);
+  color: var(--on-primary-container);
+}
+
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider-label { font-size: 12px; font-weight: 500; color: var(--on-surface-variant); }
+.slider-value { font-size: 13px; font-weight: 500; color: var(--primary); }
+
+input[type="range"] {
+  width: 100%;
+  height: 4px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.freq-warning {
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.freq-warning.orange { background: #fff3e0; color: #e65100; }
+.freq-warning.red { background: #ffebee; color: var(--error); }
+.freq-warning .warn-icon { font-size: 16px; }
+
+/* ===== CLAW/FORK CARD ===== */
+.claw-card {
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.claw-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+}
+
+.claw-states {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.claw-state {
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.claw-state.active-state {
+  border-color: var(--primary);
+  background: var(--primary-container);
+}
+
+.state-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.state-name { font-size: 13px; font-weight: 500; }
+
+.state-check {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+}
+
+.state-check input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+
+.state-angle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.state-angle .field-input { flex: 1; }
+
+.claw-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.claw-actions .btn-test {
+  flex: 1;
+  height: 36px;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.claw-actions .btn-test:hover { background: rgba(0,0,0,0.06); }
+.claw-actions .btn-test:active { background: rgba(0,0,0,0.1); }
+
+/* ===== DRAG OVER ===== */
+.drag-over {
+  border-color: var(--primary) !important;
+  background: rgba(0,113,227,0.04) !important;
+}
+
+/* ===== ADD VEHICLE MODAL ===== */
+.add-modal .modal { max-width: 360px; }
+
+.add-modal .field-group { display: flex; flex-direction: column; gap: 4px; }
+.add-modal .field-label { font-size: 12px; font-weight: 500; color: var(--on-surface-variant); }
+.add-modal .field-input { height: 56px; padding: 16px 12px 4px; border: 1px solid var(--outline); border-radius: 4px; background: transparent; color: var(--on-surface); font-family: var(--font); font-size: 16px; outline: none; transition: border-color 0.15s; position: relative; }
+.add-modal .field-input:focus { border-color: var(--primary); border-width: 2px; }
+.add-modal .field-input-wrapper { position: relative; }
+.add-modal .field-placeholder { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--on-surface-variant); pointer-events: none; transition: all 0.15s; }
+.add-modal .field-input:focus + .field-placeholder,
+.add-modal .field-input:not(:placeholder-shown) + .field-placeholder { top: 10px; transform: none; font-size: 12px; color: var(--primary); }
+.add-modal .field-input:focus + .field-placeholder { color: var(--primary); }
+
+.dropdown-select {
+  height: 56px;
+  padding: 16px 12px 4px;
+  border: 1px solid var(--outline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.dropdown-select:focus { border-color: var(--primary); border-width: 2px; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
+  gap: 8px;
+}
+
+.topbar-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-surface);
+  flex: 1;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  box-shadow: var(--elevation-1);
+}
+
+.btn-export:hover { background: color-mix(in srgb, var(--primary) 88%, white); box-shadow: var(--elevation-2); }
+
+/* ===== TOPBAR ACTIONS ===== */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-icon:hover { background: rgba(0,0,0,0.06); }
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-md);
+  box-shadow: var(--elevation-3);
+  min-width: 200px;
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dropdown-menu.show { display: flex; }
+
+.dropdown-item {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--on-surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.dropdown-item:hover { background: var(--surface-variant); }
+
+/* File input hidden */
+#vehicleFileInput { display: none; }
+
+/* ===== PAGE PAGES ===== */
+.page { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.page.active { display: flex; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <span class="topbar-title">Pybricks IDE</span>
+  <!-- 导入导出按钮组 -->
+  <div class="topbar-actions">
+    <button class="btn-icon" id="btnImportVehicle" title="导入车辆 (JSON)" onclick="importVehiclesJSON()">📤 导入</button>
+    <div class="dropdown">
+      <button class="btn-icon dropdown-toggle" id="btnExportVehicle" onclick="toggleExportMenu()">📥 导出 ▼</button>
+      <div class="dropdown-menu" id="exportMenu">
+        <div class="dropdown-item" onclick="exportVehiclesJSON()">📋 导出全部车辆 (JSON)</div>
+        <div class="dropdown-item" onclick="exportVehiclePython()">🐍 导出当前车辆 (Python)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="ide-layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-item active" data-page="vehicle" onclick="switchPage('vehicle')">
+      <span class="icon material-icons">directions_car</span>
+      <span>车辆</span>
+    </div>
+    <div class="sidebar-item" data-page="map" onclick="switchPage('map')">
+      <span class="icon material-icons">map</span>
+      <span>地图</span>
+    </div>
+    <div class="sidebar-item" data-page="program" onclick="switchPage('program')">
+      <span class="icon material-icons">code</span>
+      <span>程序</span>
+    </div>
+    <div class="sidebar-item" data-page="debug" onclick="switchPage('debug')">
+      <span class="icon material-icons">bug_report</span>
+      <span>调试</span>
+    </div>
+  </nav>
+
+  <!-- ===== VEHICLE PAGE ===== -->
+  <div class="page active" id="page-vehicle">
+    <!-- LIST PANEL -->
+    <div class="list-panel">
+      <div class="list-header">
+        <span class="list-title">车辆</span>
+        <div class="list-header-actions">
+          <button class="btn-header-action" onclick="importVehiclesJSON()" title="导入车辆">📤</button>
+          <button class="btn-header-action" onclick="exportVehiclesJSON()" title="导出车辆">📥</button>
+          <button class="btn-add" onclick="openAddVehicleModal()">+</button>
+        </div>
+      </div>
+      <div class="list-content" id="vehicle-list">
+        <div class="list-empty">暂无车辆，点击 + 添加</div>
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div class="detail-panel" id="vehicle-detail">
+      <div class="detail-empty">请选择或添加一辆车辆</div>
+    </div>
+  </div>
+
+  <!-- ===== MAP PAGE ===== -->
+  <div class="page" id="page-map">
+    <div class="list-panel">
+      <div class="list-header">
+        <span class="list-title">地图</span>
+        <button class="btn-add" onclick="openAddMapModal()">+</button>
+      </div>
+      <div class="list-content">
+        <div class="list-empty">地图功能开发中...</div>
+      </div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-empty">地图编辑器开发中</div>
+    </div>
+  </div>
+
+  <!-- ===== PROGRAM PAGE ===== -->
+  <div class="page" id="page-program">
+    <div class="list-panel">
+      <div class="list-header">
+        <span class="list-title">程序</span>
+        <button class="btn-add">+</button>
+      </div>
+      <div class="list-content">
+        <div class="list-empty">程序编辑器开发中...</div>
+      </div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-empty">代码块编辑器开发中</div>
+    </div>
+  </div>
+
+  <!-- ===== DEBUG PAGE ===== -->
+  <div class="page" id="page-debug">
+    <div class="list-panel">
+      <div class="list-header">
+        <span class="list-title">调试</span>
+      </div>
+      <div class="list-content">
+        <div class="list-empty">模拟器开发中...</div>
+      </div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-empty">调试模拟器开发中</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== ADD VEHICLE MODAL ===== -->
+<div class="modal-overlay add-modal" id="add-vehicle-modal" onclick="if(event.target===this)closeAddVehicleModal()">
+  <div class="modal">
+    <div class="modal-title">添加车辆</div>
+    <div class="field-group">
+      <label class="field-label">名称</label>
+      <div class="field-input-wrapper">
+        <input class="field-input" type="text" id="new-vehicle-name" placeholder=" " value="" />
+        <span class="field-placeholder">车辆名称</span>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Hub 类型</label>
+      <select class="dropdown-select" id="new-vehicle-hub">
+        <option value="PrimeHub" selected>Prime Hub</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outlined" onclick="closeAddVehicleModal()">取消</button>
+      <button class="btn-filled" onclick="createVehicle()">创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PORT DEVICE MODAL ===== -->
+<div class="modal-overlay" id="port-modal" onclick="if(event.target===this)closePortModal()">
+  <div class="modal">
+    <div class="modal-title" id="port-modal-title">Port A</div>
+    <div class="modal-subtitle" id="port-modal-subtitle">选择连接的设备</div>
+    <div id="port-device-list"></div>
+    <div class="modal-actions">
+      <button class="btn-outlined" onclick="closePortModal()">取消</button>
+      <button class="btn-filled" id="port-confirm-btn" onclick="confirmPortDevice()">确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DEVICE DEFINITIONS =====
+const MOTOR_DEVICES = [
+  { name: '中型电机', emoji: '⚙️', className: 'MotorMedium', type: 'motor' },
+  { name: '大型电机', emoji: '⚙️➕', className: 'MotorLarge', type: 'motor' },
+  { name: '力传感器', emoji: '🔲', className: 'ForceSensor', type: 'motor' },
+];
+
+const SENSOR_DEVICES = [
+  { name: '颜色传感器', emoji: '🔴', className: 'ColorSensor', type: 'sensor' },
+  { name: '颜色距离传感器', emoji: '📏', className: 'ColorDistanceSensor', type: 'sensor' },
+  { name: '超声波传感器', emoji: '📡', className: 'UltrasonicSensor', type: 'sensor' },
+  { name: '红外传感器', emoji: '📶', className: 'InfraredSensor', type: 'sensor' },
+  { name: '倾斜传感器', emoji: '📐', className: 'TiltSensor', type: 'sensor' },
+];
+
+const PORT_MOTOR = ['A','B','C','D'];
+const PORT_SENSOR = ['E','F'];
+
+const DEVICES_BY_PORT = {
+  'A': MOTOR_DEVICES, 'B': MOTOR_DEVICES, 'C': MOTOR_DEVICES, 'D': MOTOR_DEVICES,
+  'E': SENSOR_DEVICES, 'F': SENSOR_DEVICES,
+};
+
+const DEVICE_EMOJI = {
+  'MotorMedium': '⚙️', 'MotorLarge': '⚙️➕',
+  'ForceSensor': '🔲', 'ColorSensor': '🔴',
+  'ColorDistanceSensor': '📏', 'UltrasonicSensor': '📡',
+  'InfraredSensor': '📶', 'TiltSensor': '📐',
+};
+
+const DEVICE_NAME_MAP = {
+  'MotorMedium': '中型电机', 'MotorLarge': '大型电机',
+  'ForceSensor': '力传感器', 'ColorSensor': '颜色传感器',
+  'ColorDistanceSensor': '颜色距离传感器', 'UltrasonicSensor': '超声波传感器',
+  'InfraredSensor': '红外传感器', 'TiltSensor': '倾斜传感器',
+};
+
+// ===== STATE =====
+let vehicles = [];
+let activeVehicleId = null;
+let activePort = null;
+let selectedDeviceClass = null;
+let dragSrcType = null;
+let dragSrcPort = null;
+
+// ===== UTILS =====
+function uuid() {
+  return 'v_' + Math.random().toString(36).substr(2, 9);
+}
+
+function save() {
+  localStorage.setItem('pybricks_vehicles', JSON.stringify(vehicles));
+  localStorage.setItem('pybricks_activeVehicleId', activeVehicleId || '');
+}
+
+function load() {
+  try {
+    vehicles = JSON.parse(localStorage.getItem('pybricks_vehicles') || '[]');
+    activeVehicleId = localStorage.getItem('pybricks_activeVehicleId') || null;
+  } catch(e) { vehicles = []; }
+}
+
+function getActiveVehicle() {
+  return vehicles.find(v => v.id === activeVehicleId);
+}
+
+// ===== PAGE SWITCH =====
+function switchPage(page) {
+  // 跳转到对应页面
+  window.location.href = page + '.html';
+}
+
+// ===== VEHICLE LIST =====
+function renderVehicleList() {
+  const list = document.getElementById('vehicle-list');
+  if (vehicles.length === 0) {
+    list.innerHTML = '<div class="list-empty">暂无车辆，点击 + 添加</div>';
+    return;
+  }
+  list.innerHTML = vehicles.map(v => `
+    <div class="list-item ${v.id === activeVehicleId ? 'active' : ''}" onclick="selectVehicle('${v.id}')">
+      <span class="item-icon material-icons">directions_car</span>
+      <span>${v.name}</span>
+    </div>
+  `).join('');
+}
+
+function selectVehicle(id) {
+  activeVehicleId = id;
+  save();
+  renderVehicleList();
+  renderVehicleDetail();
+}
+
+// ===== ADD VEHICLE =====
+function openAddVehicleModal() {
+  document.getElementById('new-vehicle-name').value = '';
+  document.getElementById('add-vehicle-modal').classList.add('open');
+  setTimeout(() => document.getElementById('new-vehicle-name').focus(), 100);
+}
+
+function closeAddVehicleModal() {
+  document.getElementById('add-vehicle-modal').classList.remove('open');
+}
+
+function createVehicle() {
+  const name = document.getElementById('new-vehicle-name').value.trim();
+  if (!name) return;
+  const hub = document.getElementById('new-vehicle-hub').value;
+  const v = {
+    id: uuid(),
+    name,
+    hub,
+    ports: { A: null, B: null, C: null, D: null, E: null, F: null },
+    wheelGroup: null,
+    lineFollow: null,
+  };
+  vehicles.push(v);
+  activeVehicleId = v.id;
+  save();
+  closeAddVehicleModal();
+  renderVehicleList();
+  renderVehicleDetail();
+}
+
+// ===== VEHICLE DETAIL =====
+function renderVehicleDetail() {
+  const detail = document.getElementById('vehicle-detail');
+  const v = getActiveVehicle();
+  if (!v) {
+    detail.innerHTML = '<div class="detail-empty">请选择或添加一辆车辆</div>';
+    return;
+  }
+
+  const portCards = ['A','B','C','D','E','F'].map(p => {
+    const dev = v.ports[p];
+    if (dev) {
+      const emoji = DEVICE_EMOJI[dev.className] || '❓';
+      return `
+        <div class="device-card" onclick="editPortDevice('${p}')">
+          <span class="device-emoji">${emoji}</span>
+          <span class="device-name">${DEVICE_NAME_MAP[dev.className] || dev.className}</span>
+          <span class="device-port">${p}</span>
+          <button class="device-remove" onclick="event.stopPropagation();removeDevice('${p}')">×</button>
+        </div>
+      `;
+    }
+    return '';
+  }).join('');
+
+  const wheelGroup = v.wheelGroup;
+  const leftMotor = wheelGroup && wheelGroup.leftPort ? v.ports[wheelGroup.leftPort] : null;
+  const rightMotor = wheelGroup && wheelGroup.rightPort ? v.ports[wheelGroup.rightPort] : null;
+
+  const lEmoji = leftMotor ? (DEVICE_EMOJI[leftMotor.className] || '⚙️') : '⚙️';
+  const rEmoji = rightMotor ? (DEVICE_EMOJI[rightMotor.className] || '⚙️') : '⚙️';
+  const lName = leftMotor ? (DEVICE_NAME_MAP[leftMotor.className] || leftMotor.className) : '选择左电机';
+  const rName = rightMotor ? (DEVICE_NAME_MAP[rightMotor.className] || rightMotor.className) : '选择右电机';
+
+  const lPort = wheelGroup ? wheelGroup.leftPort : '';
+  const rPort = wheelGroup ? wheelGroup.rightPort : '';
+
+  let axleTrack = '';
+  if (wheelGroup && wheelGroup.wheelDiameter && wheelGroup.axleTrack) {
+    axleTrack = `左右轮距：${wheelGroup.axleTrack} mm（自动计算）`;
+  } else if (wheelGroup && wheelGroup.wheelDiameter) {
+    axleTrack = '配置轮距后自动计算';
+  }
+
+  const lf = v.lineFollow;
+  const lfActive = lf ? 'active' : '';
+  const lfTitle = lf && lf.sensorPort ? '单光巡线系统' : '单光巡线系统';
+
+  let freqWarning = '';
+  if (lf && lf.waitMs > 30) {
+    freqWarning = '<div class="freq-warning orange"><span class="warn-icon">⚠️</span>太高了，机器会反应不过来</div>';
+  } else if (lf && lf.waitMs < 5) {
+    freqWarning = '<div class="freq-warning red"><span class="warn-icon">⚠️</span>太低可能导致传感器采样不稳定</div>';
+  }
+
+  const lineColor = lf && lf.lineColor || '#000000';
+  const bgColor = lf && lf.bgColor || '#ffffff';
+
+  // Find claw/fork motor if any
+  let clawCard = '';
+  const clawMotors = ['A','B','C','D'].filter(p => {
+    const d = v.ports[p];
+    return d && (d.className === 'MotorMedium' || d.className === 'MotorLarge');
+  });
+
+  detail.innerHTML = `
+    <div class="detail-section">
+      <div class="section-title">Prime Hub 拼搭俯视图</div>
+      <div class="hub-card">
+        <div class="hub-title">${v.name} — Prime Hub</div>
+        <div class="hub-body" id="hub-body-${v.id}">
+          <div class="hub-top">
+            <button class="hub-btn btn-left" title="LEFT"></button>
+            <button class="hub-btn btn-right" title="RIGHT"></button>
+            <button class="hub-btn btn-center" title="CENTER"></button>
+            <button class="hub-btn btn-bt" title="BT">📶</button>
+          </div>
+
+          <!-- Ports -->
+          <div class="hub-port port-A ${v.ports.A ? 'connected' : ''}" onclick="openPortModal('A')"><span class="port-label">A</span></div>
+          <div class="hub-port port-B ${v.ports.B ? 'connected' : ''}" onclick="openPortModal('B')"><span class="port-label">B</span></div>
+          <div class="hub-port port-C ${v.ports.C ? 'connected' : ''}" onclick="openPortModal('C')"><span class="port-label">C</span></div>
+          <div class="hub-port port-D ${v.ports.D ? 'connected' : ''}" onclick="openPortModal('D')"><span class="port-label">D</span></div>
+          <div class="hub-port port-E ${v.ports.E ? 'connected' : ''}" onclick="openPortModal('E')"><span class="port-label">E</span></div>
+          <div class="hub-port port-F ${v.ports.F ? 'connected' : ''}" onclick="openPortModal('F')"><span class="port-label">F</span></div>
+
+          <!-- Display -->
+          <div class="hub-display" id="hub-display"></div>
+
+          <!-- LED -->
+          <div class="hub-led green on"></div>
+        </div>
+
+        <div class="hub-device-cards">
+          ${portCards || '<span style="font-size:12px;color:var(--on-surface-variant)">点击端口连接设备</span>'}
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-title">轮组配置</div>
+      <div class="wheel-group-card">
+        <div class="wheel-group-title">驱动轮组</div>
+        <div class="wheel-motors">
+          <div class="wheel-motor ${leftMotor ? 'filled' : ''}" id="wheel-left" ondragover="onDragOver(event)" ondrop="onDropLeft(event)" ondragleave="onDragLeave(event)" onclick="openWheelMotorSelect('left')">
+            <span class="wm-emoji">${lEmoji}</span>
+            <span class="wm-name">${lName}</span>
+            ${lPort ? `<span class="wm-port">端口 ${lPort}</span>` : ''}
+          </div>
+          <span class="wheel-arrow" onclick="flipWheels()" title="翻转左右电机">⇄</span>
+          <div class="wheel-motor ${rightMotor ? 'filled' : ''}" id="wheel-right" ondragover="onDragOver(event)" ondrop="onDropRight(event)" ondragleave="onDragLeave(event)" onclick="openWheelMotorSelect('right')">
+            <span class="wm-emoji">${rEmoji}</span>
+            <span class="wm-name">${rName}</span>
+            ${rPort ? `<span class="wm-port">端口 ${rPort}</span>` : ''}
+          </div>
+        </div>
+        <div class="wheel-config">
+          <div class="field-group">
+            <label class="field-label">轮胎直径 (mm)</label>
+            <input class="field-input" type="number" value="${wheelGroup ? wheelGroup.wheelDiameter : 62}" min="20" max="200" onchange="updateWheelConfig('wheelDiameter', this.value)" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">轮胎宽度 (mm)</label>
+            <input class="field-input" type="number" value="${wheelGroup ? wheelGroup.wheelWidth : 20}" min="10" max="100" onchange="updateWheelConfig('wheelWidth', this.value)" />
+          </div>
+        </div>
+        ${axleTrack ? `<div class="axle-info">${axleTrack}</div>` : ''}
+        <div style="font-size:12px;color:var(--on-surface-variant);text-align:center;">提示：从上方设备卡片拖拽电机到轮组，或点击选择</div>
+      </div>
+    </div>
+
+    ${lf && lf.sensorPort ? `
+    <div class="detail-section">
+      <div class="section-title">${lfTitle}</div>
+      <div class="linefollow-card">
+        <div class="linefollow-row">
+          <div class="color-picker-group">
+            <label class="field-label">巡线颜色</label>
+            <input type="color" class="color-preview" value="${lineColor}" onchange="updateLineFollow('lineColor', this.value)" style="background:${lineColor}" />
+          </div>
+          <div class="color-picker-group">
+            <label class="field-label">背景颜色</label>
+            <input type="color" class="color-preview" value="${bgColor}" onchange="updateLineFollow('bgColor', this.value)" style="background:${bgColor}" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label class="field-label">传感器位置</label>
+            <div class="side-select">
+              <button class="side-btn ${lf.sensorSide==='left'?'active':''}" onclick="updateLineFollow('sensorSide','left')">左</button>
+              <button class="side-btn ${lf.sensorSide==='right'?'active':''}" onclick="updateLineFollow('sensorSide','right')">右</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">反射率阈值 (0~100)</span>
+            <span class="slider-value" id="threshold-val">${lf.threshold || 35}</span>
+          </div>
+          <input type="range" min="0" max="100" value="${lf.threshold || 35}" oninput="updateLineFollow('threshold', this.value); document.getElementById('threshold-val').textContent = this.value" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Kp (0.3~4.0)</span>
+            <span class="slider-value" id="kp-val">${lf.kp || 1.5}</span>
+          </div>
+          <input type="range" min="3" max="40" value="${Math.round((lf.kp || 1.5)*10)}" oninput="updateLineFollow('kp', (this.value/10).toFixed(1)); document.getElementById('kp-val').textContent = (this.value/10).toFixed(1)" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">扫描频率 wait_ms (5~50)</span>
+            <span class="slider-value" id="waitms-val">${lf.waitMs || 10}</span>
+          </div>
+          <input type="range" min="5" max="50" value="${lf.waitMs || 10}" oninput="updateLineFollow('waitMs', parseInt(this.value)); document.getElementById('waitms-val').textContent = this.value" />
+        </div>
+
+        ${freqWarning}
+      </div>
+    </div>
+    ` : ''}
+
+    ${clawMotors.length > 0 ? `
+    <div class="detail-section">
+      <div class="section-title">爪子 / 叉子配置</div>
+      ${clawMotors.map(p => {
+        const dev = v.ports[p];
+        const states = dev && dev.states ? dev.states : [{name:'状态A',angle:0,enabled:false},{name:'状态B',angle:-300,enabled:false}];
+        return `
+        <div class="claw-card">
+          <div class="claw-title">${DEVICE_NAME_MAP[dev.className] || dev.className} (端口 ${p})</div>
+          <div class="claw-states">
+            ${states.map((s,i) => `
+            <div class="claw-state ${s.enabled ? 'active-state' : ''}">
+              <div class="state-header">
+                <span class="state-name">${s.name}</span>
+                <label class="state-check">
+                  <input type="checkbox" ${s.enabled ? 'checked' : ''} onchange="updateClawState('${p}',${i},'enabled',this.checked)" />
+                  启用
+                </label>
+              </div>
+              <div class="state-angle">
+                <span style="font-size:12px;color:var(--on-surface-variant);width:40px;">角度</span>
+                <input class="field-input" type="number" value="${s.angle}" style="height:36px;" onchange="updateClawState('${p}',${i},'angle',parseInt(this.value))" />
+              </div>
+              <div class="claw-actions">
+                <button class="btn-test" onclick="testClaw('${p}',${s.angle})">测试</button>
+              </div>
+            </div>
+            `).join('')}
+          </div>
+        </div>
+        `;
+      }).join('')}
+    </div>
+    ` : ''}
+  `;
+
+  // Render display pixels
+  renderHubDisplay(v);
+}
+
+function renderHubDisplay(v) {
+  const display = document.getElementById('hub-display');
+  if (!display) return;
+  display.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    const pixel = document.createElement('div');
+    pixel.className = 'display-pixel';
+    // Animate some pixels for visual interest
+    const pattern = [
+      0,0,1,0,0,
+      0,1,1,1,0,
+      1,1,0,1,1,
+      0,1,1,1,0,
+      0,0,1,0,0,
+    ];
+    if (pattern[i]) pixel.classList.add('on');
+    display.appendChild(pixel);
+  }
+}
+
+// ===== PORT MODAL =====
+function openPortModal(port) {
+  activePort = port;
+  selectedDeviceClass = null;
+  const isMotor = PORT_MOTOR.includes(port);
+  const devices = DEVICES_BY_PORT[port] || [];
+  const v = getActiveVehicle();
+
+  document.getElementById('port-modal-title').textContent = `Port ${port}`;
+  document.getElementById('port-modal-subtitle').textContent = isMotor
+    ? '电机端口 — 选择连接的设备'
+    : '传感器端口 — 选择连接的设备';
+
+  const list = document.getElementById('port-device-list');
+  list.innerHTML = devices.map(d => `
+    <div class="device-option" data-class="${d.className}" onclick="selectDeviceOption('${d.className}')">
+      <span class="opt-emoji">${d.emoji}</span>
+      <span class="opt-name">${d.name}</span>
+      <span class="opt-check">✓</span>
+    </div>
+  `).join('');
+
+  // Pre-select if already connected
+  if (v && v.ports[port]) {
+    const existing = v.ports[port].className;
+    const el = list.querySelector(`[data-class="${existing}"]`);
+    if (el) { el.classList.add('selected'); selectedDeviceClass = existing; }
+  }
+
+  document.getElementById('port-modal').classList.add('open');
+}
+
+function selectDeviceOption(cls) {
+  selectedDeviceClass = cls;
+  document.querySelectorAll('#port-device-list .device-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.class === cls);
+  });
+}
+
+function confirmPortDevice() {
+  if (!selectedDeviceClass || !activePort) return;
+  const v = getActiveVehicle();
+  if (!v) return;
+
+  v.ports[activePort] = {
+    className: selectedDeviceClass,
+    states: [
+      { name: '状态A', angle: 0, enabled: false },
+      { name: '状态B', angle: -300, enabled: false },
+    ]
+  };
+
+  // Auto-enable line follow if color sensor connected to E/F
+  if (selectedDeviceClass === 'ColorSensor' && (activePort === 'E' || activePort === 'F')) {
+    if (!v.lineFollow) {
+      v.lineFollow = { sensorPort: activePort, kp: 1.5, threshold: 35, waitMs: 10, lineColor: '#000000', bgColor: '#ffffff', sensorSide: 'left' };
+    } else {
+      v.lineFollow.sensorPort = activePort;
+    }
+  }
+
+  save();
+  closePortModal();
+  renderVehicleDetail();
+}
+
+function removeDevice(port) {
+  const v = getActiveVehicle();
+  if (!v) return;
+  v.ports[port] = null;
+
+  // Clear wheel group if that motor removed
+  if (v.wheelGroup) {
+    if (v.wheelGroup.leftPort === port) { v.wheelGroup.leftPort = null; }
+    if (v.wheelGroup.rightPort === port) { v.wheelGroup.rightPort = null; }
+  }
+
+  // Clear line follow if that sensor removed
+  if (v.lineFollow && v.lineFollow.sensorPort === port) {
+    v.lineFollow = null;
+  }
+
+  save();
+  renderVehicleDetail();
+}
+
+function editPortDevice(port) {
+  openPortModal(port);
+}
+
+function closePortModal() {
+  document.getElementById('port-modal').classList.remove('open');
+  activePort = null;
+  selectedDeviceClass = null;
+}
+
+// ===== WHEEL GROUP =====
+function openWheelMotorSelect(side) {
+  const v = getActiveVehicle();
+  if (!v) return;
+  // Find motor ports that are not already used in wheel group (or all if not set)
+  const available = ['A','B','C','D'].filter(p => {
+    const d = v.ports[p];
+    return d && (d.className === 'MotorMedium' || d.className === 'MotorLarge');
+  });
+
+  if (available.length === 0) {
+    // Prompt to add motor first
+    alert('请先在端口A/B/C/D连接电机');
+    return;
+  }
+
+  const port = available[0];
+  if (!v.wheelGroup) v.wheelGroup = { leftPort: null, rightPort: null, wheelDiameter: 62, wheelWidth: 20 };
+  if (side === 'left') {
+    v.wheelGroup.leftPort = v.wheelGroup.leftPort || port;
+  } else {
+    v.wheelGroup.rightPort = v.wheelGroup.rightPort || port;
+  }
+  save();
+  renderVehicleDetail();
+}
+
+function flipWheels() {
+  const v = getActiveVehicle();
+  if (!v || !v.wheelGroup) return;
+  const { leftPort, rightPort } = v.wheelGroup;
+  v.wheelGroup.leftPort = rightPort;
+  v.wheelGroup.rightPort = leftPort;
+  save();
+  renderVehicleDetail();
+}
+
+function updateWheelConfig(key, value) {
+  const v = getActiveVehicle();
+  if (!v) return;
+  if (!v.wheelGroup) v.wheelGroup = { leftPort: null, rightPort: null, wheelDiameter: 62, wheelWidth: 20 };
+  v.wheelGroup[key] = parseFloat(value);
+
+  // Auto-calculate axle_track based on wheelDiameter
+  if (key === 'wheelDiameter' && v.wheelGroup.wheelDiameter) {
+    v.wheelGroup.axleTrack = Math.round(v.wheelGroup.wheelDiameter * 1.8);
+  }
+
+  save();
+  renderVehicleDetail();
+}
+
+// ===== LINE FOLLOW =====
+function updateLineFollow(key, value) {
+  const v = getActiveVehicle();
+  if (!v) return;
+  if (!v.lineFollow) {
+    v.lineFollow = { sensorPort: null, kp: 1.5, threshold: 35, waitMs: 10, lineColor: '#000000', bgColor: '#ffffff', sensorSide: 'left' };
+  }
+  v.lineFollow[key] = value;
+  save();
+  if (key === 'waitMs') renderVehicleDetail();
+}
+
+// ===== CLAW/FORK =====
+function updateClawState(port, stateIndex, key, value) {
+  const v = getActiveVehicle();
+  if (!v || !v.ports[port]) return;
+  if (!v.ports[port].states) {
+    v.ports[port].states = [
+      { name: '状态A', angle: 0, enabled: false },
+      { name: '状态B', angle: -300, enabled: false },
+    ];
+  }
+  v.ports[port].states[stateIndex][key] = value;
+  save();
+  renderVehicleDetail();
+}
+
+function testClaw(port, angle) {
+  console.log(`测试爪子端口${port}，角度${angle}`);
+}
+
+// ===== DRAG & DROP =====
+function onDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function onDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function onDropLeft(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  handleWheelDrop('left');
+}
+
+function onDropRight(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  handleWheelDrop('right');
+}
+
+function handleWheelDrop(side) {
+  const v = getActiveVehicle();
+  if (!v) return;
+  if (!dragSrcPort) return;
+
+  const d = v.ports[dragSrcPort];
+  if (!d || (d.className !== 'MotorMedium' && d.className !== 'MotorLarge')) return;
+
+  if (!v.wheelGroup) v.wheelGroup = { leftPort: null, rightPort: null, wheelDiameter: 62, wheelWidth: 20 };
+  if (side === 'left') v.wheelGroup.leftPort = dragSrcPort;
+  else v.wheelGroup.rightPort = dragSrcPort;
+
+  save();
+  dragSrcPort = null;
+  renderVehicleDetail();
+}
+
+// Make device cards draggable
+document.addEventListener('DOMNodeInserted', function() {
+  document.querySelectorAll('.device-card').forEach(card => {
+    if (!card.dataset.draggable) {
+      card.dataset.draggable = 'true';
+      card.draggable = true;
+      card.addEventListener('dragstart', e => {
+        const name = card.querySelector('.device-name').textContent;
+        const port = card.querySelector('.device-port') ? card.querySelector('.device-port').textContent.replace('端口 ','') : '';
+        dragSrcPort = port;
+        e.dataTransfer.effectAllowed = 'move';
+        card.style.opacity = '0.5';
+      });
+      card.addEventListener('dragend', e => {
+        card.style.opacity = '1';
+        dragSrcPort = null;
+      });
+    }
+  });
+});
+
+// ===== EXPORT / IMPORT FUNCTIONS =====
+
+/**
+ * 切换导出下拉菜单
+ */
+function toggleExportMenu() {
+  const menu = document.getElementById('exportMenu');
+  menu.classList.toggle('show');
+  // Close on outside click
+  document.addEventListener('click', function closeMenu(e) {
+    if (!e.target.closest('.dropdown')) {
+      menu.classList.remove('show');
+      document.removeEventListener('click', closeMenu);
+    }
+  });
+}
+
+/**
+ * 导出全部车辆为 JSON 文件
+ */
+function exportVehiclesJSON() {
+  document.getElementById('exportMenu').classList.remove('show');
+  if (vehicles.length === 0) {
+    showToast('暂无车辆可导出');
+    return;
+  }
+  const data = {
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    vehicles: vehicles
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `pybricks_vehicles_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`已导出 ${vehicles.length} 辆车辆`);
+}
+
+/**
+ * 导出当前车辆为 Python 代码文件
+ */
+function exportVehiclePython() {
+  document.getElementById('exportMenu').classList.remove('show');
+  const v = getActiveVehicle();
+  if (!v) { showToast('请先选择一辆车辆'); return; }
+  exportPythonForVehicle(v);
+}
+
+/**
+ * 为指定车辆生成 Python 代码
+ */
+function exportPythonForVehicle(v) {
+  const lines = ['# Pybricks 程序自动生成', `# 车辆: ${v.name}`, '# 生成时间: ' + new Date().toLocaleString(), ''];
+
+  lines.push('from pybricks.hubs import PrimeHub');
+  lines.push('from pybricks.pupdevices import Motor, ColorSensor');
+  lines.push('from pybricks.parameters import Direction, Port, Color');
+  lines.push('from pybricks.robotics import DriveBase');
+  lines.push('');
+
+  // Port assignments
+  const portDevs = {};
+  ['A','B','C','D','E','F'].forEach(p => {
+    if (v.ports[p]) {
+      portDevs[p] = v.ports[p];
+      const cls = v.ports[p].className;
+      if (cls === 'ColorSensor') {
+        lines.push(`${p.toLowerCase()}_sensor = ColorSensor(Port.${p})`);
+      } else if (cls === 'MotorMedium' || cls === 'MotorLarge') {
+        const dir = 'Direction.CLOCKWISE';
+        lines.push(`${p.toLowerCase()}_motor = Motor(Port.${p}, ${dir})`);
+      }
+    }
+  });
+
+  lines.push('');
+  lines.push('hub = PrimeHub()');
+  lines.push('');
+
+  if (v.wheelGroup && v.wheelGroup.leftPort && v.wheelGroup.rightPort) {
+    const ld = v.wheelGroup.leftPort.toLowerCase();
+    const rd = v.wheelGroup.rightPort.toLowerCase();
+    const wd = v.wheelGroup.wheelDiameter || 62;
+    const at = v.wheelGroup.axleTrack || Math.round(wd * 1.8);
+    lines.push(`robot = DriveBase(${ld}_motor, ${rd}_motor, wheel_diameter=${wd}, axle_track=${at})`);
+    lines.push('');
+  }
+
+  if (v.lineFollow) {
+    const lf = v.lineFollow;
+    lines.push('# 巡线参数');
+    lines.push(`LINE_KP = ${lf.kp || 1.5}`);
+    lines.push(`LINE_THRESHOLD = ${lf.threshold || 35}`);
+    lines.push(`LINE_WAIT_MS = ${lf.waitMs || 10}`);
+    lines.push('');
+  }
+
+  lines.push('# 主程序');
+  lines.push('while True:');
+  lines.push('    pass');
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${v.name}.py`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`已导出 ${v.name} 为 Python`);
+}
+
+/**
+ * 导入车辆 JSON 文件
+ */
+function importVehiclesJSON() {
+  document.getElementById('exportMenu').classList.remove('show');
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      let imported = [];
+      if (Array.isArray(data)) {
+        // 纯数组格式
+        imported = data;
+      } else if (data.vehicles && Array.isArray(data.vehicles)) {
+        // 标准格式
+        imported = data.vehicles;
+      } else {
+        showToast('无效的文件格式');
+        return;
+      }
+      if (imported.length === 0) {
+        showToast('文件中没有车辆数据');
+        return;
+      }
+      // 合并：追加新车辆，ID重复则跳过
+      let added = 0;
+      for (const v of imported) {
+        if (!v.id || !v.name) continue;
+        const exists = vehicles.find(orig => orig.id === v.id);
+        if (!exists) {
+          vehicles.push(v);
+          added++;
+        }
+      }
+      await save();
+      renderVehicleList();
+      if (activeVehicleId) renderVehicleDetail();
+      showToast(`成功导入 ${added} 辆车辆（${imported.length - added}辆重复跳过）`);
+    } catch (err) {
+      console.error('[Vehicle] Import failed:', err);
+      showToast('导入失败：文件格式错误');
+    }
+  };
+  input.click();
+}
+
+// 保留旧的 exportPython 兼容调用
+function exportPython() {
+  exportVehiclePython();
+}
+
+// ===== TOAST 提示 =====
+let toastTimer = null;
+function showToast(msg) {
+  let toast = document.getElementById('vehicleToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'vehicleToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#333;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.2s;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+}
+
+// ===== INIT =====
+// 初始化 IndexedDB 并加载数据
+async function initVehiclePage() {
+  try {
+    // 等待数据库就绪
+    await window.pybricksDB.init();
+    
+    // 从 IndexedDB 加载车辆列表
+    vehicles = await window.pybricksDB.getAllVehicles();
+    
+    // 恢复上次选中的车辆
+    const savedId = await window.pybricksDB.getAppState('currentVehicleId');
+    if (savedId && vehicles.find(v => v.id === savedId)) {
+      activeVehicleId = savedId;
+    } else if (vehicles.length > 0) {
+      activeVehicleId = vehicles[0].id;
+    }
+    
+    renderVehicleList();
+    if (activeVehicleId) renderVehicleDetail();
+    
+    console.log('[Vehicle] Loaded', vehicles.length, 'vehicles');
+  } catch (err) {
+    console.error('[Vehicle] Failed to initialize:', err);
+    // 回退到空状态
+    vehicles = [];
+    renderVehicleList();
+  }
+}
+
+// 增强版 save - 保存到 IndexedDB
+async function save() {
+  try {
+    // 保存当前活跃车辆
+    if (activeVehicleId) {
+      await window.pybricksDB.setAppState('currentVehicleId', activeVehicleId);
+    }
+    
+    // 触发事件通知
+    window.pybricksEvents?.emit('vehiclesUpdated');
+  } catch (err) {
+    console.error('[Vehicle] Failed to save:', err);
+  }
+}
+
+// 增强版 load - 从 IndexedDB 加载（保留兼容性）
+function load() {
+  // load now happens async via initVehiclePage()
+  // This is kept for backwards compatibility
+}
+
+// 保存单个车辆到 IndexedDB
+async function saveVehicleToDB(vehicle) {
+  try {
+    await window.pybricksDB.saveVehicle(vehicle);
+    // 更新本地缓存
+    const idx = vehicles.findIndex(v => v.id === vehicle.id);
+    if (idx >= 0) {
+      vehicles[idx] = vehicle;
+    } else {
+      vehicles.push(vehicle);
+    }
+    await save();
+  } catch (err) {
+    console.error('[Vehicle] Failed to save vehicle:', err);
+    Toast.error('保存失败');
+  }
+}
+
+// 删除车辆
+async function deleteVehicle(id) {
+  try {
+    await window.pybricksDB.deleteVehicle(id);
+    vehicles = vehicles.filter(v => v.id !== id);
+    if (activeVehicleId === id) {
+      activeVehicleId = vehicles.length > 0 ? vehicles[0].id : null;
+    }
+    await save();
+    renderVehicleList();
+    renderVehicleDetail();
+    Toast.success('车辆已删除');
+  } catch (err) {
+    console.error('[Vehicle] Failed to delete vehicle:', err);
+    Toast.error('删除失败');
+  }
+}
+
+// 选择车辆
+function selectVehicle(id) {
+  activeVehicleId = id;
+  save();
+  renderVehicleList();
+  renderVehicleDetail();
+}
+
+// 创建车辆
+function createVehicle() {
+  const name = document.getElementById('new-vehicle-name').value.trim();
+  if (!name) return;
+  const hub = document.getElementById('new-vehicle-hub').value;
+  const v = {
+    id: uuid(),
+    name,
+    hub,
+    ports: { A: null, B: null, C: null, D: null, E: null, F: null },
+    wheelGroup: null,
+    lineFollow: null,
+  };
+  
+  // 保存到 IndexedDB
+  saveVehicleToDB(v);
+  
+  activeVehicleId = v.id;
+  closeAddVehicleModal();
+  renderVehicleList();
+  renderVehicleDetail();
+}
+
+// 更新车辆
+function updateVehicle(updates) {
+  const v = vehicles.find(v => v.id === activeVehicleId);
+  if (!v) return;
+  Object.assign(v, updates);
+  saveVehicleToDB(v);
+}
+
+// ===== PWA 初始化 =====
+document.addEventListener('DOMContentLoaded', async () => {
+  // 注册 Service Worker
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('../sw.js');
+      console.log('[SW] Registered');
+    } catch (err) {
+      console.warn('[SW] Registration failed:', err);
+    }
+  }
+  
+  // 初始化页面
+  initVehiclePage();
+});
+</script>
+
+<!-- PWA / IndexedDB -->
+<script src="../js/db.js"></script>
+<script src="../js/app.js"></script>
+
+</body>
+</html>
