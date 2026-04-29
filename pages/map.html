@@ -1877,6 +1877,7 @@ function closeAllModals() {
   document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
 }
 document.getElementById('modalCancelBtn')?.addEventListener('click', () => hideModal('mapModal'));
+}
 
 /* ======================================================
    DRAG & DROP - FILE UPLOAD
@@ -2438,5 +2439,6 @@ function importMapsJSON() {
 
 // 保持旧函数名兼容
 function exportMapsJSON() { exportAllMapsJSON(); }
+</script>
 </body>
 </html>
